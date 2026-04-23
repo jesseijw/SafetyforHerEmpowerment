@@ -1,0 +1,911 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>S.H.E. — Safety for Her Empowerment</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=Nunito:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+:root {
+  --cream: #fdf8f4; --blush: #f5ddd5; --rose: #d4736a; --rose-dark: #b85c53;
+  --mauve: #8c5c6e; --sage: #7a9e8e; --sage-light: #d6e8e2; --deep: #2d1f22;
+  --warm-gray: #6b5b5e; --light: #faf4f0;
+  --emergency: #c0392b; --emergency-light: #fdecea;
+  --safe: #27ae60; --safe-light: #e8f5e9;
+  --warn: #e67e22; --warn-light: #fef3e2;
+}
+html { scroll-behavior: smooth; }
+body { background: var(--cream); color: var(--deep); font-family: 'Nunito', sans-serif; font-weight: 400; overflow-x: hidden; }
+
+/* ── SOS BANNER ── */
+.sos-banner { background: var(--emergency); color: white; text-align: center; padding: 0.55rem 1rem; font-size: 0.8rem; font-weight: 600; display: flex; align-items: center; justify-content: center; gap: 0.75rem; flex-wrap: wrap; }
+.sos-banner a { color: white; font-weight: 700; text-decoration: underline; }
+.sos-pill { background: white; color: var(--emergency); padding: 0.15rem 0.65rem; border-radius: 20px; font-weight: 700; font-size: 0.75rem; }
+
+/* ── NAV ── */
+nav { position: sticky; top: 0; z-index: 200; background: rgba(253,248,244,0.97); backdrop-filter: blur(12px); border-bottom: 1px solid rgba(212,115,106,0.18); height: 62px; display: flex; align-items: center; padding: 0 2rem; gap: 1rem; }
+.nav-logo { font-family: 'Playfair Display', serif; font-size: 1.35rem; color: var(--rose); cursor: pointer; display: flex; align-items: center; gap: 0.4rem; white-space: nowrap; flex-shrink: 0; }
+.nav-logo small { font-size: 0.65rem; color: var(--warm-gray); font-family: 'Nunito', sans-serif; letter-spacing: 0.07em; display: none; }
+
+/* Dropdown */
+.nav-dropdown-wrap { position: relative; flex: 1; max-width: 260px; }
+.nav-select { width: 100%; appearance: none; background: var(--light); border: 2px solid rgba(212,115,106,0.25); border-radius: 10px; padding: 0.45rem 2.2rem 0.45rem 0.9rem; font-family: 'Nunito', sans-serif; font-size: 0.83rem; font-weight: 600; color: var(--deep); cursor: pointer; outline: none; transition: border-color 0.2s; }
+.nav-select:focus { border-color: var(--rose); }
+.nav-select-arrow { position: absolute; right: 0.75rem; top: 50%; transform: translateY(-50%); pointer-events: none; color: var(--rose); font-size: 0.7rem; }
+
+/* Desktop pill links */
+.nav-pills { display: flex; gap: 0.2rem; list-style: none; flex-wrap: nowrap; }
+.nav-pills button { background: none; border: none; font-family: 'Nunito', sans-serif; color: var(--warm-gray); font-size: 0.78rem; font-weight: 600; padding: 0.35rem 0.7rem; border-radius: 20px; cursor: pointer; transition: all 0.2s; white-space: nowrap; }
+.nav-pills button:hover { background: var(--blush); color: var(--rose); }
+.nav-pills button.active { background: var(--rose); color: white; }
+
+.nav-sos { background: var(--emergency); color: white; border: none; border-radius: 8px; padding: 0.45rem 1rem; font-size: 0.8rem; font-weight: 700; cursor: pointer; font-family: 'Nunito', sans-serif; transition: background 0.2s; white-space: nowrap; flex-shrink: 0; }
+.nav-sos:hover { background: #a93226; }
+
+/* ── PAGES ── */
+.page { display: none; }
+.page.active { display: block; animation: fadeIn 0.3s ease; }
+@keyframes fadeIn { from { opacity:0; transform:translateY(8px); } to { opacity:1; transform:translateY(0); } }
+
+/* ── HERO ── */
+.hero { background: linear-gradient(135deg, var(--blush) 0%, var(--cream) 60%); padding: 4rem 3rem 3.5rem; text-align: center; position: relative; overflow: hidden; }
+.hero::before { content: '♀'; position: absolute; right: -2rem; top: -3rem; font-size: 20rem; color: rgba(212,115,106,0.06); line-height: 1; pointer-events: none; }
+.hero-badge { display: inline-block; background: var(--rose); color: white; font-size: 0.72rem; font-weight: 700; letter-spacing: 0.15em; text-transform: uppercase; padding: 0.35rem 1rem; border-radius: 20px; margin-bottom: 1.25rem; }
+.hero h1 { font-family: 'Playfair Display', serif; font-size: clamp(2rem, 5vw, 3.8rem); line-height: 1.15; color: var(--deep); margin-bottom: 1rem; font-weight: 600; }
+.hero h1 em { font-style: italic; color: var(--rose); }
+.hero-sub { font-size: 1rem; color: var(--warm-gray); max-width: 520px; margin: 0 auto 2.5rem; line-height: 1.75; }
+.hero-cards { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; max-width: 820px; margin: 0 auto; }
+.hero-card { background: white; border-radius: 16px; padding: 1.4rem 1.5rem; text-align: left; flex: 1; min-width: 145px; max-width: 190px; box-shadow: 0 2px 20px rgba(44,31,34,0.08); border: 2px solid transparent; transition: all 0.25s; cursor: pointer; display: block; text-decoration: none; color: inherit; }
+.hero-card:hover { border-color: var(--rose); transform: translateY(-3px); box-shadow: 0 6px 28px rgba(212,115,106,0.18); }
+.hero-card.urgent { border-color: var(--emergency); background: var(--emergency-light); }
+.hc-icon { font-size: 1.8rem; margin-bottom: 0.6rem; }
+.hc-title { font-weight: 700; font-size: 0.9rem; color: var(--deep); margin-bottom: 0.25rem; }
+.hc-desc { font-size: 0.75rem; color: var(--warm-gray); line-height: 1.5; }
+.hero-card.urgent .hc-title { color: var(--emergency); }
+
+/* ── SHARED SECTION STYLES ── */
+.page-header { padding: 2.5rem 3rem; }
+.page-header.rose-bg { background: linear-gradient(135deg, var(--blush), var(--cream)); }
+.page-header.emergency-bg { background: var(--emergency); color: white; display: flex; align-items: center; gap: 1rem; }
+.page-header.mauve-bg { background: linear-gradient(135deg, var(--mauve), #5a3347); color: white; }
+.page-header.sage-bg { background: linear-gradient(135deg, var(--sage-light), var(--cream)); }
+.page-header h2 { font-family: 'Playfair Display', serif; font-size: clamp(1.6rem, 3vw, 2.2rem); font-weight: 600; }
+.page-header h2 em { font-style: italic; color: var(--blush); }
+.page-header p { font-size: 0.9rem; opacity: 0.88; margin-top: 0.4rem; line-height: 1.6; max-width: 560px; }
+.page-header.rose-bg p, .page-header.sage-bg p { color: var(--warm-gray); opacity: 1; }
+.ph-icon { font-size: 2.4rem; flex-shrink: 0; }
+.page-body { padding: 2.5rem 3rem; }
+
+.section-title { font-family: 'Playfair Display', serif; font-size: 1.35rem; color: var(--deep); margin-bottom: 1rem; font-weight: 600; }
+.section-intro { font-size: 0.9rem; color: var(--warm-gray); line-height: 1.75; margin-bottom: 1.75rem; max-width: 580px; }
+.divider { border: none; border-top: 1px solid rgba(212,115,106,0.12); margin: 2rem 0; }
+
+/* ── EMERGENCY ── */
+.call-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(185px, 1fr)); gap: 1rem; margin-bottom: 2.5rem; }
+.call-card { border-radius: 14px; padding: 1.4rem 1rem; text-align: center; cursor: pointer; transition: transform 0.2s, box-shadow 0.2s; text-decoration: none; display: block; }
+.call-card:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(0,0,0,0.15); }
+.call-card.red { background: var(--emergency); color: white; }
+.call-card.teal { background: var(--sage); color: white; }
+.call-card.mauve { background: var(--mauve); color: white; }
+.call-card.orange { background: var(--warn); color: white; }
+.cc-icon { font-size: 1.4rem; margin-bottom: 0.4rem; }
+.cc-num { font-size: 1.4rem; font-weight: 700; margin: 0.3rem 0; }
+.cc-label { font-size: 0.75rem; opacity: 0.9; letter-spacing: 0.03em; }
+.tip-list { display: flex; flex-direction: column; gap: 0.75rem; margin-bottom: 2.5rem; }
+.tip-item { display: flex; gap: 1rem; align-items: flex-start; background: white; border-radius: 12px; padding: 1rem 1.25rem; border-left: 4px solid var(--rose); box-shadow: 0 1px 8px rgba(44,31,34,0.06); }
+.tip-item.safe-tip { border-color: var(--safe); }
+.tip-item.warn-tip { border-color: var(--warn); }
+.tip-emoji { font-size: 1.2rem; flex-shrink: 0; margin-top: 0.1rem; }
+.tip-text { font-size: 0.87rem; line-height: 1.65; color: var(--deep); }
+.tip-text strong { font-weight: 700; }
+.tip-text a { color: var(--rose); }
+
+/* ── SAFETY TIPS ── */
+.filter-tabs { display: flex; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 2rem; }
+.tab-btn { background: var(--light); border: 2px solid transparent; border-radius: 20px; padding: 0.4rem 1rem; font-family: 'Nunito', sans-serif; font-size: 0.8rem; font-weight: 600; cursor: pointer; transition: all 0.2s; color: var(--warm-gray); }
+.tab-btn:hover { border-color: var(--rose); color: var(--rose); }
+.tab-btn.active { background: var(--rose); color: white; border-color: var(--rose); }
+.tips-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(270px, 1fr)); gap: 1.25rem; }
+.tip-card { background: white; border-radius: 16px; padding: 1.4rem; box-shadow: 0 2px 12px rgba(44,31,34,0.07); border: 1px solid rgba(212,115,106,0.1); transition: box-shadow 0.2s; }
+.tip-card:hover { box-shadow: 0 4px 20px rgba(212,115,106,0.15); }
+.tc-icon { font-size: 1.8rem; margin-bottom: 0.6rem; }
+.tc-cat { font-size: 0.68rem; font-weight: 700; letter-spacing: 0.15em; text-transform: uppercase; color: var(--rose); margin-bottom: 0.4rem; }
+.tip-card h3 { font-size: 0.95rem; font-weight: 700; color: var(--deep); margin-bottom: 0.45rem; }
+.tip-card p { font-size: 0.83rem; line-height: 1.7; color: var(--warm-gray); }
+
+/* ── MAP ── */
+.map-zones { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 1rem; margin-bottom: 2rem; }
+.zone-card { border-radius: 14px; padding: 1.2rem 1.4rem; border-left: 5px solid; }
+.zone-card.safe { background: var(--safe-light); border-color: var(--safe); }
+.zone-card.caution { background: var(--warn-light); border-color: var(--warn); }
+.zone-card.avoid { background: var(--emergency-light); border-color: var(--emergency); }
+.zone-label { font-size: 0.68rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 0.35rem; }
+.zone-card.safe .zone-label { color: var(--safe); }
+.zone-card.caution .zone-label { color: var(--warn); }
+.zone-card.avoid .zone-label { color: var(--emergency); }
+.zone-card h3 { font-size: 0.92rem; font-weight: 700; color: var(--deep); margin-bottom: 0.35rem; }
+.zone-card p { font-size: 0.8rem; color: var(--warm-gray); line-height: 1.6; }
+.map-placeholder { background: var(--sage-light); border-radius: 16px; height: 280px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 0.9rem; border: 2px dashed rgba(122,158,142,0.4); margin-bottom: 2rem; text-align: center; padding: 2rem; }
+.map-placeholder h3 { font-family: 'Playfair Display', serif; font-size: 1.25rem; color: var(--deep); }
+.map-placeholder p { font-size: 0.84rem; color: var(--warm-gray); max-width: 340px; line-height: 1.6; }
+
+/* ── SELF DEFENSE ── */
+.accordion { display: flex; flex-direction: column; gap: 0.75rem; }
+.acc-item { background: white; border-radius: 14px; box-shadow: 0 2px 10px rgba(44,31,34,0.06); overflow: hidden; border: 1px solid rgba(212,115,106,0.1); }
+.acc-header { display: flex; align-items: center; gap: 0.9rem; padding: 1.15rem 1.4rem; cursor: pointer; transition: background 0.2s; user-select: none; }
+.acc-header:hover { background: var(--blush); }
+.acc-icon { font-size: 1.4rem; flex-shrink: 0; }
+.acc-title { font-weight: 700; font-size: 0.92rem; color: var(--deep); flex: 1; }
+.acc-badge { font-size: 0.68rem; font-weight: 700; padding: 0.18rem 0.55rem; border-radius: 10px; letter-spacing: 0.04em; }
+.acc-badge.green { background: var(--safe-light); color: var(--safe); }
+.acc-badge.amber { background: var(--warn-light); color: var(--warn); }
+.acc-arrow { color: var(--warm-gray); font-size: 0.75rem; transition: transform 0.3s; flex-shrink: 0; }
+.acc-item.open .acc-arrow { transform: rotate(180deg); }
+.acc-body { display: none; padding: 0 1.4rem 1.4rem; font-size: 0.87rem; line-height: 1.78; color: var(--warm-gray); }
+.acc-item.open .acc-body { display: block; }
+.acc-body ol, .acc-body ul { padding-left: 1.4rem; margin-top: 0.7rem; }
+.acc-body li { margin-bottom: 0.45rem; }
+.acc-body strong { color: var(--deep); }
+
+/* ── RESOURCES ── */
+.resource-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(265px, 1fr)); gap: 1.2rem; }
+.resource-card { background: white; border-radius: 16px; padding: 1.5rem; box-shadow: 0 2px 12px rgba(44,31,34,0.07); border-top: 4px solid var(--rose); }
+.resource-card.sage-t { border-color: var(--sage); }
+.resource-card.mauve-t { border-color: var(--mauve); }
+.rc-icon { font-size: 1.7rem; margin-bottom: 0.65rem; }
+.rc-org { font-size: 0.68rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: var(--rose); margin-bottom: 0.25rem; }
+.resource-card.sage-t .rc-org { color: var(--sage); }
+.resource-card.mauve-t .rc-org { color: var(--mauve); }
+.rc-title { font-weight: 700; font-size: 0.95rem; color: var(--deep); margin-bottom: 0.4rem; }
+.rc-desc { font-size: 0.82rem; color: var(--warm-gray); line-height: 1.65; margin-bottom: 0.9rem; }
+.rc-link { font-size: 0.84rem; font-weight: 700; color: var(--rose); text-decoration: none; display: flex; align-items: center; gap: 0.35rem; }
+.rc-link:hover { text-decoration: underline; }
+
+/* ── FORMS (shared) ── */
+.she-form { background: white; border-radius: 20px; padding: 2.5rem; box-shadow: 0 4px 24px rgba(44,31,34,0.08); max-width: 620px; }
+.form-notice { background: var(--blush); border-radius: 12px; padding: 1rem 1.25rem; margin-bottom: 1.75rem; font-size: 0.85rem; line-height: 1.7; color: var(--deep); }
+.form-group { margin-bottom: 1.4rem; }
+.form-label { display: block; font-weight: 700; font-size: 0.88rem; margin-bottom: 0.55rem; color: var(--deep); }
+.form-label span { font-weight: 400; color: var(--warm-gray); font-size: 0.78rem; }
+.form-input, .form-textarea, .form-select { width: 100%; border: 2px solid #e8d5d0; border-radius: 10px; padding: 0.7rem 1rem; font-family: 'Nunito', sans-serif; font-size: 0.88rem; color: var(--deep); background: #fffaf8; outline: none; transition: border-color 0.2s; }
+.form-input:focus, .form-textarea:focus, .form-select:focus { border-color: var(--rose); }
+.form-textarea { resize: vertical; min-height: 100px; }
+.chip-group { display: flex; flex-wrap: wrap; gap: 0.45rem; }
+.chip-input { display: none; }
+.chip-label { background: var(--light); border: 2px solid transparent; border-radius: 20px; padding: 0.38rem 0.95rem; font-size: 0.8rem; font-weight: 600; cursor: pointer; transition: all 0.2s; color: var(--warm-gray); }
+.chip-label:hover { border-color: var(--rose); color: var(--rose); }
+.chip-input:checked + .chip-label { background: var(--rose); color: white; border-color: var(--rose); }
+.form-submit { background: var(--rose); color: white; border: none; border-radius: 12px; padding: 0.9rem 2rem; font-family: 'Nunito', sans-serif; font-size: 0.95rem; font-weight: 700; cursor: pointer; transition: all 0.2s; width: 100%; margin-top: 0.5rem; }
+.form-submit:hover { background: var(--rose-dark); transform: translateY(-1px); }
+.form-submit:disabled { background: var(--safe); cursor: default; transform: none; }
+
+/* ── ABOUT ── */
+.about-mission { background: var(--blush); border-radius: 18px; padding: 2.2rem; margin-bottom: 2.5rem; display: flex; gap: 1.5rem; align-items: flex-start; }
+.mission-icon { font-size: 2.8rem; flex-shrink: 0; }
+.mission-text h3 { font-family: 'Playfair Display', serif; font-size: 1.35rem; color: var(--deep); margin-bottom: 0.65rem; font-weight: 600; }
+.mission-text p { font-size: 0.88rem; line-height: 1.8; color: var(--warm-gray); }
+.mission-text p + p { margin-top: 0.6rem; }
+.about-two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 2.5rem; margin-bottom: 2.5rem; }
+.about-col h3 { font-family: 'Playfair Display', serif; font-size: 1.25rem; color: var(--deep); margin-bottom: 0.9rem; font-weight: 600; }
+.about-col p { font-size: 0.87rem; line-height: 1.8; color: var(--warm-gray); margin-bottom: 0.65rem; }
+.step-list { display: flex; flex-direction: column; gap: 0.7rem; }
+.step-item { display: flex; gap: 0.85rem; align-items: flex-start; }
+.step-num { background: var(--rose); color: white; width: 26px; height: 26px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.72rem; font-weight: 700; flex-shrink: 0; margin-top: 0.1rem; }
+.step-text { font-size: 0.86rem; line-height: 1.65; color: var(--warm-gray); }
+.step-text strong { color: var(--deep); }
+.stats-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px,1fr)); gap: 1rem; background: var(--deep); border-radius: 18px; padding: 2rem; margin-bottom: 2.5rem; }
+.stat-box { text-align: center; }
+.stat-num { font-family: 'Playfair Display', serif; font-size: 2rem; color: var(--blush); font-weight: 600; }
+.stat-label { font-size: 0.72rem; color: rgba(245,221,213,0.7); margin-top: 0.2rem; line-height: 1.4; }
+.team-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px,1fr)); gap: 1rem; margin-bottom: 2.5rem; }
+.team-card { background: white; border-radius: 16px; padding: 1.5rem 1rem; text-align: center; box-shadow: 0 2px 10px rgba(44,31,34,0.07); }
+.team-avatar { width: 56px; height: 56px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; margin: 0 auto 0.85rem; }
+.team-name { font-weight: 700; font-size: 0.9rem; color: var(--deep); margin-bottom: 0.2rem; }
+.team-role { font-size: 0.72rem; color: var(--rose); font-weight: 600; letter-spacing: 0.04em; }
+.cta-box { background: var(--blush); border-radius: 16px; padding: 2rem; display: flex; flex-direction: column; gap: 1rem; }
+.cta-box h3 { font-family: 'Playfair Display', serif; font-size: 1.25rem; color: var(--deep); font-weight: 600; }
+.cta-box p { font-size: 0.87rem; color: var(--warm-gray); line-height: 1.7; }
+.cta-btns { display: flex; gap: 0.75rem; flex-wrap: wrap; }
+.btn-rose { background: var(--rose); color: white; border: none; border-radius: 10px; padding: 0.65rem 1.4rem; font-family: 'Nunito', sans-serif; font-size: 0.85rem; font-weight: 700; cursor: pointer; transition: all 0.2s; }
+.btn-rose:hover { background: var(--rose-dark); }
+.btn-mauve { background: var(--mauve); color: white; border: none; border-radius: 10px; padding: 0.65rem 1.4rem; font-family: 'Nunito', sans-serif; font-size: 0.85rem; font-weight: 700; cursor: pointer; transition: all 0.2s; }
+.btn-mauve:hover { background: #6e4558; }
+
+/* ── REVIEWS ── */
+.rating-summary { display: flex; gap: 2rem; align-items: center; background: white; border-radius: 18px; padding: 2rem 2.5rem; box-shadow: 0 2px 16px rgba(44,31,34,0.08); margin-bottom: 2rem; flex-wrap: wrap; gap: 1.5rem; }
+.rating-big { text-align: center; flex-shrink: 0; }
+.rating-num-big { font-family: 'Playfair Display', serif; font-size: 3.8rem; color: var(--rose); line-height: 1; font-weight: 600; }
+.rating-stars-lg { font-size: 1.2rem; margin: 0.2rem 0; }
+.rating-count-sm { font-size: 0.75rem; color: var(--warm-gray); }
+.bar-list { flex: 1; min-width: 190px; display: flex; flex-direction: column; gap: 0.35rem; }
+.bar-row { display: flex; align-items: center; gap: 0.65rem; font-size: 0.78rem; color: var(--warm-gray); }
+.bar-track { flex: 1; height: 7px; background: var(--light); border-radius: 4px; overflow: hidden; }
+.bar-fill { height: 100%; background: var(--rose); border-radius: 4px; }
+.review-list { display: flex; flex-direction: column; gap: 1.1rem; margin-bottom: 2rem; }
+.review-card { background: white; border-radius: 16px; padding: 1.6rem; box-shadow: 0 2px 12px rgba(44,31,34,0.07); border: 1px solid rgba(212,115,106,0.1); }
+.review-top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 0.75rem; flex-wrap: wrap; gap: 0.5rem; }
+.reviewer-row { display: flex; align-items: center; gap: 0.7rem; }
+.rev-avatar { width: 38px; height: 38px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1rem; flex-shrink: 0; }
+.rev-name { font-weight: 700; font-size: 0.9rem; color: var(--deep); }
+.rev-meta { font-size: 0.73rem; color: var(--warm-gray); margin-top: 0.05rem; }
+.rev-stars { font-size: 0.95rem; }
+.rev-tag { background: var(--blush); color: var(--rose); font-size: 0.68rem; font-weight: 700; padding: 0.18rem 0.55rem; border-radius: 10px; }
+.review-text { font-size: 0.86rem; line-height: 1.75; color: var(--warm-gray); }
+.helpful-row { margin-top: 0.7rem; font-size: 0.75rem; color: var(--warm-gray); display: flex; align-items: center; gap: 0.5rem; }
+.helpful-btn { background: none; border: 1px solid rgba(212,115,106,0.3); border-radius: 20px; padding: 0.18rem 0.55rem; font-size: 0.73rem; cursor: pointer; font-family: 'Nunito', sans-serif; color: var(--warm-gray); transition: all 0.2s; }
+.helpful-btn:hover:not(:disabled) { border-color: var(--rose); color: var(--rose); }
+.star-picker { display: flex; gap: 0.35rem; margin-bottom: 0.25rem; }
+.star-btn { font-size: 1.7rem; background: none; border: none; cursor: pointer; transition: transform 0.15s; opacity: 0.3; filter: grayscale(1); }
+.star-btn.lit { opacity: 1; filter: none; }
+.star-btn:hover { transform: scale(1.2); }
+.review-form-wrap { margin-bottom: 2.5rem; }
+.review-form-title { font-family: 'Playfair Display', serif; font-size: 1.3rem; color: var(--deep); margin-bottom: 1.25rem; font-weight: 600; }
+
+/* ── SOCIAL MEDIA PAGE ── */
+.social-hero { background: linear-gradient(135deg, #1a1a2e 0%, #2d1f22 100%); color: white; padding: 3rem 3rem 2.5rem; text-align: center; position: relative; overflow: hidden; }
+.social-hero::before { content: '✦'; position: absolute; right: 2rem; top: 1rem; font-size: 12rem; opacity: 0.04; pointer-events: none; }
+.social-hero h2 { font-family: 'Playfair Display', serif; font-size: clamp(1.8rem, 4vw, 2.8rem); font-weight: 600; margin-bottom: 0.75rem; }
+.social-hero h2 em { font-style: italic; color: var(--blush); }
+.social-hero p { font-size: 0.92rem; opacity: 0.8; max-width: 480px; margin: 0 auto; line-height: 1.7; }
+.social-body { padding: 2.5rem 3rem; }
+.social-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 1.5rem; margin-bottom: 2.5rem; }
+.social-card { border-radius: 20px; overflow: hidden; box-shadow: 0 4px 20px rgba(0,0,0,0.1); transition: transform 0.25s, box-shadow 0.25s; }
+.social-card:hover { transform: translateY(-4px); box-shadow: 0 10px 32px rgba(0,0,0,0.15); }
+.social-card-top { padding: 2rem; display: flex; align-items: center; gap: 1rem; }
+.social-logo { width: 52px; height: 52px; border-radius: 14px; display: flex; align-items: center; justify-content: center; font-size: 1.6rem; flex-shrink: 0; }
+.social-name { font-weight: 700; font-size: 1.1rem; }
+.social-handle { font-size: 0.8rem; opacity: 0.75; margin-top: 0.15rem; }
+.social-card-body { background: white; padding: 1.4rem 1.75rem; }
+.social-desc { font-size: 0.84rem; color: var(--warm-gray); line-height: 1.7; margin-bottom: 1.1rem; }
+.social-follow-btn { display: flex; align-items: center; justify-content: center; gap: 0.5rem; width: 100%; padding: 0.7rem; border-radius: 10px; font-family: 'Nunito', sans-serif; font-size: 0.88rem; font-weight: 700; text-decoration: none; transition: all 0.2s; border: none; cursor: pointer; }
+/* TikTok */
+.social-card.tiktok .social-card-top { background: linear-gradient(135deg, #010101, #2b2b2b); color: white; }
+.social-card.tiktok .social-logo { background: rgba(255,255,255,0.1); }
+.social-card.tiktok .social-follow-btn { background: #010101; color: white; }
+.social-card.tiktok .social-follow-btn:hover { background: #333; }
+/* Instagram */
+.social-card.instagram .social-card-top { background: linear-gradient(135deg, #833ab4, #fd1d1d, #fcb045); color: white; }
+.social-card.instagram .social-logo { background: rgba(255,255,255,0.15); }
+.social-card.instagram .social-follow-btn { background: linear-gradient(135deg, #833ab4, #fd1d1d); color: white; }
+.social-card.instagram .social-follow-btn:hover { opacity: 0.9; }
+/* Facebook */
+.social-card.facebook .social-card-top { background: linear-gradient(135deg, #1877f2, #0d5cbf); color: white; }
+.social-card.facebook .social-logo { background: rgba(255,255,255,0.15); }
+.social-card.facebook .social-follow-btn { background: #1877f2; color: white; }
+.social-card.facebook .social-follow-btn:hover { background: #0d5cbf; }
+.social-cta { background: var(--blush); border-radius: 18px; padding: 2rem 2.5rem; text-align: center; }
+.social-cta h3 { font-family: 'Playfair Display', serif; font-size: 1.4rem; color: var(--deep); margin-bottom: 0.6rem; font-weight: 600; }
+.social-cta p { font-size: 0.88rem; color: var(--warm-gray); line-height: 1.7; max-width: 420px; margin: 0 auto 1.25rem; }
+.social-cta-handle { font-size: 1.1rem; font-weight: 700; color: var(--rose); letter-spacing: 0.02em; }
+
+/* ── BOTTOM NAV ── */
+.bottom-nav { display: none; position: fixed; bottom: 0; left: 0; right: 0; background: white; border-top: 1px solid rgba(212,115,106,0.15); z-index: 190; }
+.bnav-row { display: flex; }
+.bnav-btn { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 0.15rem; padding: 0.5rem 0.25rem; background: none; border: none; font-family: 'Nunito', sans-serif; font-size: 0.58rem; font-weight: 700; color: var(--warm-gray); cursor: pointer; transition: color 0.2s; letter-spacing: 0.02em; }
+.bnav-btn:hover, .bnav-btn.active { color: var(--rose); }
+.bnav-btn .bi { font-size: 1.15rem; }
+.bnav-sos { color: var(--emergency) !important; font-weight: 800 !important; }
+
+/* ── SOS MODAL ── */
+.modal-bg { position: fixed; inset: 0; z-index: 999; background: rgba(0,0,0,0.6); backdrop-filter: blur(4px); display: none; align-items: center; justify-content: center; padding: 1rem; }
+.modal-bg.open { display: flex; }
+.modal-box { background: white; border-radius: 20px; padding: 2.5rem; max-width: 450px; width: 100%; box-shadow: 0 20px 60px rgba(0,0,0,0.3); animation: popIn 0.28s ease; }
+@keyframes popIn { from { opacity:0; transform:scale(0.93); } to { opacity:1; transform:scale(1); } }
+.modal-head { text-align: center; margin-bottom: 1.75rem; }
+.modal-big-icon { font-size: 3rem; }
+.modal-box h2 { font-family: 'Playfair Display', serif; font-size: 1.55rem; color: var(--emergency); margin-top: 0.4rem; }
+.modal-box p { font-size: 0.86rem; color: var(--warm-gray); margin-top: 0.4rem; line-height: 1.6; }
+.modal-btns { display: flex; flex-direction: column; gap: 0.65rem; margin-bottom: 1.25rem; }
+.modal-btn { display: flex; align-items: center; gap: 1rem; padding: 0.95rem 1.4rem; border-radius: 12px; text-decoration: none; font-weight: 700; font-size: 0.9rem; transition: transform 0.2s; }
+.modal-btn:hover { transform: translateX(3px); }
+.modal-btn.red { background: var(--emergency); color: white; }
+.modal-btn.mauve { background: var(--mauve); color: white; }
+.modal-btn.teal { background: var(--sage); color: white; }
+.mb-num { font-size: 1.05rem; font-weight: 800; }
+.mb-lbl { font-size: 0.75rem; opacity: 0.9; font-weight: 400; }
+.modal-close { width: 100%; background: var(--light); border: none; border-radius: 10px; padding: 0.7rem; font-family: 'Nunito', sans-serif; font-size: 0.86rem; font-weight: 600; color: var(--warm-gray); cursor: pointer; }
+.modal-close:hover { background: var(--blush); }
+
+/* ── RESPONSIVE ── */
+@media (max-width: 860px) {
+  .nav-pills { display: none; }
+  .nav-logo small { display: inline; }
+}
+@media (max-width: 600px) {
+  .nav-dropdown-wrap { max-width: none; flex: 1; }
+  .page-header, .page-body, .social-body, .about-body, .reviews-body { padding: 1.5rem 1.1rem; }
+  .hero { padding: 2rem 1.1rem 2rem; }
+  .hero-cards { gap: 0.6rem; }
+  .hero-card { min-width: 130px; padding: 1rem; }
+  .bottom-nav { display: block; }
+  body { padding-bottom: 68px; }
+  .call-grid { grid-template-columns: 1fr 1fr; }
+  .she-form, .review-form-wrap .she-form { padding: 1.4rem; }
+  .about-two-col { grid-template-columns: 1fr; gap: 1.75rem; }
+  .about-mission { flex-direction: column; gap: 1rem; }
+  .rating-summary { flex-direction: column; }
+  .stats-row { grid-template-columns: 1fr 1fr; }
+  .social-body { padding: 1.5rem 1.1rem; }
+}
+</style>
+</head>
+<body>
+
+<!-- SOS BANNER -->
+<div class="sos-banner">
+  <span class="sos-pill">⚡ Emergency?</span>
+  Call <a href="tel:911">911</a> &nbsp;·&nbsp; DV Hotline: <a href="tel:18007997233">1-800-799-7233</a> &nbsp;·&nbsp; Sexual Assault: <a href="tel:18006564673">1-800-656-4673</a>
+</div>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo" onclick="goPage('home')">S.H.E. <small>Safety for Her Empowerment</small></div>
+
+  <!-- Dropdown (always visible) -->
+  <div class="nav-dropdown-wrap">
+    <select class="nav-select" onchange="goPage(this.value); this.blur()">
+      <option value="home">🏠 Home</option>
+      <option value="emergency">🚨 Emergency</option>
+      <option value="tips">🛡️ Safety Tips</option>
+      <option value="map">🗺️ Safe Map</option>
+      <option value="defense">💪 Self-Defense</option>
+      <option value="resources">📚 Resources</option>
+      <option value="survey">📋 Survey</option>
+      <option value="social">📱 Social Media</option>
+      <option value="about">ℹ️ About</option>
+      <option value="reviews">⭐ Reviews</option>
+    </select>
+    <span class="nav-select-arrow">▼</span>
+  </div>
+
+  <!-- Desktop pill links -->
+  <ul class="nav-pills" id="navPills">
+    <li><button onclick="goPage('home')" data-page="home" class="active">Home</button></li>
+    <li><button onclick="goPage('emergency')" data-page="emergency">🚨 Emergency</button></li>
+    <li><button onclick="goPage('tips')" data-page="tips">Tips</button></li>
+    <li><button onclick="goPage('map')" data-page="map">Map</button></li>
+    <li><button onclick="goPage('defense')" data-page="defense">Self-Defense</button></li>
+    <li><button onclick="goPage('resources')" data-page="resources">Resources</button></li>
+    <li><button onclick="goPage('survey')" data-page="survey">Survey</button></li>
+    <li><button onclick="goPage('social')" data-page="social">📱 Socials</button></li>
+    <li><button onclick="goPage('about')" data-page="about">About</button></li>
+    <li><button onclick="goPage('reviews')" data-page="reviews">⭐ Reviews</button></li>
+  </ul>
+
+  <button class="nav-sos" onclick="openSOS()">🆘 SOS</button>
+</nav>
+
+<!-- ═══════════════ HOME ═══════════════ -->
+<div id="page-home" class="page active">
+  <div class="hero">
+    <div class="hero-badge">Downtown Orlando · Free Women's Safety Resource</div>
+    <h1>You deserve to feel<br><em>safe everywhere.</em></h1>
+    <p class="hero-sub">S.H.E. is your free, centralized safety guide for navigating Downtown Orlando. Emergency contacts, safety tips, safe routes, self-defense skills, and local help — all in one place.</p>
+    <div class="hero-cards">
+      <a class="hero-card urgent" href="#" onclick="openSOS(); return false;"><div class="hc-icon">🚨</div><div class="hc-title">I need help NOW</div><div class="hc-desc">Emergency contacts & steps</div></a>
+      <a class="hero-card" href="#" onclick="goPage('tips'); return false;"><div class="hc-icon">🛡️</div><div class="hc-title">Safety Tips</div><div class="hc-desc">Practical everyday advice</div></a>
+      <a class="hero-card" href="#" onclick="goPage('map'); return false;"><div class="hc-icon">🗺️</div><div class="hc-title">Safe Routes</div><div class="hc-desc">Navigate Downtown confidently</div></a>
+      <a class="hero-card" href="#" onclick="goPage('defense'); return false;"><div class="hc-icon">💪</div><div class="hc-title">Self-Defense</div><div class="hc-desc">Skills to protect yourself</div></a>
+      <a class="hero-card" href="#" onclick="goPage('resources'); return false;"><div class="hc-icon">📚</div><div class="hc-title">Find Help</div><div class="hc-desc">Shelters, hotlines & support</div></a>
+      <a class="hero-card" href="#" onclick="goPage('social'); return false;"><div class="hc-icon">📱</div><div class="hc-title">Follow Us</div><div class="hc-desc">Stay updated on socials</div></a>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════ EMERGENCY ═══════════════ -->
+<div id="page-emergency" class="page">
+  <div class="page-header emergency-bg"><div class="ph-icon">🚨</div><div><h2>Emergency Help</h2><p>If you are in immediate danger, call 911 now. These resources are here for you 24/7.</p></div></div>
+  <div class="page-body">
+    <div class="call-grid">
+      <a href="tel:911" class="call-card red"><div class="cc-icon">📞</div><div class="cc-num">911</div><div class="cc-label">Police / Fire / Ambulance</div></a>
+      <a href="tel:18007997233" class="call-card mauve"><div class="cc-icon">💜</div><div class="cc-num">1-800-799-7233</div><div class="cc-label">National DV Hotline (24/7)</div></a>
+      <a href="tel:18006564673" class="call-card teal"><div class="cc-icon">🤍</div><div class="cc-num">1-800-656-4673</div><div class="cc-label">RAINN Sexual Assault Hotline</div></a>
+      <a href="tel:988" class="call-card orange"><div class="cc-icon">💛</div><div class="cc-num">988</div><div class="cc-label">Crisis & Mental Health Line</div></a>
+    </div>
+    <h3 class="section-title">If you're being followed</h3>
+    <div class="tip-list">
+      <div class="tip-item warn-tip"><span class="tip-emoji">🏃‍♀️</span><div class="tip-text"><strong>Go somewhere public immediately.</strong> A busy store, restaurant, or lit area. Do NOT go home.</div></div>
+      <div class="tip-item warn-tip"><span class="tip-emoji">📱</span><div class="tip-text"><strong>Call someone and stay on the line.</strong> Tell them your location and describe who is following you.</div></div>
+      <div class="tip-item warn-tip"><span class="tip-emoji">🔁</span><div class="tip-text"><strong>Test it:</strong> turn right four times. If they're still behind you, call 911 immediately.</div></div>
+      <div class="tip-item warn-tip"><span class="tip-emoji">🚔</span><div class="tip-text"><strong>Find a police officer, security guard, or business staff member</strong> and ask them to stay with you.</div></div>
+    </div>
+    <h3 class="section-title">If someone grabs you</h3>
+    <div class="tip-list">
+      <div class="tip-item"><span class="tip-emoji">📢</span><div class="tip-text"><strong>Yell "FIRE!" loudly</strong> — not just "help." People respond faster and it draws more attention.</div></div>
+      <div class="tip-item"><span class="tip-emoji">🎯</span><div class="tip-text"><strong>Target vulnerable areas:</strong> eyes, nose, throat, groin. You don't need to be strong — be decisive.</div></div>
+      <div class="tip-item"><span class="tip-emoji">🏃</span><div class="tip-text"><strong>Run toward people and light.</strong> Your goal is escape, not winning a fight.</div></div>
+      <div class="tip-item safe-tip"><span class="tip-emoji">📞</span><div class="tip-text"><strong>Call 911 as soon as it's safe.</strong> Even if nothing "officially" happened, reporting creates a record.</div></div>
+    </div>
+    <h3 class="section-title">Orlando-area emergency locations</h3>
+    <div class="tip-list">
+      <div class="tip-item safe-tip"><span class="tip-emoji">🏥</span><div class="tip-text"><strong>Orlando Health ORMC</strong> — 52 W Underwood St, Orlando · <a href="tel:14074438486">(407) 443-8486</a></div></div>
+      <div class="tip-item safe-tip"><span class="tip-emoji">🚔</span><div class="tip-text"><strong>Orlando Police — Downtown</strong> — 100 S Hughey Ave · <a href="tel:14072462470">(407) 246-2470</a></div></div>
+      <div class="tip-item safe-tip"><span class="tip-emoji">💜</span><div class="tip-text"><strong>Harbor House of Central Florida</strong> (DV Shelter, 24/7 crisis line) · <a href="tel:14074861400">(407) 486-1400</a></div></div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════ TIPS ═══════════════ -->
+<div id="page-tips" class="page">
+  <div class="page-header rose-bg"><h2>🛡️ Safety Tips</h2><p>Practical, actionable advice for everyday situations — at any age.</p></div>
+  <div class="page-body">
+    <div class="filter-tabs">
+      <button class="tab-btn active" onclick="filterTips('all',this)">All Tips</button>
+      <button class="tab-btn" onclick="filterTips('walking',this)">Walking & Transit</button>
+      <button class="tab-btn" onclick="filterTips('night',this)">At Night</button>
+      <button class="tab-btn" onclick="filterTips('digital',this)">Digital Safety</button>
+      <button class="tab-btn" onclick="filterTips('social',this)">Social Situations</button>
+      <button class="tab-btn" onclick="filterTips('teens',this)">For Teens</button>
+    </div>
+    <div class="tips-grid" id="tipsGrid">
+      <div class="tip-card" data-cat="walking"><div class="tc-icon">🚶‍♀️</div><div class="tc-cat">Walking & Transit</div><h3>Walk with confidence</h3><p>Keep your head up, walk at a steady pace, and make brief eye contact. Predators often target people who appear distracted or unsure.</p></div>
+      <div class="tip-card" data-cat="walking"><div class="tc-icon">🎧</div><div class="tc-cat">Walking & Transit</div><h3>One earbud only</h3><p>Keep one ear free so you can hear what's around you — especially in parking lots, garages, and less-trafficked areas.</p></div>
+      <div class="tip-card" data-cat="walking"><div class="tc-icon">📍</div><div class="tc-cat">Walking & Transit</div><h3>Share your location</h3><p>Use Google Maps or Find My Friends live location sharing with a trusted person whenever you're out alone, especially after dark.</p></div>
+      <div class="tip-card" data-cat="walking"><div class="tc-icon">🚌</div><div class="tc-cat">Walking & Transit</div><h3>Plan your route ahead</h3><p>Know your route before you leave. Identify well-lit streets, open businesses, and police stations along the way.</p></div>
+      <div class="tip-card" data-cat="night"><div class="tc-icon">💡</div><div class="tc-cat">At Night</div><h3>Stick to lit streets</h3><p>Choose well-lit routes even if they're longer. Avoid shortcuts through alleys, parking structures, or unlit paths.</p></div>
+      <div class="tip-card" data-cat="night"><div class="tc-icon">🚗</div><div class="tc-cat">At Night</div><h3>Check your car first</h3><p>Before getting in at night, glance in the back seats. Have keys out before you reach the car — not while searching your bag.</p></div>
+      <div class="tip-card" data-cat="night"><div class="tc-icon">👭</div><div class="tc-cat">At Night</div><h3>Use the buddy system</h3><p>Travel with a friend when possible. If going alone, let someone know your route and check in when you arrive.</p></div>
+      <div class="tip-card" data-cat="digital"><div class="tc-icon">📲</div><div class="tc-cat">Digital Safety</div><h3>Download a safety app</h3><p>Apps like bSafe, Noonlight, or Shake2Safety let you send your GPS to emergency contacts with one tap.</p></div>
+      <div class="tip-card" data-cat="digital"><div class="tc-icon">🔒</div><div class="tc-cat">Digital Safety</div><h3>Lock your privacy settings</h3><p>Keep social media accounts private. Never post your real-time location — this tells strangers when you'll be alone.</p></div>
+      <div class="tip-card" data-cat="social"><div class="tc-icon">🥤</div><div class="tc-cat">Social Situations</div><h3>Never leave your drink</h3><p>Keep your drink in hand at all events. If you set it down or lose sight of it, get a new one — no exceptions.</p></div>
+      <div class="tip-card" data-cat="social"><div class="tc-icon">🚘</div><div class="tc-cat">Social Situations</div><h3>Verify your rideshare</h3><p>Check the license plate, car model, AND driver photo before getting in. Sit in the back. Share your trip with a trusted person.</p></div>
+      <div class="tip-card" data-cat="social"><div class="tc-icon">🤝</div><div class="tc-cat">Social Situations</div><h3>Bystander intervention</h3><p>If you see someone being harassed: check in, create a distraction, call for help, or connect them with others nearby.</p></div>
+      <div class="tip-card" data-cat="teens"><div class="tc-icon">📱</div><div class="tc-cat">For Teens</div><h3>Set up a code word</h3><p>Agree on a secret word with a trusted adult. If you text or say it, they know to come get you — no questions asked.</p></div>
+      <div class="tip-card" data-cat="teens"><div class="tc-icon">🙅‍♀️</div><div class="tc-cat">For Teens</div><h3>Trust your gut — always</h3><p>If something feels wrong, it probably is. You never need a "reason" to leave, say no, or ask for help.</p></div>
+      <div class="tip-card" data-cat="teens"><div class="tc-icon">💬</div><div class="tc-cat">For Teens</div><h3>Talk to a trusted adult</h3><p>If something happened to you or someone you know, talking to a counselor, parent, or teacher is always okay.</p></div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════ MAP ═══════════════ -->
+<div id="page-map" class="page">
+  <div class="page-header sage-bg"><h2>🗺️ Downtown Orlando Safety Map</h2><p>Community-reported zones and safety resources around Downtown Orlando.</p></div>
+  <div class="page-body">
+    <div class="map-placeholder"><div style="font-size:2.8rem">🗺️</div><h3>Interactive Map Coming Soon</h3><p>We're building a community-sourced map showing safer routes, high-risk zones, police stations, hospitals, and fire stations. Help us build it!</p><button class="btn-rose" onclick="goPage('survey')">Take the survey to help →</button></div>
+    <h3 class="section-title">Community-Reported Safety Zones</h3>
+    <p class="section-intro">Based on community survey data. Always trust your own instincts — conditions can change.</p>
+    <div class="map-zones">
+      <div class="zone-card safe"><div class="zone-label">✅ Generally Safe</div><h3>Lake Eola Park (Daytime)</h3><p>Well-lit, high foot traffic, frequent events. Avoid isolated areas after dark.</p></div>
+      <div class="zone-card safe"><div class="zone-label">✅ Generally Safe</div><h3>Dr. Phillips Center Area</h3><p>Event venue with good lighting, security staff, and consistent evening crowds.</p></div>
+      <div class="zone-card safe"><div class="zone-label">✅ Generally Safe</div><h3>Orange Ave (Daytime)</h3><p>Main commercial corridor. Active during business hours with shops and pedestrian traffic.</p></div>
+      <div class="zone-card caution"><div class="zone-label">⚠️ Use Caution</div><h3>Church Street / Bars District</h3><p>Busy at night but alcohol-related incidents increase. Go with friends, have a clear exit plan.</p></div>
+      <div class="zone-card caution"><div class="zone-label">⚠️ Use Caution</div><h3>Parking Garages After Dark</h3><p>Poor lighting in many structures. Park near exits, have keys ready, try to go with others.</p></div>
+      <div class="zone-card avoid"><div class="zone-label">🔴 Extra Caution at Night</div><h3>Isolated Side Streets</h3><p>Less-trafficked streets behind main corridors have poor lighting and minimal foot traffic after 9pm.</p></div>
+    </div>
+    <hr class="divider">
+    <h3 class="section-title">Nearby Emergency Resources</h3>
+    <div class="tip-list">
+      <div class="tip-item safe-tip"><span class="tip-emoji">🚔</span><div class="tip-text"><strong>Orlando PD Downtown</strong> — 100 S Hughey Ave (near Orange Ave & I-4)</div></div>
+      <div class="tip-item safe-tip"><span class="tip-emoji">🏥</span><div class="tip-text"><strong>Orlando Health Regional Medical Center</strong> — 52 W Underwood St</div></div>
+      <div class="tip-item safe-tip"><span class="tip-emoji">🚒</span><div class="tip-text"><strong>Orlando Fire Station 1</strong> — 39 W Jefferson St, Downtown Orlando</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════ SELF DEFENSE ═══════════════ -->
+<div id="page-defense" class="page">
+  <div class="page-header rose-bg"><h2>💪 Self-Defense Skills</h2><p>Practical techniques and awareness tools — no experience required.</p></div>
+  <div class="page-body">
+    <p class="section-intro">Self-defense isn't just physical. Awareness, confidence, and preparation are your most powerful tools. Tap each section to expand.</p>
+    <div class="accordion">
+      <div class="acc-item"><div class="acc-header" onclick="toggleAcc(this)"><span class="acc-icon">👁️</span><span class="acc-title">Situational Awareness — Your First Defense</span><span class="acc-badge green">Beginner</span><span class="acc-arrow">▼</span></div><div class="acc-body"><p>Most dangerous situations can be avoided before they start.</p><ul><li>Keep your phone down in unfamiliar or isolated areas</li><li>Scan your environment when entering a new space</li><li>Notice exits wherever you go</li><li>Trust your instincts — if something feels wrong, act on it</li><li>Make brief, confident eye contact rather than looking away</li></ul></div></div>
+      <div class="acc-item"><div class="acc-header" onclick="toggleAcc(this)"><span class="acc-icon">🗣️</span><span class="acc-title">Using Your Voice as a Weapon</span><span class="acc-badge green">Beginner</span><span class="acc-arrow">▼</span></div><div class="acc-body"><ul><li><strong>"STOP. BACK OFF."</strong> — Firm, low voice. Not pleading. Not polite.</li><li>Shout <strong>"FIRE!"</strong> in public — people respond faster than to "help"</li><li>Be specific: <strong>"YOU, in the red jacket — call 911 NOW"</strong></li><li>Don't apologize for setting a boundary. Say it once, clearly, and mean it.</li></ul></div></div>
+      <div class="acc-item"><div class="acc-header" onclick="toggleAcc(this)"><span class="acc-icon">👊</span><span class="acc-title">Basic Escape Techniques</span><span class="acc-badge green">Beginner</span><span class="acc-arrow">▼</span></div><div class="acc-body"><p>Your goal is to <strong>escape</strong> — not to win a fight.</p><ol><li><strong>Wrist grab:</strong> Rotate your arm toward their thumb and pull sharply.</li><li><strong>Bear hug from behind:</strong> Drop your weight, stomp on their foot, throw your head back.</li><li><strong>Choke from front:</strong> Tuck your chin, step to the side, push their wrists down and step back.</li></ol><p style="margin-top:0.7rem"><strong>Target zones:</strong> Eyes, nose, throat, groin, knees. Effective regardless of size.</p></div></div>
+      <div class="acc-item"><div class="acc-header" onclick="toggleAcc(this)"><span class="acc-icon">🔑</span><span class="acc-title">Everyday Items as Safety Tools</span><span class="acc-badge green">Beginner</span><span class="acc-arrow">▼</span></div><div class="acc-body"><ul><li><strong>Keys:</strong> Hold between fingers or use to scrape an attacker</li><li><strong>Personal alarm:</strong> 110dB+ keychain alarm draws attention instantly</li><li><strong>Whistle:</strong> Loud, no battery, easy to access</li><li><strong>Umbrella or bag:</strong> Creates distance between you and an attacker</li><li><strong>Phone flashlight:</strong> Shine directly into eyes to disorient</li></ul></div></div>
+      <div class="acc-item"><div class="acc-header" onclick="toggleAcc(this)"><span class="acc-icon">🥋</span><span class="acc-title">Free & Low-Cost Classes in Orlando</span><span class="acc-badge amber">Resources</span><span class="acc-arrow">▼</span></div><div class="acc-body"><ul><li><strong>Orlando Parks & Recreation</strong> — Check seasonal listings for free/low-cost self-defense</li><li><strong>UCF campus</strong> — Free workshops through campus safety and the women's center</li><li><strong>Harbor House of Central Florida</strong> — Free community safety workshops for survivors</li><li><strong>YouTube:</strong> Search "RAD self defense" or "basic self defense for women"</li></ul></div></div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════ RESOURCES ═══════════════ -->
+<div id="page-resources" class="page">
+  <div class="page-header rose-bg"><h2>📚 Help & Resources</h2><p>Local and national organizations for women's safety, support, and healing — all free and confidential.</p></div>
+  <div class="page-body">
+    <div class="resource-grid">
+      <div class="resource-card"><div class="rc-icon">💜</div><div class="rc-org">Domestic Violence</div><div class="rc-title">Harbor House of Central Florida</div><div class="rc-desc">Orlando's primary DV shelter. Emergency housing, counseling, legal advocacy, and a 24/7 crisis line.</div><a href="tel:14074861400" class="rc-link">📞 (407) 486-1400</a></div>
+      <div class="resource-card"><div class="rc-icon">🤍</div><div class="rc-org">Sexual Assault</div><div class="rc-title">RAINN National Hotline</div><div class="rc-desc">Free, confidential support 24/7 for survivors of sexual assault. Connects to local Orlando-area services.</div><a href="tel:18006564673" class="rc-link">📞 1-800-656-4673</a></div>
+      <div class="resource-card sage-t"><div class="rc-icon">🌿</div><div class="rc-org">Mental Health</div><div class="rc-title">NAMI Central Florida</div><div class="rc-desc">Mental health support for trauma survivors. Free helpline, support groups, and education programs.</div><a href="tel:14074923355" class="rc-link">📞 (407) 492-3355</a></div>
+      <div class="resource-card sage-t"><div class="rc-icon">💬</div><div class="rc-org">Crisis Text Line</div><div class="rc-title">Text HOME to 741741</div><div class="rc-desc">Can't speak out loud? Text with a crisis counselor instantly. Free and confidential, 24/7.</div><a href="sms:741741" class="rc-link">💬 Text HOME to 741741</a></div>
+      <div class="resource-card mauve-t"><div class="rc-icon">⚖️</div><div class="rc-org">Legal Help</div><div class="rc-title">Community Legal Services of Mid-FL</div><div class="rc-desc">Free legal aid including restraining orders, protective injunctions, and safety planning.</div><a href="tel:18005369355" class="rc-link">📞 1-800-536-9355</a></div>
+      <div class="resource-card mauve-t"><div class="rc-icon">🏫</div><div class="rc-org">For Students</div><div class="rc-title">UCF Victim Services</div><div class="rc-desc">Free, confidential support for UCF students who've experienced violence, harassment, or assault.</div><a href="tel:14078230000" class="rc-link">📞 (407) 823-0000</a></div>
+      <div class="resource-card"><div class="rc-icon">🌙</div><div class="rc-org">Shelter</div><div class="rc-title">Coalition for the Homeless of CF</div><div class="rc-desc">Emergency shelter and services for women and families experiencing homelessness in Orlando.</div><a href="tel:14074254941" class="rc-link">📞 (407) 425-4941</a></div>
+      <div class="resource-card"><div class="rc-icon">💛</div><div class="rc-org">Youth Support</div><div class="rc-title">National Runaway Safeline</div><div class="rc-desc">For teens and young people in crisis. Free, confidential help by phone, text, or chat — 24/7.</div><a href="tel:18007862929" class="rc-link">📞 1-800-786-2929</a></div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════ SURVEY ═══════════════ -->
+<div id="page-survey" class="page">
+  <div class="page-header sage-bg"><h2>📋 Community Safety Survey</h2><p>Your anonymous answers help us build a better safety map for Downtown Orlando.</p></div>
+  <div class="page-body">
+    <div style="max-width:580px">
+      <div class="form-notice" style="background:var(--blush);border-radius:14px;padding:1.25rem 1.5rem;margin-bottom:2rem;font-size:0.88rem;line-height:1.75;color:var(--deep);">
+        🔒 This survey is <strong>100% anonymous</strong>. No names or contact info collected. Your responses directly shape our community safety map of Downtown Orlando.
+      </div>
+
+      <div style="background:white;border-radius:20px;padding:2.5rem;box-shadow:0 4px 24px rgba(44,31,34,0.08);text-align:center;">
+        <div style="font-size:3rem;margin-bottom:1rem;">📋</div>
+        <h3 style="font-family:'Playfair Display',serif;font-size:1.5rem;color:var(--deep);margin-bottom:0.75rem;font-weight:600;">Take Our Community Survey</h3>
+        <p style="font-size:0.9rem;color:var(--warm-gray);line-height:1.75;max-width:400px;margin:0 auto 2rem;">Tell us about where and when you feel unsafe in Downtown Orlando. Your answers help us build a real safety map for our community.</p>
+
+        <a href="https://docs.google.com/forms/d/e/1FAIpQLSduQbl7rOWfWpistrICuCIrF_EVbG4PqFh8m34ZR5dAzdUqoA/viewform?urp=gmail_link"
+           target="_blank" rel="noopener"
+           style="display:inline-flex;align-items:center;gap:0.6rem;background:var(--rose);color:white;text-decoration:none;padding:1rem 2.5rem;border-radius:12px;font-family:'Nunito',sans-serif;font-size:1rem;font-weight:700;transition:background 0.2s;margin-bottom:1.5rem;"
+           onmouseover="this.style.background='var(--rose-dark)'" onmouseout="this.style.background='var(--rose)'">
+          Open Survey →
+        </a>
+
+        <div style="display:flex;justify-content:center;gap:2rem;flex-wrap:wrap;margin-top:1.5rem;padding-top:1.5rem;border-top:1px solid rgba(212,115,106,0.12);">
+          <div style="text-align:center">
+            <div style="font-size:1.4rem;font-family:'Playfair Display',serif;color:var(--rose);font-weight:600">~5 min</div>
+            <div style="font-size:0.72rem;color:var(--warm-gray);margin-top:0.2rem">Quick to complete</div>
+          </div>
+          <div style="text-align:center">
+            <div style="font-size:1.4rem;font-family:'Playfair Display',serif;color:var(--rose);font-weight:600">100%</div>
+            <div style="font-size:0.72rem;color:var(--warm-gray);margin-top:0.2rem">Anonymous</div>
+          </div>
+        </div>
+      </div>
+
+      <p style="font-size:0.8rem;color:var(--warm-gray);text-align:center;margin-top:1.25rem;line-height:1.6;">
+        The survey opens in Google Forms in a new tab. No sign-in required.
+      </p>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════ SOCIAL MEDIA ═══════════════ -->
+<div id="page-social" class="page">
+  <div class="social-hero">
+    <h2>Follow <em>S.H.E.</em></h2>
+    <p>Stay connected for safety tips, real stories, community updates, and resources — wherever you spend your time online.</p>
+  </div>
+  <div class="social-body">
+    <div class="social-grid">
+
+      <!-- TikTok -->
+      <div class="social-card tiktok">
+        <div class="social-card-top">
+          <div class="social-logo">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="white"><path d="M19.59 6.69a4.83 4.83 0 01-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 01-2.88 2.5 2.89 2.89 0 01-2.89-2.89 2.89 2.89 0 012.89-2.89c.28 0 .54.04.79.1V9.01a6.27 6.27 0 00-.79-.05 6.34 6.34 0 00-6.34 6.34 6.34 6.34 0 006.34 6.34 6.34 6.34 0 006.33-6.34V8.69a8.24 8.24 0 004.84 1.56V6.79a4.85 4.85 0 01-1.07-.1z"/></svg>
+          </div>
+          <div><div class="social-name">TikTok</div><div class="social-handle">@safetyforher_empowerment</div></div>
+        </div>
+        <div class="social-card-body">
+          <p class="social-desc">Short videos, real safety scenarios, self-defense clips, and quick tips — perfect for a quick scroll that could actually keep you safer.</p>
+          <a href="https://www.tiktok.com/@safetyforher_empowerment" target="_blank" rel="noopener" class="social-follow-btn">▶ Follow on TikTok</a>
+        </div>
+      </div>
+
+      <!-- Instagram -->
+      <div class="social-card instagram">
+        <div class="social-card-top">
+          <div class="social-logo">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="white"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/></svg>
+          </div>
+          <div><div class="social-name">Instagram</div><div class="social-handle">@SafetyForHerEmpowerment</div></div>
+        </div>
+        <div class="social-card-body">
+          <p class="social-desc">Photo slideshows, safety stats, community spotlights, and updates about new resources — follow for regular empowering content.</p>
+          <a href="https://www.instagram.com/SafetyForHerEmpowerment" target="_blank" rel="noopener" class="social-follow-btn">♥ Follow on Instagram</a>
+        </div>
+      </div>
+
+      <!-- Facebook -->
+      <div class="social-card facebook">
+        <div class="social-card-top">
+          <div class="social-logo">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="white"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+          </div>
+          <div><div class="social-name">Facebook</div><div class="social-handle">@SafetyForHerEmpowerment</div></div>
+        </div>
+        <div class="social-card-body">
+          <p class="social-desc">Photos, articles, community discussions, and event announcements. A great place for parents and community members to stay connected.</p>
+          <a href="https://www.facebook.com/SafetyForHerEmpowerment" target="_blank" rel="noopener" class="social-follow-btn">👍 Follow on Facebook</a>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="social-cta">
+      <h3>One handle, everywhere 📣</h3>
+      <p>Find us across all platforms under the same name. Share our page with someone who could use it — safety information works best when it spreads.</p>
+      <div class="social-cta-handle">@SafetyForHerEmpowerment</div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════ ABOUT ═══════════════ -->
+<div id="page-about" class="page">
+  <div class="page-header mauve-bg"><h2>About <em>S.H.E.</em></h2><p>A community-led initiative started by young women in Downtown Orlando who were tired of feeling unsafe — and decided to do something about it.</p></div>
+  <div class="page-body">
+
+    <div class="about-mission">
+      <div class="mission-icon">💗</div>
+      <div class="mission-text">
+        <h3>Our Mission</h3>
+        <p>Because women and girls lack access to centralized safety resources in high-traffic urban areas, S.H.E. exists to improve access to practical knowledge so they can confidently navigate and respond to risks in Downtown Orlando — and beyond.</p>
+        <p>We believe safety information should be free, accessible, and actually useful. Not scattered across the internet. Not buried in outdated pamphlets. Right here, whenever you need it.</p>
+      </div>
+    </div>
+
+    <div class="stats-row">
+      <div class="stat-box"><div class="stat-num">57%</div><div class="stat-label">of women have experienced verbal harassment</div></div>
+      <div class="stat-box"><div class="stat-num">41%</div><div class="stat-label">experienced physically aggressive forms</div></div>
+      <div class="stat-box"><div class="stat-num">1 in 3</div><div class="stat-label">women worldwide face physical or sexual violence</div></div>
+      <div class="stat-box"><div class="stat-num">58%</div><div class="stat-label">of US women feel safe in their community</div></div>
+    </div>
+
+    <div class="about-two-col">
+      <div class="about-col">
+        <h3>Why we started S.H.E.</h3>
+        <p>As young girls living in the Orlando area, we were stunned at the shortage of practical and centralized safety resources available to women in our community.</p>
+        <p>Apart from a few self-defense classes or general safety tips, there were an underwhelming number of accessible guides or digital tools to help navigate high-traffic spaces like Downtown Orlando.</p>
+        <p>We found that the widespread sense of insecurity could relate directly to this scarcity of resources — especially in high-traffic urban areas. So we built this.</p>
+      </div>
+      <div class="about-col">
+        <h3>How S.H.E. works</h3>
+        <div class="step-list">
+          <div class="step-item"><div class="step-num">1</div><div class="step-text"><strong>Community surveys</strong> collect anonymous data about where and when women feel unsafe in Downtown Orlando.</div></div>
+          <div class="step-item"><div class="step-num">2</div><div class="step-text"><strong>We analyze the data</strong> to identify high-risk zones, safer routes, and patterns.</div></div>
+          <div class="step-item"><div class="step-num">3</div><div class="step-text"><strong>We build resources</strong> — safety guides, maps, tips, and self-defense info tailored to real local experiences.</div></div>
+          <div class="step-item"><div class="step-num">4</div><div class="step-text"><strong>We distribute everything freely</strong> online and in print to community centers, shelters, and youth organizations.</div></div>
+          <div class="step-item"><div class="step-num">5</div><div class="step-text"><strong>We keep improving</strong> based on community feedback and new survey data.</div></div>
+        </div>
+      </div>
+    </div>
+
+    <h3 class="section-title">Meet the Team</h3>
+    <p style="font-size:0.86rem;color:var(--warm-gray);margin-bottom:1.4rem;">S.H.E. was founded by a group of young women from the Orlando area through the Community Problem Solvers program.</p>
+    <div class="team-grid">
+      <div class="team-card"><div class="team-avatar" style="background:linear-gradient(135deg,var(--blush),var(--rose))">👩</div><div class="team-name">S.H.E. Founders</div><div class="team-role">Research & Vision</div></div>
+      <div class="team-card"><div class="team-avatar" style="background:linear-gradient(135deg,var(--sage-light),var(--sage))">📊</div><div class="team-name">Data Team</div><div class="team-role">Survey & Mapping</div></div>
+      <div class="team-card"><div class="team-avatar" style="background:linear-gradient(135deg,#e8e0ff,var(--mauve))">🌐</div><div class="team-name">Outreach Team</div><div class="team-role">Community & Socials</div></div>
+      <div class="team-card"><div class="team-avatar" style="background:linear-gradient(135deg,var(--warn-light),var(--warn))">🤝</div><div class="team-name">Partnerships</div><div class="team-role">Organizations & Schools</div></div>
+    </div>
+
+    <div class="cta-box">
+      <h3>Get involved</h3>
+      <p>S.H.E. is a community effort. The more people contribute, the better our resources become for everyone.</p>
+      <div class="cta-btns">
+        <button class="btn-rose" onclick="goPage('survey')">📋 Take the Survey</button>
+        <button class="btn-mauve" onclick="goPage('reviews')">⭐ Leave a Review</button>
+        <button class="btn-rose" onclick="goPage('social')" style="background:var(--sage)">📱 Follow Us</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════ REVIEWS ═══════════════ -->
+<div id="page-reviews" class="page">
+  <div class="page-header sage-bg"><h2>⭐ Community Reviews</h2><p>Real experiences from women and girls in the Orlando area. Your story matters.</p></div>
+  <div class="page-body">
+
+    <div class="rating-summary">
+      <div class="rating-big">
+        <div class="rating-num-big">4.9</div>
+        <div class="rating-stars-lg">⭐⭐⭐⭐⭐</div>
+        <div class="rating-count-sm">Based on 24 reviews</div>
+      </div>
+      <div class="bar-list">
+        <div class="bar-row"><span>5 ★</span><div class="bar-track"><div class="bar-fill" style="width:88%"></div></div><span>21</span></div>
+        <div class="bar-row"><span>4 ★</span><div class="bar-track"><div class="bar-fill" style="width:8%"></div></div><span>2</span></div>
+        <div class="bar-row"><span>3 ★</span><div class="bar-track"><div class="bar-fill" style="width:4%"></div></div><span>1</span></div>
+        <div class="bar-row"><span>2 ★</span><div class="bar-track"><div class="bar-fill" style="width:0%"></div></div><span>0</span></div>
+        <div class="bar-row"><span>1 ★</span><div class="bar-track"><div class="bar-fill" style="width:0%"></div></div><span>0</span></div>
+      </div>
+      <button class="btn-rose" onclick="document.getElementById('reviewFormBox').scrollIntoView({behavior:'smooth'})" style="align-self:center;padding:0.75rem 1.5rem">✍️ Write a Review</button>
+    </div>
+
+    <!-- Existing Reviews -->
+    <div class="review-list" id="reviewList">
+      <div class="review-card">
+        <div class="review-top">
+          <div class="reviewer-row"><div class="rev-avatar" style="background:linear-gradient(135deg,#f5ddd5,#d4736a)">👩</div><div><div class="rev-name">Marisol R.</div><div class="rev-meta">UCF Student · 2 weeks ago</div></div></div>
+          <div style="display:flex;align-items:center;gap:0.5rem;flex-wrap:wrap"><div class="rev-stars">⭐⭐⭐⭐⭐</div><span class="rev-tag">Self-Defense</span></div>
+        </div>
+        <p class="review-text">I walk to class alone at night a lot and I never knew what to actually DO if something happened. The self-defense page taught me things I could actually remember and use. The "yell FIRE not HELP" tip alone felt like something everyone should know. So grateful this exists.</p>
+        <div class="helpful-row">Was this helpful? <button class="helpful-btn" onclick="markHelpful(this)">👍 Helpful (12)</button></div>
+      </div>
+      <div class="review-card">
+        <div class="review-top">
+          <div class="reviewer-row"><div class="rev-avatar" style="background:linear-gradient(135deg,#d6e8e2,#7a9e8e)">🌿</div><div><div class="rev-name">Anonymous</div><div class="rev-meta">Downtown Orlando resident · 1 month ago</div></div></div>
+          <div style="display:flex;align-items:center;gap:0.5rem;flex-wrap:wrap"><div class="rev-stars">⭐⭐⭐⭐⭐</div><span class="rev-tag">Emergency Info</span></div>
+        </div>
+        <p class="review-text">I used the emergency page when my friend needed help and didn't know where to turn. Having Harbor House's number right there — and knowing it was a 24/7 line — made everything easier in a really stressful moment. Please keep this site going.</p>
+        <div class="helpful-row">Was this helpful? <button class="helpful-btn" onclick="markHelpful(this)">👍 Helpful (18)</button></div>
+      </div>
+      <div class="review-card">
+        <div class="review-top">
+          <div class="reviewer-row"><div class="rev-avatar" style="background:linear-gradient(135deg,#e8f5e9,#27ae60)">🌱</div><div><div class="rev-name">Destiny T.</div><div class="rev-meta">High school student · 3 weeks ago</div></div></div>
+          <div style="display:flex;align-items:center;gap:0.5rem;flex-wrap:wrap"><div class="rev-stars">⭐⭐⭐⭐⭐</div><span class="rev-tag">For Teens</span></div>
+        </div>
+        <p class="review-text">My school counselor shared this with our class and I thought it was going to be boring but it's actually really helpful and easy to read. The code word idea with parents is something I actually set up with my mom right after. This should be in every school.</p>
+        <div class="helpful-row">Was this helpful? <button class="helpful-btn" onclick="markHelpful(this)">👍 Helpful (9)</button></div>
+      </div>
+      <div class="review-card">
+        <div class="review-top">
+          <div class="reviewer-row"><div class="rev-avatar" style="background:linear-gradient(135deg,#f3e8ff,#8c5c6e)">💜</div><div><div class="rev-name">Camille W.</div><div class="rev-meta">Downtown worker · 1 month ago</div></div></div>
+          <div style="display:flex;align-items:center;gap:0.5rem;flex-wrap:wrap"><div class="rev-stars">⭐⭐⭐⭐⭐</div><span class="rev-tag">Safe Map</span></div>
+        </div>
+        <p class="review-text">I walk from my office to the parking garage at night and I've always felt uneasy. Knowing that area is flagged as "use caution" on here actually validated something I'd felt but couldn't name. Can't wait for the full interactive map!</p>
+        <div class="helpful-row">Was this helpful? <button class="helpful-btn" onclick="markHelpful(this)">👍 Helpful (7)</button></div>
+      </div>
+      <div class="review-card">
+        <div class="review-top">
+          <div class="reviewer-row"><div class="rev-avatar" style="background:linear-gradient(135deg,#fef3e2,#e67e22)">🌸</div><div><div class="rev-name">Anonymous</div><div class="rev-meta">Orlando area · 2 months ago</div></div></div>
+          <div style="display:flex;align-items:center;gap:0.5rem;flex-wrap:wrap"><div class="rev-stars">⭐⭐⭐⭐</div><span class="rev-tag">Resources</span></div>
+        </div>
+        <p class="review-text">Really appreciate having all the hotlines in one place. I'd love to see more resources for seniors and women who don't speak English as a first language. Still, 4 stars — this is really needed in our community.</p>
+        <div class="helpful-row">Was this helpful? <button class="helpful-btn" onclick="markHelpful(this)">👍 Helpful (5)</button></div>
+      </div>
+    </div>
+
+    <!-- Write a Review -->
+    <div id="reviewFormBox" class="review-form-wrap">
+      <div class="section-title" style="margin-bottom:1.25rem">✍️ Share your experience</div>
+      <div class="she-form">
+        <div class="form-notice">Your review helps others know how S.H.E. can help them. You can stay anonymous!</div>
+
+        <div class="form-group">
+          <label class="form-label">Your rating</label>
+          <div class="star-picker" id="starPicker">
+            <button class="star-btn" onclick="setStars(1)">⭐</button>
+            <button class="star-btn" onclick="setStars(2)">⭐</button>
+            <button class="star-btn" onclick="setStars(3)">⭐</button>
+            <button class="star-btn" onclick="setStars(4)">⭐</button>
+            <button class="star-btn" onclick="setStars(5)">⭐</button>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Name or nickname <span>(optional — can stay anonymous)</span></label>
+          <input type="text" class="form-input" id="reviewName" placeholder="e.g. Maria, Anonymous, UCF Student…">
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Which part helped you most? <span>(optional)</span></label>
+          <div class="chip-group">
+            <input type="radio" class="chip-input" name="helpSec" id="hs1"><label class="chip-label" for="hs1">Emergency info</label>
+            <input type="radio" class="chip-input" name="helpSec" id="hs2"><label class="chip-label" for="hs2">Safety tips</label>
+            <input type="radio" class="chip-input" name="helpSec" id="hs3"><label class="chip-label" for="hs3">Safe map</label>
+            <input type="radio" class="chip-input" name="helpSec" id="hs4"><label class="chip-label" for="hs4">Self-defense</label>
+            <input type="radio" class="chip-input" name="helpSec" id="hs5"><label class="chip-label" for="hs5">Resources</label>
+            <input type="radio" class="chip-input" name="helpSec" id="hs6"><label class="chip-label" for="hs6">All of it!</label>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Your review</label>
+          <textarea class="form-textarea" id="reviewText" placeholder="Share how S.H.E. helped you, what you found most useful, or what you'd like to see added…"></textarea>
+        </div>
+
+        <button class="form-submit" onclick="submitReview(this)">Post Review →</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════ SOS MODAL ═══════════════ -->
+<div class="modal-bg" id="sosModal">
+  <div class="modal-box">
+    <div class="modal-head"><div class="modal-big-icon">🆘</div><h2>Are you in danger?</h2><p>If you are in immediate danger, call 911 right now. These contacts are here for you 24/7.</p></div>
+    <div class="modal-btns">
+      <a href="tel:911" class="modal-btn red"><span>📞</span><div><div class="mb-num">911</div><div class="mb-lbl">Police / Fire / Emergency</div></div></a>
+      <a href="tel:18007997233" class="modal-btn mauve"><span>💜</span><div><div class="mb-num">1-800-799-7233</div><div class="mb-lbl">National DV Hotline (24/7)</div></div></a>
+      <a href="tel:18006564673" class="modal-btn teal"><span>🤍</span><div><div class="mb-num">1-800-656-4673</div><div class="mb-lbl">RAINN Sexual Assault Hotline</div></div></a>
+    </div>
+    <button class="modal-close" onclick="closeSOS()">I'm safe — close this</button>
+  </div>
+</div>
+
+<!-- ═══════════════ BOTTOM NAV ═══════════════ -->
+<div class="bottom-nav">
+  <div class="bnav-row">
+    <button class="bnav-btn active" onclick="goPage('home',this)"><span class="bi">🏠</span>Home</button>
+    <button class="bnav-btn" onclick="goPage('emergency',this)"><span class="bi">🚨</span>Emergency</button>
+    <button class="bnav-btn" onclick="goPage('tips',this)"><span class="bi">🛡️</span>Tips</button>
+    <button class="bnav-btn" onclick="goPage('map',this)"><span class="bi">🗺️</span>Map</button>
+    <button class="bnav-btn" onclick="goPage('resources',this)"><span class="bi">📚</span>Help</button>
+    <button class="bnav-btn" onclick="goPage('social',this)"><span class="bi">📱</span>Socials</button>
+    <button class="bnav-btn" onclick="goPage('about',this)"><span class="bi">ℹ️</span>About</button>
+    <button class="bnav-btn" onclick="goPage('reviews',this)"><span class="bi">⭐</span>Reviews</button>
+    <button class="bnav-btn bnav-sos" onclick="openSOS()"><span class="bi">🆘</span>SOS</button>
+  </div>
+</div>
+
+<script>
+// ── PAGE NAVIGATION ──
+function goPage(id, bnav) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  const pg = document.getElementById('page-' + id);
+  if (pg) { pg.classList.add('active'); } else { console.warn('No page: ' + id); return; }
+  // update dropdown
+  const sel = document.querySelector('.nav-select');
+  if (sel) sel.value = id;
+  // update pills
+  document.querySelectorAll('.nav-pills button').forEach(b => b.classList.toggle('active', b.dataset.page === id));
+  // update bottom nav
+  document.querySelectorAll('.bnav-btn:not(.bnav-sos)').forEach(b => b.classList.remove('active'));
+  if (bnav && bnav.classList) bnav.classList.add('active');
+  else { document.querySelectorAll('.bnav-btn:not(.bnav-sos)').forEach(b => { if (b.getAttribute('onclick') && b.getAttribute('onclick').includes("'"+id+"'")) b.classList.add('active'); }); }
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+// ── SOS MODAL ──
+function openSOS() { document.getElementById('sosModal').classList.add('open'); document.body.style.overflow='hidden'; }
+function closeSOS() { document.getElementById('sosModal').classList.remove('open'); document.body.style.overflow=''; }
+document.getElementById('sosModal').addEventListener('click', function(e){ if(e.target===this) closeSOS(); });
+
+// ── ACCORDION ──
+function toggleAcc(header) { header.parentElement.classList.toggle('open'); }
+
+// ── FILTER TIPS ──
+function filterTips(cat, btn) {
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  document.querySelectorAll('.tip-card').forEach(c => { c.style.display = (cat==='all' || c.dataset.cat===cat) ? '' : 'none'; });
+}
+
+// ── GENERIC FORM SUBMIT ──
+function submitForm(btn, formId, msg) {
+  btn.textContent = msg;
+  btn.disabled = true;
+}
+
+// ── STAR PICKER ──
+let selectedStars = 5;
+function setStars(n) {
+  selectedStars = n;
+  document.querySelectorAll('.star-btn').forEach((b,i) => b.classList.toggle('lit', i < n));
+}
+setStars(5); // default all lit
+
+// ── SUBMIT REVIEW ──
+function submitReview(btn) {
+  const text = document.getElementById('reviewText').value.trim();
+  if (!text) { document.getElementById('reviewText').style.borderColor='var(--emergency)'; document.getElementById('reviewText').focus(); return; }
+  const name = document.getElementById('reviewName').value.trim() || 'Anonymous';
+  const section = document.querySelector('input[name="helpSec"]:checked');
+  const tag = section ? section.nextElementSibling.textContent : 'General';
+  const stars = '⭐'.repeat(selectedStars);
+  const palettes = [
+    'linear-gradient(135deg,#f5ddd5,#d4736a)',
+    'linear-gradient(135deg,#d6e8e2,#7a9e8e)',
+    'linear-gradient(135deg,#f3e8ff,#8c5c6e)',
+    'linear-gradient(135deg,#fef3e2,#e67e22)',
+    'linear-gradient(135deg,#e8f5e9,#27ae60)'
+  ];
+  const emojis = ['👩','🌿','💜','🌸','🌺','💛','🌙'];
+  const bg = palettes[Math.floor(Math.random()*palettes.length)];
+  const em = emojis[Math.floor(Math.random()*emojis.length)];
+  const card = document.createElement('div');
+  card.className = 'review-card';
+  card.style.animation = 'fadeIn 0.4s ease';
+  card.innerHTML = `
+    <div class="review-top">
+      <div class="reviewer-row"><div class="rev-avatar" style="background:${bg}">${em}</div><div><div class="rev-name">${name}</div><div class="rev-meta">Just now</div></div></div>
+      <div style="display:flex;align-items:center;gap:0.5rem;flex-wrap:wrap"><div class="rev-stars">${stars}</div><span class="rev-tag">${tag}</span></div>
+    </div>
+    <p class="review-text">${text.replace(/</g,'&lt;')}</p>
+    <div class="helpful-row">Was this helpful? <button class="helpful-btn" onclick="markHelpful(this)">👍 Helpful (0)</button></div>`;
+  document.getElementById('reviewList').prepend(card);
+  btn.textContent = '✅ Review posted! Thank you!';
+  btn.disabled = true;
+  document.getElementById('reviewText').value = '';
+  document.getElementById('reviewName').value = '';
+  card.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+// ── HELPFUL BUTTON ──
+function markHelpful(btn) {
+  if (btn.disabled) return;
+  const n = (parseInt((btn.textContent.match(/\((\d+)\)/)||[0,0])[1]) || 0) + 1;
+  btn.textContent = `👍 Helpful (${n})`;
+  btn.style.background = 'var(--blush)'; btn.style.color = 'var(--rose)';
+  btn.disabled = true;
+}
+</script>
+</body>
+</html>
