@@ -864,42 +864,46 @@ const downtownOrlando = {
   "geometry": {
     "type": "Polygon",
     "coordinates": [[
-      [-81.3900, 28.5500],
-      [-81.3700, 28.5500],
-      [-81.3700, 28.5300],
-      [-81.3900, 28.5300],
-      [-81.3900, 28.5500] // closes the shape
+      // NW corner (near Marks St / I-4 area)
+      [-81.3955, 28.5555],
+
+      // North edge (Marks Street / Lake Ivanhoe edge)
+      [-81.3605, 28.5555],
+
+      // Northeast edge (Mills Ave / Lake Eola Heights)
+      [-81.3600, 28.5450],
+
+      // East side (Thornton Park / Summerlin area)
+      [-81.3555, 28.5350],
+
+      // Southeast corner (Kaley Ave boundary)
+      [-81.3605, 28.5255],
+
+      // South edge (Kaley / South Street area)
+      [-81.3955, 28.5255],
+
+      // West edge (Orange Blossom Trail / Parramore side)
+      [-81.4055, 28.5355],
+
+      // back to start
+      [-81.3955, 28.5555]
     ]]
   }
 };
     map.on('load', () => {
-
-  // add the shape data
   map.addSource('downtown-orlando', {
     type: 'geojson',
     data: downtownOrlando
-  });
-
-  // optional light fill (makes area visible)
-  map.addLayer({
-    id: 'downtown-fill',
-    type: 'fill',
-    source: 'downtown-orlando',
-    paint: {
-      'fill-color': '#ff4d6d',
-      'fill-opacity': 0.15
-    }
   });
   map.addLayer({
     id: 'downtown-outline',
     type: 'line',
     source: 'downtown-orlando',
     paint: {
-      'line-color': '#ff4d6d',
+  'line-color': '#ff4d6d',
       'line-width': 3
     }
   });
-
 });
 </script>
 </body>
