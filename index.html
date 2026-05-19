@@ -17,49 +17,27 @@
   --safe: #27ae60; --safe-light: #e8f5e9;
   --warn: #e67e22; --warn-light: #fef3e2;
 }
-html { scroll-behavior: smooth; }
-body { background: var(--cream); color: var(--deep); font-family: 'Nunito', sans-serif; font-weight: 400; overflow-x: hidden; }
+html, body {
+  height: 100%;
+}
+
 #page-map {
   display: flex;
   flex-direction: column;
   height: 100vh;
 }
- #map {
+
+#map {
   width: 100%;
   height: 55vh;
+  min-height: 300px;
 }
-  .map-content {
+
+.map-content {
   flex: 1;
   overflow-y: auto;
   padding: 20px;
 }
-.section-title {
-  margin-top: 10px;
-  margin-bottom: 8px;
-  font-size: 18px;
-  font-weight: 600;
-}
-
-.section-intro {
-  margin-bottom: 15px;
-  color: var(--warm-gray);
-  line-height: 1.4;
-}
-
-.map-zones,
-.tip-list {
-  margin-top: 10px;
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-
-.divider {
-  margin: 20px 0;
-  border: none;
-  border-top: 1px solid #ddd;
-}
-</style>
 /* ── SOS BANNER ── */
 .sos-banner { background: var(--emergency); color: white; text-align: center; padding: 0.55rem 1rem; font-size: 0.8rem; font-weight: 600; display: flex; align-items: center; justify-content: center; gap: 0.75rem; flex-wrap: wrap; }
 .sos-banner a { color: white; font-weight: 700; text-decoration: underline; }
