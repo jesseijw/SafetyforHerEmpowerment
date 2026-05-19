@@ -19,23 +19,36 @@
 }
 html, body {
   height: 100%;
+  margin: 0;
+  overflow: hidden;
 }
 
-#page-map {
+/* PAGE SYSTEM */
+.page {
+  display: none;
+}
+
+.page.active {
   display: flex;
   flex-direction: column;
   height: 100vh;
 }
 
+/* MAP PAGE CONTAINER */
+#page-map {
+  overflow: hidden;
+}
+
+/* MAP */
 #map {
   width: 100%;
   height: 55vh;
   min-height: 300px;
 }
 
+/* CONTENT AREA */
 .map-content {
   flex: 1;
-  overflow-y: auto;
   padding: 20px;
 }
 /* ── SOS BANNER ── */
@@ -500,8 +513,8 @@ nav { position: sticky; top: 0; z-index: 200; background: rgba(253,248,244,0.97)
 </div>
 
 <!-- ═══════════════ MAP ═══════════════ -->
-<div id="page-map" class="page">
-<div id="map"></div>
+<div id="page-map" class="page active">
+  <div id="map"></div>
 <div class="map-content">
     <h3 class="section-title">Community-Reported Safety Zones</h3>
     <p class="section-intro">Based on community survey data. Always trust your own instincts — conditions can change.</p>
