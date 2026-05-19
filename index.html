@@ -840,65 +840,76 @@ function markHelpful(btn) {
     <a href="https://www.facebook.com/SafetyForHerEmpowerment" target="_blank" rel="noopener" style="color:rgba(245,221,213,0.6);font-size:0.78rem;text-decoration:none;" onmouseover="this.style.color='var(--blush)'" onmouseout="this.style.color='rgba(245,221,213,0.6)'">Facebook</a>
   </div>
 </footer>
-  <script>
+<script>
+window.addEventListener("load", function () {
 
-mapboxgl.accessToken = 'pk.eyJ1Ijoic2FmZXR5Zm9yaGVyZW1wb3dlcm1lbnQiLCJhIjoiY21wYnkyN3E5MDJhYzJycHg2cTk0ZjlqdyJ9.0_p6SMAmrg9rMP_nqXyDRg';
+  const mapContainer = document.getElementById("map");
 
-const map = new mapboxgl.Map({
-  container: 'map',
-  style: 'mapbox://styles/mapbox/streets-v11',
-  center: [-81.3792, 28.5383],
-  zoom: 13
-});
+  // only run if the map div exists
+  if (mapContainer) {
 
-new mapboxgl.Marker({ color: '#ff4d6d' })
-  .setLngLat([-81.3792, 28.5383])
-  .setPopup(
-    new mapboxgl.Popup().setHTML(
-      "<h3>Downtown Orlando</h3><p>Community safety hub</p>"
-    )
-  )
-  .addTo(map);
-const downtownOrlando = {
-  "type": "Feature",
-  "geometry": {
-    "type": "Polygon",
-    "coordinates": [[
-      [-81.3900, 28.5500],
-      [-81.3700, 28.5500],
-      [-81.3700, 28.5300],
-      [-81.3900, 28.5300],
-      [-81.3900, 28.5500] // closes the shape
-    ]]
-  }
-};
+    mapboxgl.accessToken = 'pk.eyJ1Ijoic2FmZXR5Zm9yaGVyZW1wb3dlcm1lbnQiLCJhIjoiY21wY2l4Y2puMDF4bjJwcHRiYXE0MWI0OCJ9.ToclbFQZy07rsBAE2JhrKA';
+
+    const map = new mapboxgl.Map({
+      container: 'map',
+      style: 'mapbox://styles/mapbox/streets-v12',
+      center: [-81.3792, 28.5383],
+      zoom: 13
+    });
+
+    new mapboxgl.Marker({ color: '#ff4d6d' })
+      .setLngLat([-81.3792, 28.5383])
+      .setPopup(
+        new mapboxgl.Popup().setHTML(
+          "<h3>Downtown Orlando</h3><p>Community safety hub</p>"
+        )
+      )
+      .addTo(map);
+
+    const downtownOrlando = {
+      type: "Feature",
+      geometry: {
+        type: "Polygon",
+        coordinates: [[
+          [-81.3900, 28.5500],
+          [-81.3700, 28.5500],
+          [-81.3700, 28.5300],
+          [-81.3900, 28.5300],
+          [-81.3900, 28.5500]
+        ]]
+      }
+    };
+
     map.on('load', () => {
 
-  // add the shape data
-  map.addSource('downtown-orlando', {
-    type: 'geojson',
-    data: downtownOrlando
-  });
+      map.addSource('downtown-orlando', {
+        type: 'geojson',
+        data: downtownOrlando
+      });
 
-  // optional light fill (makes area visible)
-  map.addLayer({
-    id: 'downtown-fill',
-    type: 'fill',
-    source: 'downtown-orlando',
-    paint: {
-      'fill-color': '#ff4d6d',
-      'fill-opacity': 0.15
-    }
-  });
-  map.addLayer({
-    id: 'downtown-outline',
-    type: 'line',
-    source: 'downtown-orlando',
-    paint: {
-      'line-color': '#ff4d6d',
-      'line-width': 3
-    }
-  });
+      map.addLayer({
+        id: 'downtown-fill',
+        type: 'fill',
+        source: 'downtown-orlando',
+        paint: {
+          'fill-color': '#ff4d6d',
+          'fill-opacity': 0.15
+        }
+      });
+
+      map.addLayer({
+        id: 'downtown-outline',
+        type: 'line',
+        source: 'downtown-orlando',
+        paint: {
+          'line-color': '#ff4d6d',
+          'line-width': 3
+        }
+      });
+
+    });
+
+  }
 
 });
 </script>
