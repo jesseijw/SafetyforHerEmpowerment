@@ -7,6 +7,24 @@
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=Nunito:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <link href="https://api.mapbox.com/mapbox-gl-js/v3.2.0/mapbox-gl.css" rel="stylesheet" />
 <script src="https://api.mapbox.com/mapbox-gl-js/v3.2.0/mapbox-gl.js"></script>
+  #map {
+  width: 100%;
+  height: 500px;
+  border-radius: 24px;
+  overflow: hidden;
+  margin-bottom: 40px;
+}
+.map-content {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 40px 24px;
+}
+
+.map-zones {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 24px;
+}
 <style>
 *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
 :root {
@@ -462,7 +480,8 @@ nav { position: sticky; top: 0; z-index: 200; background: rgba(253,248,244,0.97)
 </div>
 
 <!-- ═══════════════ MAP ═══════════════ -->
-<div id="map" style="width:100%; height:500px; border-radius:20px;"></div>
+<div id="map"></div>
+<div class="map-content">
     <h3 class="section-title">Community-Reported Safety Zones</h3>
     <p class="section-intro">Based on community survey data. Always trust your own instincts — conditions can change.</p>
     <div class="map-zones">
@@ -480,6 +499,7 @@ nav { position: sticky; top: 0; z-index: 200; background: rgba(253,248,244,0.97)
       <div class="tip-item safe-tip"><span class="tip-emoji">🏥</span><div class="tip-text"><strong>Orlando Health Regional Medical Center</strong> — 52 W Underwood St</div></div>
       <div class="tip-item safe-tip"><span class="tip-emoji">🚒</span><div class="tip-text"><strong>Orlando Fire Station 1</strong> — 39 W Jefferson St, Downtown Orlando</div></div>
     </div>
+ /div>
   </div>
 </div>
 
@@ -824,7 +844,7 @@ mapboxgl.accessToken = 'pk.eyJ1Ijoic2FmZXR5Zm9yaGVyZW1wb3dlcm1lbnQiLCJhIjoiY21wY
 
 const map = new mapboxgl.Map({
   container: 'map',
-  style: 'mapbox://styles/mapbox/dark-v11',
+  style: 'mapbox://styles/mapbox/streets-v11',
   center: [-81.3792, 28.5383],
   zoom: 13
 });
