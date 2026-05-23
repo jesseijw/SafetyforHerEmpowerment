@@ -43,6 +43,8 @@ html, body {
 /* MAP PAGE CONTAINER */
 #page-map {
   overflow: hidden;
+  display: flex;
+  flex-direction: column;
 }
 
 /* MAP */
@@ -50,11 +52,39 @@ html, body {
   width: 100%;
   height: 55vh;
   min-height: 300px;
+  flex: 0 0 auto;
 }
 
 .map-content {
   flex: 1;
   padding: 20px;
+  overflow-y: auto;
+  background: var(--light);
+}
+
+/* Mapbox Popup Styling */
+.mapboxgl-popup-content {
+  background: white !important;
+  border-radius: 12px !important;
+  padding: 12px !important;
+  font-family: 'Nunito', sans-serif !important;
+}
+
+.mapboxgl-popup-content h3 {
+  font-family: 'Playfair Display', serif;
+  color: var(--deep);
+  font-size: 1rem;
+  margin-bottom: 4px;
+}
+
+.mapboxgl-popup-content p {
+  font-size: 0.8rem;
+  color: var(--warm-gray);
+  line-height: 1.4;
+}
+
+.mapboxgl-popup-close-button {
+  color: var(--rose) !important;
 }
 
 /* ── SOS BANNER ── */
@@ -154,7 +184,7 @@ nav { position: sticky; top: 0; z-index: 200; background: rgba(253,248,244,0.97)
 .tip-card p { font-size: 0.83rem; line-height: 1.7; color: var(--warm-gray); }
 
 /* ── MAP ── */
-.zone-card { border-radius: 14px; padding: 1.2rem 1.4rem; border-left: 5px solid; }
+.zone-card { border-radius: 14px; padding: 1.2rem 1.4rem; border-left: 5px solid; margin-bottom: 1rem; }
 .zone-card.safe { background: var(--safe-light); border-color: var(--safe); }
 .zone-card.caution { background: var(--warn-light); border-color: var(--warn); }
 .zone-card.avoid { background: var(--emergency-light); border-color: var(--emergency); }
@@ -224,61 +254,6 @@ nav { position: sticky; top: 0; z-index: 200; background: rgba(253,248,244,0.97)
 .mission-text h3 { font-family: 'Playfair Display', serif; font-size: 1.35rem; color: var(--deep); margin-bottom: 0.65rem; font-weight: 600; }
 .mission-text p { font-size: 0.88rem; line-height: 1.8; color: var(--warm-gray); }
 .mission-text p + p { margin-top: 0.6rem; }
-.about-two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 2.5rem; margin-bottom: 2.5rem; }
-.about-col h3 { font-family: 'Playfair Display', serif; font-size: 1.25rem; color: var(--deep); margin-bottom: 0.9rem; font-weight: 600; }
-.about-col p { font-size: 0.87rem; line-height: 1.8; color: var(--warm-gray); margin-bottom: 0.65rem; }
-.step-list { display: flex; flex-direction: column; gap: 0.7rem; }
-.step-item { display: flex; gap: 0.85rem; align-items: flex-start; }
-.step-num { background: var(--rose); color: white; width: 26px; height: 26px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.72rem; font-weight: 700; flex-shrink: 0; }
-.step-text { font-size: 0.86rem; line-height: 1.65; color: var(--warm-gray); }
-.step-text strong { color: var(--deep); }
-.stats-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px,1fr)); gap: 1rem; background: var(--deep); border-radius: 18px; padding: 2rem; margin-bottom: 2.5rem; }
-.stat-box { text-align: center; }
-.stat-num { font-family: 'Playfair Display', serif; font-size: 2rem; color: var(--blush); font-weight: 600; }
-.stat-label { font-size: 0.72rem; color: rgba(245,221,213,0.7); margin-top: 0.2rem; line-height: 1.4; }
-.team-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px,1fr)); gap: 1rem; margin-bottom: 2.5rem; }
-.team-card { background: white; border-radius: 16px; padding: 1.5rem 1rem; text-align: center; box-shadow: 0 2px 10px rgba(44,31,34,0.07); }
-.team-avatar { width: 56px; height: 56px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; margin: 0 auto 0.85rem; }
-.team-name { font-weight: 700; font-size: 0.9rem; color: var(--deep); margin-bottom: 0.2rem; }
-.team-role { font-size: 0.72rem; color: var(--rose); font-weight: 600; letter-spacing: 0.04em; }
-.cta-box { background: var(--blush); border-radius: 16px; padding: 2rem; display: flex; flex-direction: column; gap: 1rem; }
-.cta-box h3 { font-family: 'Playfair Display', serif; font-size: 1.25rem; color: var(--deep); font-weight: 600; }
-.cta-box p { font-size: 0.87rem; color: var(--warm-gray); line-height: 1.7; }
-.cta-btns { display: flex; gap: 0.75rem; flex-wrap: wrap; }
-.btn-rose { background: var(--rose); color: white; border: none; border-radius: 10px; padding: 0.65rem 1.4rem; font-family: 'Nunito', sans-serif; font-size: 0.85rem; font-weight: 700; cursor: pointer; transition: all 0.2s; }
-.btn-rose:hover { background: var(--rose-dark); }
-.btn-mauve { background: var(--mauve); color: white; border: none; border-radius: 10px; padding: 0.65rem 1.4rem; font-family: 'Nunito', sans-serif; font-size: 0.85rem; font-weight: 700; cursor: pointer; transition: all 0.2s; }
-.btn-mauve:hover { background: #6e4558; }
-
-/* ── REVIEWS ── */
-.rating-summary { display: flex; gap: 2rem; align-items: center; background: white; border-radius: 18px; padding: 2rem 2.5rem; box-shadow: 0 2px 16px rgba(44,31,34,0.08); margin-bottom: 2rem; flex-wrap: wrap; }
-.rating-big { text-align: center; flex-shrink: 0; }
-.rating-num-big { font-family: 'Playfair Display', serif; font-size: 3.8rem; color: var(--rose); line-height: 1; font-weight: 600; }
-.rating-stars-lg { font-size: 1.2rem; margin: 0.2rem 0; }
-.rating-count-sm { font-size: 0.75rem; color: var(--warm-gray); }
-.bar-list { flex: 1; min-width: 190px; display: flex; flex-direction: column; gap: 0.35rem; }
-.bar-row { display: flex; align-items: center; gap: 0.65rem; font-size: 0.78rem; color: var(--warm-gray); }
-.bar-track { flex: 1; height: 7px; background: var(--light); border-radius: 4px; overflow: hidden; }
-.bar-fill { height: 100%; background: var(--rose); border-radius: 4px; }
-.review-list { display: flex; flex-direction: column; gap: 1.1rem; margin-bottom: 2rem; }
-.review-card { background: white; border-radius: 16px; padding: 1.6rem; box-shadow: 0 2px 12px rgba(44,31,34,0.07); border: 1px solid rgba(212,115,106,0.1); }
-.review-top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 0.75rem; flex-wrap: wrap; gap: 0.5rem; }
-.reviewer-row { display: flex; align-items: center; gap: 0.7rem; }
-.rev-avatar { width: 38px; height: 38px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1rem; flex-shrink: 0; }
-.rev-name { font-weight: 700; font-size: 0.9rem; color: var(--deep); }
-.rev-meta { font-size: 0.73rem; color: var(--warm-gray); margin-top: 0.05rem; }
-.rev-stars { font-size: 0.95rem; }
-.rev-tag { background: var(--blush); color: var(--rose); font-size: 0.68rem; font-weight: 700; padding: 0.18rem 0.55rem; border-radius: 10px; }
-.review-text { font-size: 0.86rem; line-height: 1.75; color: var(--warm-gray); }
-.helpful-row { margin-top: 0.7rem; font-size: 0.75rem; color: var(--warm-gray); display: flex; align-items: center; gap: 0.5rem; }
-.helpful-btn { background: none; border: 1px solid rgba(212,115,106,0.3); border-radius: 20px; padding: 0.18rem 0.55rem; font-size: 0.73rem; cursor: pointer; font-family: 'Nunito', sans-serif; color: var(--warm-gray); transition: all 0.2s; }
-.helpful-btn:hover:not(:disabled) { border-color: var(--rose); color: var(--rose); }
-.star-picker { display: flex; gap: 0.35rem; margin-bottom: 0.25rem; }
-.star-btn { font-size: 1.7rem; background: none; border: none; cursor: pointer; transition: transform 0.15s; opacity: 0.3; filter: grayscale(1); }
-.star-btn.lit { opacity: 1; filter: none; }
-.star-btn:hover { transform: scale(1.2); }
-.review-form-wrap { margin-bottom: 2.5rem; }
-.review-form-title { font-family: 'Playfair Display', serif; font-size: 1.3rem; color: var(--deep); margin-bottom: 1.25rem; font-weight: 600; }
 
 /* ── SOCIAL MEDIA PAGE ── */
 .social-hero { background: linear-gradient(135deg, #1a1a2e 0%, #2d1f22 100%); color: white; padding: 3rem 3rem 2.5rem; text-align: center; position: relative; overflow: hidden; }
@@ -365,14 +340,7 @@ nav { position: sticky; top: 0; z-index: 200; background: rgba(253,248,244,0.97)
   .rating-summary { flex-direction: column; }
   .stats-row { grid-template-columns: 1fr 1fr; }
   .social-body { padding: 1.5rem 1.1rem; }
-}
-
-#map {
-  width: 100%;
-  height: 500px;
-  border-radius: 24px;
-  overflow: hidden;
-  margin-bottom: 40px;
+  #map { height: 45vh; }
 }
 
 </style>
@@ -498,18 +466,46 @@ nav { position: sticky; top: 0; z-index: 200; background: rgba(253,248,244,0.97)
 </div>
 
 <!-- ═══════════════ MAP ═══════════════ -->
-<div id="page-map" class="page active">
+<div id="page-map" class="page">
   <div id="map"></div>
   <div class="map-content">
     <h3 class="section-title">Community-Reported Safety Zones</h3>
-    <p class="section-intro">Based on community survey data. Always trust your own instincts — conditions can change.</p>
-    <div class="map-zones">
-      <div class="zone-card safe"><div class="zone-label">✅ Generally Safe</div><h3>Lake Eola Park (Daytime)</h3><p>Well-lit, high foot traffic, frequent events. Avoid isolated areas after dark.</p></div>
-      <div class="zone-card safe"><div class="zone-label">✅ Generally Safe</div><h3>Dr. Phillips Center Area</h3><p>Event venue with good lighting, security staff, and consistent evening crowds.</p></div>
-      <div class="zone-card safe"><div class="zone-label">✅ Generally Safe</div><h3>Orange Ave (Daytime)</h3><p>Main commercial corridor. Active during business hours with shops and pedestrian traffic.</p></div>
-      <div class="zone-card caution"><div class="zone-label">⚠️ Use Caution</div><h3>Church Street / Bars District</h3><p>Busy at night but alcohol-related incidents increase. Go with friends, have a plan.</p></div>
-      <div class="zone-card caution"><div class="zone-label">⚠️ Use Caution</div><h3>Parking Garages After Dark</h3><p>Poor lighting in many structures. Park near exits, have keys ready, try to use daytime.</p></div>
-      <div class="zone-card avoid"><div class="zone-label">🔴 Extra Caution at Night</div><h3>Isolated Side Streets</h3><p>Less-trafficked streets behind main corridors have poor lighting and minimal foot traffic.</p></div>
+    <p class="section-intro">Based on community survey data. Click locations on the map or see zones below. Always trust your own instincts — conditions can change.</p>
+    
+    <div class="zone-card safe">
+      <div class="zone-label">✅ Generally Safe</div>
+      <h3>Lake Eola Park (Daytime)</h3>
+      <p>Well-lit, high foot traffic, frequent events. Avoid isolated areas after dark.</p>
+    </div>
+    
+    <div class="zone-card safe">
+      <div class="zone-label">✅ Generally Safe</div>
+      <h3>Dr. Phillips Center Area</h3>
+      <p>Event venue with good lighting, security staff, and consistent evening crowds.</p>
+    </div>
+    
+    <div class="zone-card safe">
+      <div class="zone-label">✅ Generally Safe</div>
+      <h3>Orange Ave (Daytime)</h3>
+      <p>Main commercial corridor. Active during business hours with shops and pedestrian traffic.</p>
+    </div>
+    
+    <div class="zone-card caution">
+      <div class="zone-label">⚠️ Use Caution</div>
+      <h3>Church Street / Bars District</h3>
+      <p>Busy at night but alcohol-related incidents increase. Go with friends, have a plan.</p>
+    </div>
+    
+    <div class="zone-card caution">
+      <div class="zone-label">⚠️ Use Caution</div>
+      <h3>Parking Garages After Dark</h3>
+      <p>Poor lighting in many structures. Park near exits, have keys ready, try to use daytime.</p>
+    </div>
+    
+    <div class="zone-card avoid">
+      <div class="zone-label">🔴 Extra Caution at Night</div>
+      <h3>Isolated Side Streets</h3>
+      <p>Less-trafficked streets behind main corridors have poor lighting and minimal foot traffic.</p>
     </div>
   </div>
 </div>
@@ -617,9 +613,61 @@ nav { position: sticky; top: 0; z-index: 200; background: rgba(253,248,244,0.97)
 </div>
 
 <script>
+// Replace with your actual Mapbox token if you have one
+// For now, this shows the basic structure
+let map;
+
+function initializeMap() {
+  // Try to initialize Mapbox - requires a token from mapbox.com
+  try {
+    mapboxgl.accessToken = 'YOUR_MAPBOX_TOKEN_HERE'; // You'll need to add your own token
+    
+    map = new mapboxgl.Map({
+      container: 'map',
+      style: 'mapbox://styles/mapbox/light-v11',
+      center: [-81.3774, 28.5421], // Downtown Orlando coordinates
+      zoom: 14
+    });
+
+    // Safe zones markers
+    const zones = [
+      { lng: -81.3748, lat: 28.5421, title: 'Lake Eola Park', type: 'safe', desc: 'Generally Safe - High foot traffic' },
+      { lng: -81.3895, lat: 28.5412, title: 'Dr. Phillips Center', type: 'safe', desc: 'Generally Safe - Good security' },
+      { lng: -81.3780, lat: 28.5440, title: 'Orange Avenue', type: 'safe', desc: 'Generally Safe - Daytime' },
+      { lng: -81.3850, lat: 28.5390, title: 'Church Street', type: 'caution', desc: 'Use Caution - Bars area' },
+      { lng: -81.3700, lat: 28.5500, title: 'Parking Garages', type: 'caution', desc: 'Use Caution - Poor lighting' },
+      { lng: -81.3600, lat: 28.5300, title: 'Side Streets', type: 'avoid', desc: 'Extra Caution at Night' }
+    ];
+
+    zones.forEach(zone => {
+      const markerColor = zone.type === 'safe' ? '#27ae60' : (zone.type === 'caution' ? '#e67e22' : '#c0392b');
+      
+      const el = document.createElement('div');
+      el.style.width = '32px';
+      el.style.height = '32px';
+      el.style.backgroundImage = `url('data:image/svg+xml;charset=utf-8,%3Csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"%3E%3Ccircle cx="12" cy="12" r="10" fill="${markerColor.replace('#', '%23')}"%3E%3C/circle%3E%3C/svg%3E')`;
+      el.style.backgroundSize = '100%';
+      el.style.cursor = 'pointer';
+
+      new mapboxgl.Marker(el)
+        .setLngLat([zone.lng, zone.lat])
+        .setPopup(new mapboxgl.Popup({ offset: 25 })
+          .setHTML(`<h3>${zone.title}</h3><p>${zone.desc}</p>`))
+        .addTo(map);
+    });
+  } catch (e) {
+    console.log('Mapbox not available - showing placeholder');
+  }
+}
+
 function goPage(page) {
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
   document.getElementById('page-' + page).classList.add('active');
+  
+  // Initialize map when switching to map page
+  if (page === 'map' && !map) {
+    setTimeout(initializeMap, 100);
+  }
   
   // Update nav buttons
   document.querySelectorAll('.nav-pills button').forEach(b => b.classList.remove('active'));
@@ -644,11 +692,6 @@ function filterTips(category) {
 function toggleAcc(header) {
   const item = header.closest('.acc-item');
   item.classList.toggle('open');
-}
-
-// Initialize map (placeholder)
-if (document.getElementById('map')) {
-  document.getElementById('map').innerHTML = '<div class="map-placeholder"><div style="font-size:2rem;">🗺️</div><h3>Downtown Orlando Safety Map</h3><p>Interactive map coming soon</p></div>';
 }
 </script>
 
