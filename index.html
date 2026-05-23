@@ -22,6 +22,11 @@ html, body {
   margin: 0;
   overflow: hidden;
 }
+  .map-zones {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 24px;
+}
 
 /* PAGE SYSTEM */
 .page {
@@ -45,12 +50,14 @@ html, body {
   height: 55vh;
   min-height: 300px;
 }
-
-/* CONTENT AREA */
-.map-content {
+  .map-content {
   flex: 1;
   padding: 20px;
 }
+  </style>
+</head>
+<body>
+
 /* ── SOS BANNER ── */
 .sos-banner { background: var(--emergency); color: white; text-align: center; padding: 0.55rem 1rem; font-size: 0.8rem; font-weight: 600; display: flex; align-items: center; justify-content: center; gap: 0.75rem; flex-wrap: wrap; }
 .sos-banner a { color: white; font-weight: 700; text-decoration: underline; }
@@ -513,7 +520,7 @@ nav { position: sticky; top: 0; z-index: 200; background: rgba(253,248,244,0.97)
 </div>
 
 <!-- ═══════════════ MAP ═══════════════ -->
-<div id="page-map" class="page active">
+<div id="page-map" class="page">
   <div id="map"></div>
 <div class="map-content">
     <h3 class="section-title">Community-Reported Safety Zones</h3>
@@ -879,7 +886,7 @@ window.addEventListener("load", function () {
   // only run if the map div exists
   if (mapContainer) {
 
-    mapboxgl.accessToken = 'pk.eyJ1Ijoic2FmZXR5Zm9yaGVyZW1wb3dlcm1lbnQiLCJhIjoiY21wY2l4Y2puMDF4bjJwcHRiYXE0MWI0OCJ9.ToclbFQZy07rsBAE2JhrKA';
+    mapboxgl.accessToken = 'pk.eyJ1Ijoic2FmZXR5Zm9yaGVyZW1wb3dlcm1lbnQiLCJhIjoiY21wYnkyN3E5MDJhYzJycHg2cTk0ZjlqdyJ9.0_p6SMAmrg9rMP_nqXyDRg';
 
     const map = new mapboxgl.Map({
       container: 'map',
@@ -887,61 +894,6 @@ window.addEventListener("load", function () {
       center: [-81.3792, 28.5383],
       zoom: 13
     });
-
-    new mapboxgl.Marker({ color: '#ff4d6d' })
-      .setLngLat([-81.3792, 28.5383])
-      .setPopup(
-        new mapboxgl.Popup().setHTML(
-          "<h3>Downtown Orlando</h3><p>Community safety hub</p>"
-        )
-      )
-      .addTo(map);
-
-    const downtownOrlando = {
-      type: "Feature",
-      geometry: {
-        type: "Polygon",
-        coordinates: [[
-          [-81.3900, 28.5500],
-          [-81.3700, 28.5500],
-          [-81.3700, 28.5300],
-          [-81.3900, 28.5300],
-          [-81.3900, 28.5500]
-        ]]
-      }
-    };
-
-    map.on('load', () => {
-
-      map.addSource('downtown-orlando', {
-        type: 'geojson',
-        data: downtownOrlando
-      });
-
-      map.addLayer({
-        id: 'downtown-fill',
-        type: 'fill',
-        source: 'downtown-orlando',
-        paint: {
-          'fill-color': '#ff4d6d',
-          'fill-opacity': 0.15
-        }
-      });
-
-      map.addLayer({
-        id: 'downtown-outline',
-        type: 'line',
-        source: 'downtown-orlando',
-        paint: {
-          'line-color': '#ff4d6d',
-          'line-width': 3
-        }
-      });
-
-    });
-        setTimeout(() => {
-      map.resize();
-    }, 300);
 
   }
 
