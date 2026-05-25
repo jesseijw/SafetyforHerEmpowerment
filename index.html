@@ -5,8 +5,6 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>S.H.E. — Safety for Her Empowerment</title>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=Nunito:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-<link href="https://api.mapbox.com/mapbox-gl-js/v3.2.0/mapbox-gl.css" rel="stylesheet" />
-<script src="https://api.mapbox.com/mapbox-gl-js/v3.2.0/mapbox-gl.js"></script>
 <style>
 *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
 :root {
@@ -17,48 +15,33 @@
   --safe: #27ae60; --safe-light: #e8f5e9;
   --warn: #e67e22; --warn-light: #fef3e2;
 }
-html, body {
-  height: 100%;
-  margin: 0;
-  overflow: hidden;
+
+/* ── RESET / BASE ── */
+html {
+  scroll-behavior: smooth;
+}
+body {
+  font-family: 'Nunito', sans-serif;
+  background: var(--cream);
+  color: var(--deep);
+  min-height: 100vh;
 }
 
-.map-zones {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-  gap: 24px;
-}
-
-/* PAGE SYSTEM */
+/* ── PAGE SYSTEM ── */
 .page {
   display: none;
 }
-
 .page.active {
   display: flex;
   flex-direction: column;
-  height: 100vh;
+  min-height: calc(100vh - 62px); /* subtract nav height */
+  overflow-y: auto;
+  animation: fadeIn 0.3s ease;
 }
-
-/* MAP PAGE CONTAINER */
-#page-map {
-  overflow: hidden;
-}
-
-/* MAP */
-#map {
-  width: 100%;
-  height: 55vh;
-  min-height: 300px;
-}
-
-.map-content {
-  flex: 1;
-  padding: 20px;
-}
+@keyframes fadeIn { from { opacity:0; transform:translateY(8px); } to { opacity:1; transform:translateY(0); } }
 
 /* ── SOS BANNER ── */
-.sos-banner { background: var(--emergency); color: white; text-align: center; padding: 0.55rem 1rem; font-size: 0.8rem; font-weight: 600; display: flex; align-items: center; justify-content: center; gap: 0.5rem; }
+.sos-banner { background: var(--emergency); color: white; text-align: center; padding: 0.55rem 1rem; font-size: 0.8rem; font-weight: 600; display: flex; align-items: center; justify-content: center; gap: 0.5rem; flex-wrap: wrap; }
 .sos-banner a { color: white; font-weight: 700; text-decoration: underline; }
 .sos-pill { background: white; color: var(--emergency); padding: 0.15rem 0.65rem; border-radius: 20px; font-weight: 700; font-size: 0.75rem; }
 
@@ -70,7 +53,7 @@ nav { position: sticky; top: 0; z-index: 200; background: rgba(253,248,244,0.97)
 /* Dropdown */
 .nav-dropdown-wrap { position: relative; flex: 1; max-width: 260px; }
 .nav-select { width: 100%; appearance: none; background: var(--light); border: 2px solid rgba(212,115,106,0.25); border-radius: 10px; padding: 0.45rem 2.2rem 0.45rem 0.9rem; font-family: 'Nunito', sans-serif; font-size: 0.8rem; color: var(--deep); cursor: pointer; }
-.nav-select:focus { border-color: var(--rose); }
+.nav-select:focus { border-color: var(--rose); outline: none; }
 .nav-select-arrow { position: absolute; right: 0.75rem; top: 50%; transform: translateY(-50%); pointer-events: none; color: var(--rose); font-size: 0.7rem; }
 
 /* Desktop pill links */
@@ -79,13 +62,8 @@ nav { position: sticky; top: 0; z-index: 200; background: rgba(253,248,244,0.97)
 .nav-pills button:hover { background: var(--blush); color: var(--rose); }
 .nav-pills button.active { background: var(--rose); color: white; }
 
-.nav-sos { background: var(--emergency); color: white; border: none; border-radius: 8px; padding: 0.45rem 1rem; font-size: 0.8rem; font-weight: 700; cursor: pointer; font-family: 'Nunito', sans-serif; transition: background 0.2s; }
+.nav-sos { background: var(--emergency); color: white; border: none; border-radius: 8px; padding: 0.45rem 1rem; font-size: 0.8rem; font-weight: 700; cursor: pointer; font-family: 'Nunito', sans-serif; transition: background 0.2s; white-space: nowrap; flex-shrink: 0; }
 .nav-sos:hover { background: #a93226; }
-
-/* ── PAGES ── */
-.page { display: none; }
-.page.active { display: flex; flex-direction: column; height: 100vh; animation: fadeIn 0.3s ease; }
-@keyframes fadeIn { from { opacity:0; transform:translateY(8px); } to { opacity:1; transform:translateY(0); } }
 
 /* ── HERO ── */
 .hero { background: linear-gradient(135deg, var(--blush) 0%, var(--cream) 60%); padding: 4rem 3rem 3.5rem; text-align: center; position: relative; overflow: hidden; }
@@ -95,7 +73,7 @@ nav { position: sticky; top: 0; z-index: 200; background: rgba(253,248,244,0.97)
 .hero h1 em { font-style: italic; color: var(--rose); }
 .hero-sub { font-size: 1rem; color: var(--warm-gray); max-width: 520px; margin: 0 auto 2.5rem; line-height: 1.75; }
 .hero-cards { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; max-width: 820px; margin: 0 auto; }
-.hero-card { background: white; border-radius: 16px; padding: 1.4rem 1.5rem; text-align: left; flex: 1; min-width: 145px; max-width: 190px; box-shadow: 0 2px 20px rgba(44,31,34,0.08); border: 2px solid transparent; transition: all 0.2s; }
+.hero-card { background: white; border-radius: 16px; padding: 1.4rem 1.5rem; text-align: left; flex: 1; min-width: 145px; max-width: 190px; box-shadow: 0 2px 20px rgba(44,31,34,0.08); border: 2px solid transparent; transition: all 0.2s; cursor: pointer; text-decoration: none; display: block; }
 .hero-card:hover { border-color: var(--rose); transform: translateY(-3px); box-shadow: 0 6px 28px rgba(212,115,106,0.18); }
 .hero-card.urgent { border-color: var(--emergency); background: var(--emergency-light); }
 .hc-icon { font-size: 1.8rem; margin-bottom: 0.6rem; }
@@ -154,6 +132,9 @@ nav { position: sticky; top: 0; z-index: 200; background: rgba(253,248,244,0.97)
 .tip-card p { font-size: 0.83rem; line-height: 1.7; color: var(--warm-gray); }
 
 /* ── MAP ── */
+.map-zones { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 24px; }
+#map { width: 100%; height: 400px; background: var(--sage-light); display: flex; align-items: center; justify-content: center; }
+.map-content { padding: 2rem 3rem 3rem; }
 .zone-card { border-radius: 14px; padding: 1.2rem 1.4rem; border-left: 5px solid; }
 .zone-card.safe { background: var(--safe-light); border-color: var(--safe); }
 .zone-card.caution { background: var(--warn-light); border-color: var(--warn); }
@@ -166,7 +147,7 @@ nav { position: sticky; top: 0; z-index: 200; background: rgba(253,248,244,0.97)
 .zone-card p { font-size: 0.8rem; color: var(--warm-gray); line-height: 1.6; }
 .map-placeholder { background: var(--sage-light); border-radius: 16px; height: 280px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 0.9rem; border: 2px dashed rgba(212,115,106,0.2); }
 .map-placeholder h3 { font-family: 'Playfair Display', serif; font-size: 1.25rem; color: var(--deep); }
-.map-placeholder p { font-size: 0.84rem; color: var(--warm-gray); max-width: 340px; line-height: 1.6; }
+.map-placeholder p { font-size: 0.84rem; color: var(--warm-gray); max-width: 340px; line-height: 1.6; text-align: center; }
 
 /* ── SELF DEFENSE ── */
 .accordion { display: flex; flex-direction: column; gap: 0.75rem; }
@@ -200,86 +181,6 @@ nav { position: sticky; top: 0; z-index: 200; background: rgba(253,248,244,0.97)
 .rc-link { font-size: 0.84rem; font-weight: 700; color: var(--rose); text-decoration: none; display: flex; align-items: center; gap: 0.35rem; }
 .rc-link:hover { text-decoration: underline; }
 
-/* ── FORMS (shared) ── */
-.she-form { background: white; border-radius: 20px; padding: 2.5rem; box-shadow: 0 4px 24px rgba(44,31,34,0.08); max-width: 620px; }
-.form-notice { background: var(--blush); border-radius: 12px; padding: 1rem 1.25rem; margin-bottom: 1.75rem; font-size: 0.85rem; line-height: 1.7; color: var(--deep); }
-.form-group { margin-bottom: 1.4rem; }
-.form-label { display: block; font-weight: 700; font-size: 0.88rem; margin-bottom: 0.55rem; color: var(--deep); }
-.form-label span { font-weight: 400; color: var(--warm-gray); font-size: 0.78rem; }
-.form-input, .form-textarea, .form-select { width: 100%; border: 2px solid #e8d5d0; border-radius: 10px; padding: 0.7rem 1rem; font-family: 'Nunito', sans-serif; font-size: 0.88rem; color: var(--deep); }
-.form-input:focus, .form-textarea:focus, .form-select:focus { border-color: var(--rose); }
-.form-textarea { resize: vertical; min-height: 100px; }
-.chip-group { display: flex; flex-wrap: wrap; gap: 0.45rem; }
-.chip-input { display: none; }
-.chip-label { background: var(--light); border: 2px solid transparent; border-radius: 20px; padding: 0.38rem 0.95rem; font-size: 0.8rem; font-weight: 600; cursor: pointer; transition: all 0.2s; color: var(--deep); }
-.chip-label:hover { border-color: var(--rose); color: var(--rose); }
-.chip-input:checked + .chip-label { background: var(--rose); color: white; border-color: var(--rose); }
-.form-submit { background: var(--rose); color: white; border: none; border-radius: 12px; padding: 0.9rem 2rem; font-family: 'Nunito', sans-serif; font-size: 0.95rem; font-weight: 700; cursor: pointer; transition: all 0.2s; }
-.form-submit:hover { background: var(--rose-dark); transform: translateY(-1px); }
-.form-submit:disabled { background: var(--safe); cursor: default; transform: none; }
-
-/* ── ABOUT ── */
-.about-mission { background: var(--blush); border-radius: 18px; padding: 2.2rem; margin-bottom: 2.5rem; display: flex; gap: 1.5rem; align-items: flex-start; }
-.mission-icon { font-size: 2.8rem; flex-shrink: 0; }
-.mission-text h3 { font-family: 'Playfair Display', serif; font-size: 1.35rem; color: var(--deep); margin-bottom: 0.65rem; font-weight: 600; }
-.mission-text p { font-size: 0.88rem; line-height: 1.8; color: var(--warm-gray); }
-.mission-text p + p { margin-top: 0.6rem; }
-.about-two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 2.5rem; margin-bottom: 2.5rem; }
-.about-col h3 { font-family: 'Playfair Display', serif; font-size: 1.25rem; color: var(--deep); margin-bottom: 0.9rem; font-weight: 600; }
-.about-col p { font-size: 0.87rem; line-height: 1.8; color: var(--warm-gray); margin-bottom: 0.65rem; }
-.step-list { display: flex; flex-direction: column; gap: 0.7rem; }
-.step-item { display: flex; gap: 0.85rem; align-items: flex-start; }
-.step-num { background: var(--rose); color: white; width: 26px; height: 26px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.72rem; font-weight: 700; flex-shrink: 0; }
-.step-text { font-size: 0.86rem; line-height: 1.65; color: var(--warm-gray); }
-.step-text strong { color: var(--deep); }
-.stats-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px,1fr)); gap: 1rem; background: var(--deep); border-radius: 18px; padding: 2rem; margin-bottom: 2.5rem; }
-.stat-box { text-align: center; }
-.stat-num { font-family: 'Playfair Display', serif; font-size: 2rem; color: var(--blush); font-weight: 600; }
-.stat-label { font-size: 0.72rem; color: rgba(245,221,213,0.7); margin-top: 0.2rem; line-height: 1.4; }
-.team-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px,1fr)); gap: 1rem; margin-bottom: 2.5rem; }
-.team-card { background: white; border-radius: 16px; padding: 1.5rem 1rem; text-align: center; box-shadow: 0 2px 10px rgba(44,31,34,0.07); }
-.team-avatar { width: 56px; height: 56px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; margin: 0 auto 0.85rem; }
-.team-name { font-weight: 700; font-size: 0.9rem; color: var(--deep); margin-bottom: 0.2rem; }
-.team-role { font-size: 0.72rem; color: var(--rose); font-weight: 600; letter-spacing: 0.04em; }
-.cta-box { background: var(--blush); border-radius: 16px; padding: 2rem; display: flex; flex-direction: column; gap: 1rem; }
-.cta-box h3 { font-family: 'Playfair Display', serif; font-size: 1.25rem; color: var(--deep); font-weight: 600; }
-.cta-box p { font-size: 0.87rem; color: var(--warm-gray); line-height: 1.7; }
-.cta-btns { display: flex; gap: 0.75rem; flex-wrap: wrap; }
-.btn-rose { background: var(--rose); color: white; border: none; border-radius: 10px; padding: 0.65rem 1.4rem; font-family: 'Nunito', sans-serif; font-size: 0.85rem; font-weight: 700; cursor: pointer; transition: all 0.2s; }
-.btn-rose:hover { background: var(--rose-dark); }
-.btn-mauve { background: var(--mauve); color: white; border: none; border-radius: 10px; padding: 0.65rem 1.4rem; font-family: 'Nunito', sans-serif; font-size: 0.85rem; font-weight: 700; cursor: pointer; transition: all 0.2s; }
-.btn-mauve:hover { background: #6e4558; }
-
-/* ── REVIEWS ── */
-.rating-summary { display: flex; gap: 2rem; align-items: center; background: white; border-radius: 18px; padding: 2rem 2.5rem; box-shadow: 0 2px 16px rgba(44,31,34,0.08); margin-bottom: 2rem; flex-wrap: wrap; }
-.rating-big { text-align: center; flex-shrink: 0; }
-.rating-num-big { font-family: 'Playfair Display', serif; font-size: 3.8rem; color: var(--rose); line-height: 1; font-weight: 600; }
-.rating-stars-lg { font-size: 1.2rem; margin: 0.2rem 0; }
-.rating-count-sm { font-size: 0.75rem; color: var(--warm-gray); }
-.bar-list { flex: 1; min-width: 190px; display: flex; flex-direction: column; gap: 0.35rem; }
-.bar-row { display: flex; align-items: center; gap: 0.65rem; font-size: 0.78rem; color: var(--warm-gray); }
-.bar-track { flex: 1; height: 7px; background: var(--light); border-radius: 4px; overflow: hidden; }
-.bar-fill { height: 100%; background: var(--rose); border-radius: 4px; }
-.review-list { display: flex; flex-direction: column; gap: 1.1rem; margin-bottom: 2rem; }
-.review-card { background: white; border-radius: 16px; padding: 1.6rem; box-shadow: 0 2px 12px rgba(44,31,34,0.07); border: 1px solid rgba(212,115,106,0.1); }
-.review-top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 0.75rem; flex-wrap: wrap; gap: 0.5rem; }
-.reviewer-row { display: flex; align-items: center; gap: 0.7rem; }
-.rev-avatar { width: 38px; height: 38px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1rem; flex-shrink: 0; }
-.rev-name { font-weight: 700; font-size: 0.9rem; color: var(--deep); }
-.rev-meta { font-size: 0.73rem; color: var(--warm-gray); margin-top: 0.05rem; }
-.rev-stars { font-size: 0.95rem; }
-.rev-tag { background: var(--blush); color: var(--rose); font-size: 0.68rem; font-weight: 700; padding: 0.18rem 0.55rem; border-radius: 10px; }
-.review-text { font-size: 0.86rem; line-height: 1.75; color: var(--warm-gray); }
-.helpful-row { margin-top: 0.7rem; font-size: 0.75rem; color: var(--warm-gray); display: flex; align-items: center; gap: 0.5rem; }
-.helpful-btn { background: none; border: 1px solid rgba(212,115,106,0.3); border-radius: 20px; padding: 0.18rem 0.55rem; font-size: 0.73rem; cursor: pointer; font-family: 'Nunito', sans-serif; color: var(--warm-gray); transition: all 0.2s; }
-.helpful-btn:hover:not(:disabled) { border-color: var(--rose); color: var(--rose); }
-.star-picker { display: flex; gap: 0.35rem; margin-bottom: 0.25rem; }
-.star-btn { font-size: 1.7rem; background: none; border: none; cursor: pointer; transition: transform 0.15s; opacity: 0.3; filter: grayscale(1); }
-.star-btn.lit { opacity: 1; filter: none; }
-.star-btn:hover { transform: scale(1.2); }
-.review-form-wrap { margin-bottom: 2.5rem; }
-.review-form-title { font-family: 'Playfair Display', serif; font-size: 1.3rem; color: var(--deep); margin-bottom: 1.25rem; font-weight: 600; }
-
 /* ── SOCIAL MEDIA PAGE ── */
 .social-hero { background: linear-gradient(135deg, #1a1a2e 0%, #2d1f22 100%); color: white; padding: 3rem 3rem 2.5rem; text-align: center; position: relative; overflow: hidden; }
 .social-hero::before { content: '✦'; position: absolute; right: 2rem; top: 1rem; font-size: 12rem; opacity: 0.04; pointer-events: none; }
@@ -297,32 +198,35 @@ nav { position: sticky; top: 0; z-index: 200; background: rgba(253,248,244,0.97)
 .social-card-body { background: white; padding: 1.4rem 1.75rem; }
 .social-desc { font-size: 0.84rem; color: var(--warm-gray); line-height: 1.7; margin-bottom: 1.1rem; }
 .social-follow-btn { display: flex; align-items: center; justify-content: center; gap: 0.5rem; width: 100%; padding: 0.7rem; border-radius: 10px; font-family: 'Nunito', sans-serif; font-size: 0.88rem; font-weight: 700; text-decoration: none; transition: all 0.2s; }
-/* TikTok */
 .social-card.tiktok .social-card-top { background: linear-gradient(135deg, #010101, #2b2b2b); color: white; }
 .social-card.tiktok .social-logo { background: rgba(255,255,255,0.1); }
 .social-card.tiktok .social-follow-btn { background: #010101; color: white; }
 .social-card.tiktok .social-follow-btn:hover { background: #333; }
-/* Instagram */
 .social-card.instagram .social-card-top { background: linear-gradient(135deg, #833ab4, #fd1d1d, #fcb045); color: white; }
 .social-card.instagram .social-logo { background: rgba(255,255,255,0.15); }
 .social-card.instagram .social-follow-btn { background: linear-gradient(135deg, #833ab4, #fd1d1d); color: white; }
 .social-card.instagram .social-follow-btn:hover { opacity: 0.9; }
-/* Facebook */
 .social-card.facebook .social-card-top { background: linear-gradient(135deg, #1877f2, #0d5cbf); color: white; }
 .social-card.facebook .social-logo { background: rgba(255,255,255,0.15); }
 .social-card.facebook .social-follow-btn { background: #1877f2; color: white; }
 .social-card.facebook .social-follow-btn:hover { background: #0d5cbf; }
-.social-cta { background: var(--blush); border-radius: 18px; padding: 2rem 2.5rem; text-align: center; }
-.social-cta h3 { font-family: 'Playfair Display', serif; font-size: 1.4rem; color: var(--deep); margin-bottom: 0.6rem; font-weight: 600; }
-.social-cta p { font-size: 0.88rem; color: var(--warm-gray); line-height: 1.7; max-width: 420px; margin: 0 auto 1.25rem; }
-.social-cta-handle { font-size: 1.1rem; font-weight: 700; color: var(--rose); letter-spacing: 0.02em; }
+
+/* ── ABOUT ── */
+.about-mission { background: var(--blush); border-radius: 18px; padding: 2.2rem; margin-bottom: 2.5rem; display: flex; gap: 1.5rem; align-items: flex-start; }
+.mission-icon { font-size: 2.8rem; flex-shrink: 0; }
+.mission-text h3 { font-family: 'Playfair Display', serif; font-size: 1.35rem; color: var(--deep); margin-bottom: 0.65rem; font-weight: 600; }
+.mission-text p { font-size: 0.88rem; line-height: 1.8; color: var(--warm-gray); }
+.mission-text p + p { margin-top: 0.6rem; }
+
+/* ── FORMS ── */
+.she-form { background: white; border-radius: 20px; padding: 2.5rem; box-shadow: 0 4px 24px rgba(44,31,34,0.08); max-width: 620px; }
+.form-notice { background: var(--blush); border-radius: 12px; padding: 1rem 1.25rem; margin-bottom: 1.75rem; font-size: 0.85rem; line-height: 1.7; color: var(--deep); }
 
 /* ── BOTTOM NAV ── */
 .bottom-nav { display: none; position: fixed; bottom: 0; left: 0; right: 0; background: white; border-top: 1px solid rgba(212,115,106,0.15); z-index: 190; }
 .bnav-row { display: flex; }
 .bnav-btn { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 0.15rem; padding: 0.5rem 0.25rem; background: none; border: none; font-family: 'Nunito', sans-serif; font-size: 0.7rem; font-weight: 600; color: var(--warm-gray); cursor: pointer; transition: color 0.2s; }
 .bnav-btn:hover, .bnav-btn.active { color: var(--rose); }
-.bnav-btn .bi { font-size: 1.15rem; }
 .bnav-sos { color: var(--emergency) !important; font-weight: 800 !important; }
 
 /* ── SOS MODAL ── */
@@ -352,29 +256,17 @@ nav { position: sticky; top: 0; z-index: 200; background: rgba(253,248,244,0.97)
 }
 @media (max-width: 600px) {
   .nav-dropdown-wrap { max-width: none; flex: 1; }
-  .page-header, .page-body, .social-body, .about-body, .reviews-body { padding: 1.5rem 1.1rem; }
+  .page-header, .page-body, .social-body, .map-content { padding: 1.5rem 1.1rem; }
   .hero { padding: 2rem 1.1rem 2rem; }
   .hero-cards { gap: 0.6rem; }
   .hero-card { min-width: 130px; padding: 1rem; }
   .bottom-nav { display: block; }
   body { padding-bottom: 68px; }
   .call-grid { grid-template-columns: 1fr 1fr; }
-  .she-form, .review-form-wrap .she-form { padding: 1.4rem; }
-  .about-two-col { grid-template-columns: 1fr; gap: 1.75rem; }
+  .she-form { padding: 1.4rem; }
   .about-mission { flex-direction: column; gap: 1rem; }
-  .rating-summary { flex-direction: column; }
-  .stats-row { grid-template-columns: 1fr 1fr; }
   .social-body { padding: 1.5rem 1.1rem; }
 }
-
-#map {
-  width: 100%;
-  height: 500px;
-  border-radius: 24px;
-  overflow: hidden;
-  margin-bottom: 40px;
-}
-
 </style>
 </head>
 <body>
@@ -389,9 +281,8 @@ nav { position: sticky; top: 0; z-index: 200; background: rgba(253,248,244,0.97)
 <nav>
   <div class="nav-logo" onclick="goPage('home')">S.H.E.</div>
 
-  <!-- Dropdown (always visible) -->
   <div class="nav-dropdown-wrap">
-    <select class="nav-select" onchange="goPage(this.value); this.blur()">
+    <select class="nav-select" id="navSelect" onchange="goPage(this.value); this.blur()">
       <option value="home">🏠 Home</option>
       <option value="emergency">🚨 Emergency</option>
       <option value="tips">🛡️ Safety Tips</option>
@@ -405,7 +296,6 @@ nav { position: sticky; top: 0; z-index: 200; background: rgba(253,248,244,0.97)
     <span class="nav-select-arrow">▼</span>
   </div>
 
-  <!-- Desktop pill links -->
   <ul class="nav-pills" id="navPills">
     <li><button onclick="goPage('home')" data-page="home" class="active">Home</button></li>
     <li><button onclick="goPage('emergency')" data-page="emergency">🚨 Emergency</button></li>
@@ -470,12 +360,12 @@ nav { position: sticky; top: 0; z-index: 200; background: rgba(253,248,244,0.97)
   <div class="page-header rose-bg"><h2>🛡️ Safety Tips</h2><p>Practical, actionable advice for everyday situations — at any age.</p></div>
   <div class="page-body">
     <div class="filter-tabs">
-      <button class="tab-btn active" onclick="filterTips('all',this)">All Tips</button>
-      <button class="tab-btn" onclick="filterTips('walking',this)">Walking & Transit</button>
-      <button class="tab-btn" onclick="filterTips('night',this)">At Night</button>
-      <button class="tab-btn" onclick="filterTips('digital',this)">Digital Safety</button>
-      <button class="tab-btn" onclick="filterTips('social',this)">Social Situations</button>
-      <button class="tab-btn" onclick="filterTips('teens',this)">For Teens</button>
+      <button class="tab-btn active" onclick="filterTips('all', this)">All Tips</button>
+      <button class="tab-btn" onclick="filterTips('walking', this)">Walking & Transit</button>
+      <button class="tab-btn" onclick="filterTips('night', this)">At Night</button>
+      <button class="tab-btn" onclick="filterTips('digital', this)">Digital Safety</button>
+      <button class="tab-btn" onclick="filterTips('social', this)">Social Situations</button>
+      <button class="tab-btn" onclick="filterTips('teens', this)">For Teens</button>
     </div>
     <div class="tips-grid" id="tipsGrid">
       <div class="tip-card" data-cat="walking"><div class="tc-icon">🚶‍♀️</div><div class="tc-cat">Walking & Transit</div><h3>Walk with confidence</h3><p>Keep your head up, walk at a steady pace. Avoid looking lost or distracted.</p></div>
@@ -498,8 +388,14 @@ nav { position: sticky; top: 0; z-index: 200; background: rgba(253,248,244,0.97)
 </div>
 
 <!-- ═══════════════ MAP ═══════════════ -->
-<div id="page-map" class="page active">
-  <div id="map"></div>
+<div id="page-map" class="page">
+  <div id="map">
+    <div class="map-placeholder">
+      <div style="font-size:2rem;">🗺️</div>
+      <h3>Downtown Orlando Safety Map</h3>
+      <p>Interactive map coming soon. See safety zones listed below.</p>
+    </div>
+  </div>
   <div class="map-content">
     <h3 class="section-title">Community-Reported Safety Zones</h3>
     <p class="section-intro">Based on community survey data. Always trust your own instincts — conditions can change.</p>
@@ -520,9 +416,75 @@ nav { position: sticky; top: 0; z-index: 200; background: rgba(253,248,244,0.97)
   <div class="page-body">
     <p class="section-intro">Self-defense isn't just physical. Awareness, confidence, and preparation are your most powerful tools.</p>
     <div class="accordion">
-      <div class="acc-item"><div class="acc-header" onclick="toggleAcc(this)"><span class="acc-icon">👁️</span><span class="acc-title">Situational Awareness</span></div><div class="acc-body">Always know what's around you. Notice exits, people nearby, and anything unusual.</div></div>
-      <div class="acc-item"><div class="acc-header" onclick="toggleAcc(this)"><span class="acc-icon">🗣️</span><span class="acc-title">Using Your Voice</span></div><div class="acc-body">Your voice is your first weapon. Yelling "FIRE!" is more effective than "HELP!"</div></div>
-      <div class="acc-item"><div class="acc-header" onclick="toggleAcc(this)"><span class="acc-icon">👊</span><span class="acc-title">Basic Escape Techniques</span></div><div class="acc-body">Target vulnerable areas. Your goal is escape, not winning. Run toward people and light.</div></div>
+      <div class="acc-item">
+        <div class="acc-header" onclick="toggleAcc(this)">
+          <span class="acc-icon">👁️</span>
+          <span class="acc-title">Situational Awareness</span>
+          <span class="acc-badge green">Foundation</span>
+          <span class="acc-arrow">▼</span>
+        </div>
+        <div class="acc-body">
+          <p>Always know what's around you. Before entering any space, identify exits, note who's nearby, and trust your instincts if something feels off.</p>
+          <ul>
+            <li><strong>Scan your surroundings</strong> when entering a new space — exits, lighting, people.</li>
+            <li><strong>Avoid distractions</strong> like phones or headphones in unfamiliar areas.</li>
+            <li><strong>Walk confidently</strong> — predators target people who appear unaware or distracted.</li>
+            <li><strong>Trust your gut.</strong> If something feels wrong, leave immediately.</li>
+          </ul>
+        </div>
+      </div>
+      <div class="acc-item">
+        <div class="acc-header" onclick="toggleAcc(this)">
+          <span class="acc-icon">🗣️</span>
+          <span class="acc-title">Using Your Voice</span>
+          <span class="acc-badge green">No Training Needed</span>
+          <span class="acc-arrow">▼</span>
+        </div>
+        <div class="acc-body">
+          <p>Your voice is your first and most powerful weapon. Using it correctly can deter an attacker and attract help.</p>
+          <ul>
+            <li><strong>Yell "FIRE!" not "HELP!"</strong> — bystanders respond faster to fire.</li>
+            <li><strong>Be loud and direct:</strong> "STOP! Get away from me!" — a firm, loud voice signals you're not an easy target.</li>
+            <li><strong>Make noise immediately</strong> if grabbed — yelling disrupts the attacker and alerts others.</li>
+          </ul>
+        </div>
+      </div>
+      <div class="acc-item">
+        <div class="acc-header" onclick="toggleAcc(this)">
+          <span class="acc-icon">👊</span>
+          <span class="acc-title">Basic Escape Techniques</span>
+          <span class="acc-badge amber">Practice Helps</span>
+          <span class="acc-arrow">▼</span>
+        </div>
+        <div class="acc-body">
+          <p>You don't need to be strong — you need to be decisive. Target vulnerable areas and run toward safety.</p>
+          <ul>
+            <li><strong>Eyes:</strong> Thumb gouge or finger jab — causes temporary blindness.</li>
+            <li><strong>Nose:</strong> Palm strike upward — painful and disorienting.</li>
+            <li><strong>Throat:</strong> Edge-of-hand chop — causes choking and gasping.</li>
+            <li><strong>Groin:</strong> Knee strike or kick — effective regardless of your size.</li>
+            <li><strong>Instep:</strong> Stomp hard if grabbed from behind.</li>
+          </ul>
+          <p style="margin-top:0.8rem;"><strong>Remember:</strong> The goal is to escape, not to win. Strike once decisively and run toward people and light.</p>
+        </div>
+      </div>
+      <div class="acc-item">
+        <div class="acc-header" onclick="toggleAcc(this)">
+          <span class="acc-icon">📱</span>
+          <span class="acc-title">Safety Technology</span>
+          <span class="acc-badge green">Easy to Set Up</span>
+          <span class="acc-arrow">▼</span>
+        </div>
+        <div class="acc-body">
+          <p>Use technology as an extra layer of protection before you need it.</p>
+          <ul>
+            <li><strong>Share your live location</strong> with a trusted friend via Google Maps or Find My.</li>
+            <li><strong>Safety apps:</strong> bSafe, Noonlight, and Shake2Safety can alert contacts and call 911.</li>
+            <li><strong>ICE contacts:</strong> Set up "In Case of Emergency" contacts in your phone.</li>
+            <li><strong>Charge your phone</strong> before going out — a dead battery can leave you vulnerable.</li>
+          </ul>
+        </div>
+      </div>
     </div>
   </div>
 </div>
@@ -532,10 +494,48 @@ nav { position: sticky; top: 0; z-index: 200; background: rgba(253,248,244,0.97)
   <div class="page-header rose-bg"><h2>📚 Help & Resources</h2><p>Local and national organizations for women's safety, support, and healing — all free and confidential.</p></div>
   <div class="page-body">
     <div class="resource-grid">
-      <div class="resource-card"><div class="rc-icon">💜</div><div class="rc-org">Domestic Violence</div><div class="rc-title">Harbor House of Central Florida</div><div class="rc-desc">Orlando's primary DV shelter with 24/7 crisis line.</div><a href="tel:14074861111" class="rc-link">Call 407-486-1111</a></div>
-      <div class="resource-card"><div class="rc-icon">🤍</div><div class="rc-org">Sexual Assault</div><div class="rc-title">RAINN National Hotline</div><div class="rc-desc">Free, confidential support for sexual assault survivors.</div><a href="tel:18006564673" class="rc-link">Call 1-800-656-4673</a></div>
-      <div class="resource-card sage-t"><div class="rc-icon">💬</div><div class="rc-org">Crisis Text</div><div class="rc-title">Text HOME to 741741</div><div class="rc-desc">Crisis Text Line for immediate mental health support.</div></div>
-      <div class="resource-card mauve-t"><div class="rc-icon">⚖️</div><div class="rc-org">Legal Help</div><div class="rc-title">Community Legal Services</div><div class="rc-desc">Free legal assistance and restraining order help.</div></div>
+      <div class="resource-card">
+        <div class="rc-icon">💜</div>
+        <div class="rc-org">Domestic Violence</div>
+        <div class="rc-title">Harbor House of Central Florida</div>
+        <div class="rc-desc">Orlando's primary DV shelter with emergency housing, counseling, and legal advocacy. 24/7 crisis line.</div>
+        <a href="tel:14074861111" class="rc-link">📞 Call 407-486-1111</a>
+      </div>
+      <div class="resource-card">
+        <div class="rc-icon">🤍</div>
+        <div class="rc-org">Sexual Assault</div>
+        <div class="rc-title">RAINN National Hotline</div>
+        <div class="rc-desc">Free, confidential support 24/7 for survivors of sexual assault, abuse, and harassment.</div>
+        <a href="tel:18006564673" class="rc-link">📞 Call 1-800-656-4673</a>
+      </div>
+      <div class="resource-card sage-t">
+        <div class="rc-icon">💬</div>
+        <div class="rc-org">Crisis Text Line</div>
+        <div class="rc-title">Text HOME to 741741</div>
+        <div class="rc-desc">Free, 24/7 text-based crisis support. Text anytime for immediate mental health help.</div>
+        <a href="sms:741741&body=HOME" class="rc-link">💬 Text 741741</a>
+      </div>
+      <div class="resource-card sage-t">
+        <div class="rc-icon">🧠</div>
+        <div class="rc-org">Mental Health</div>
+        <div class="rc-title">988 Suicide & Crisis Lifeline</div>
+        <div class="rc-desc">Call or text 988 for free, confidential support from trained crisis counselors.</div>
+        <a href="tel:988" class="rc-link">📞 Call or Text 988</a>
+      </div>
+      <div class="resource-card mauve-t">
+        <div class="rc-icon">⚖️</div>
+        <div class="rc-org">Legal Help</div>
+        <div class="rc-title">Community Legal Services of Mid-Florida</div>
+        <div class="rc-desc">Free civil legal help for low-income residents, including restraining orders and family law.</div>
+        <a href="tel:18004320008" class="rc-link">📞 Call 1-800-432-0008</a>
+      </div>
+      <div class="resource-card mauve-t">
+        <div class="rc-icon">🏠</div>
+        <div class="rc-org">Emergency Shelter</div>
+        <div class="rc-title">Coalition for the Homeless of Central Florida</div>
+        <div class="rc-desc">Emergency and transitional shelter options for women and families in crisis.</div>
+        <a href="tel:14078397300" class="rc-link">📞 Call 407-839-7300</a>
+      </div>
     </div>
   </div>
 </div>
@@ -551,8 +551,8 @@ nav { position: sticky; top: 0; z-index: 200; background: rgba(253,248,244,0.97)
       <div style="background:white; border-radius:20px; padding:2.5rem; text-align:center; box-shadow: 0 4px 24px rgba(44,31,34,0.08);">
         <div style="font-size:3rem; margin-bottom:1rem;">📋</div>
         <h3 style="font-family:'Playfair Display',serif; font-size:1.5rem; color:var(--deep); margin-bottom:0.75rem; font-weight:600;">Take Our Community Survey</h3>
-        <p style="font-size:0.9rem; color:var(--warm-gray); line-height:1.75; margin-bottom:2rem;">Tell us about where and when you feel unsafe.</p>
-        <a href="https://docs.google.com/forms/d/e/1FAIpQLSduQbl7rOWfWpistrICuCIrF_EVbG4PqFh8m34ZR5dAzdUqoA/viewform?urp=gmail_link" target="_blank" rel="noopener" style="display:inline-flex; align-items:center; gap:0.6rem; background:var(--rose); color:white; text-decoration:none; padding:1rem 2.5rem; border-radius:12px; font-family:'Nunito',sans-serif; font-weight:700;">
+        <p style="font-size:0.9rem; color:var(--warm-gray); line-height:1.75; margin-bottom:2rem;">Tell us about where and when you feel unsafe in Downtown Orlando. Takes under 3 minutes.</p>
+        <a href="https://docs.google.com/forms/d/e/1FAIpQLSduQbl7rOWfWpistrICuCIrF_EVbG4PqFh8m34ZR5dAzdUqoA/viewform?urp=gmail_link" target="_blank" rel="noopener" style="display:inline-flex; align-items:center; gap:0.6rem; background:var(--rose); color:white; text-decoration:none; padding:1rem 2.5rem; border-radius:12px; font-family:'Nunito',sans-serif; font-weight:700; font-size:0.95rem; transition:background 0.2s;">
           Open Survey →
         </a>
       </div>
@@ -574,7 +574,7 @@ nav { position: sticky; top: 0; z-index: 200; background: rgba(253,248,244,0.97)
           <div><div class="social-name">TikTok</div><div class="social-handle">@safetyforher_empowerment</div></div>
         </div>
         <div class="social-card-body">
-          <p class="social-desc">Short videos, safety scenarios, self-defense clips, and quick tips.</p>
+          <p class="social-desc">Short videos, safety scenarios, self-defense clips, and quick tips for everyday situations.</p>
           <a href="https://www.tiktok.com/@safetyforher_empowerment" target="_blank" rel="noopener" class="social-follow-btn">▶ Follow on TikTok</a>
         </div>
       </div>
@@ -584,7 +584,7 @@ nav { position: sticky; top: 0; z-index: 200; background: rgba(253,248,244,0.97)
           <div><div class="social-name">Instagram</div><div class="social-handle">@SafetyForHerEmpowerment</div></div>
         </div>
         <div class="social-card-body">
-          <p class="social-desc">Photo slideshows, safety stats, community spotlights.</p>
+          <p class="social-desc">Photo slideshows, safety statistics, community spotlights, and empowering stories.</p>
           <a href="https://www.instagram.com/SafetyForHerEmpowerment" target="_blank" rel="noopener" class="social-follow-btn">♥ Follow on Instagram</a>
         </div>
       </div>
@@ -594,7 +594,7 @@ nav { position: sticky; top: 0; z-index: 200; background: rgba(253,248,244,0.97)
           <div><div class="social-name">Facebook</div><div class="social-handle">@SafetyForHerEmpowerment</div></div>
         </div>
         <div class="social-card-body">
-          <p class="social-desc">Photos, articles, community discussions, and event announcements.</p>
+          <p class="social-desc">Photos, articles, community discussions, and event announcements for Downtown Orlando.</p>
           <a href="https://www.facebook.com/SafetyForHerEmpowerment" target="_blank" rel="noopener" class="social-follow-btn">👍 Follow on Facebook</a>
         </div>
       </div>
@@ -610,29 +610,129 @@ nav { position: sticky; top: 0; z-index: 200; background: rgba(253,248,244,0.97)
       <div class="mission-icon">🚀</div>
       <div class="mission-text">
         <h3>Our Mission</h3>
-        <p>We believe every woman deserves to feel safe. S.H.E. provides free, practical resources to help you navigate Downtown Orlando with confidence.</p>
+        <p>S.H.E. — Safety for Her Empowerment — exists because every woman deserves to feel safe wherever she goes. We're a community-led initiative providing free, practical, and accessible safety resources tailored to Downtown Orlando.</p>
+        <p>From emergency contacts and self-defense skills to safe route mapping and local support organizations, everything on this platform is designed to be immediately useful — no sign-up, no cost, no barriers.</p>
+      </div>
+    </div>
+    <div style="background:white; border-radius:18px; padding:2rem; box-shadow:0 2px 16px rgba(44,31,34,0.07); margin-bottom:2rem;">
+      <h3 style="font-family:'Playfair Display',serif; font-size:1.2rem; color:var(--deep); margin-bottom:1rem; font-weight:600;">How S.H.E. Works</h3>
+      <div style="display:flex; flex-direction:column; gap:0.75rem;">
+        <div style="display:flex; gap:0.85rem; align-items:flex-start;">
+          <div style="background:var(--rose); color:white; width:26px; height:26px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:0.72rem; font-weight:700; flex-shrink:0;">1</div>
+          <div style="font-size:0.86rem; line-height:1.65; color:var(--warm-gray);"><strong style="color:var(--deep);">Community Surveys</strong> — Women in Downtown Orlando report safety concerns, incidents, and recommendations through our anonymous survey.</div>
+        </div>
+        <div style="display:flex; gap:0.85rem; align-items:flex-start;">
+          <div style="background:var(--rose); color:white; width:26px; height:26px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:0.72rem; font-weight:700; flex-shrink:0;">2</div>
+          <div style="font-size:0.86rem; line-height:1.65; color:var(--warm-gray);"><strong style="color:var(--deep);">Data Mapping</strong> — We analyze that data to identify safe zones, caution areas, and patterns of concern across the city.</div>
+        </div>
+        <div style="display:flex; gap:0.85rem; align-items:flex-start;">
+          <div style="background:var(--rose); color:white; width:26px; height:26px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:0.72rem; font-weight:700; flex-shrink:0;">3</div>
+          <div style="font-size:0.86rem; line-height:1.65; color:var(--warm-gray);"><strong style="color:var(--deep);">Resource Sharing</strong> — We connect women with the emergency contacts, local shelters, hotlines, and skills they need — all for free.</div>
+        </div>
+      </div>
+    </div>
+    <div style="background:var(--blush); border-radius:16px; padding:2rem; text-align:center;">
+      <h3 style="font-family:'Playfair Display',serif; font-size:1.25rem; color:var(--deep); margin-bottom:0.6rem; font-weight:600;">Want to help?</h3>
+      <p style="font-size:0.87rem; color:var(--warm-gray); line-height:1.7; max-width:420px; margin:0 auto 1.25rem;">Take the survey, share with friends, or follow us on social media to help S.H.E. reach more women in Orlando.</p>
+      <div style="display:flex; gap:0.75rem; justify-content:center; flex-wrap:wrap;">
+        <button onclick="goPage('survey')" style="background:var(--rose); color:white; border:none; border-radius:10px; padding:0.65rem 1.4rem; font-family:'Nunito',sans-serif; font-size:0.85rem; font-weight:700; cursor:pointer;">Take the Survey</button>
+        <button onclick="goPage('social')" style="background:var(--mauve); color:white; border:none; border-radius:10px; padding:0.65rem 1.4rem; font-family:'Nunito',sans-serif; font-size:0.85rem; font-weight:700; cursor:pointer;">Follow Us</button>
       </div>
     </div>
   </div>
 </div>
 
+<!-- ── BOTTOM NAV (mobile) ── -->
+<div class="bottom-nav">
+  <div class="bnav-row">
+    <button class="bnav-btn active" onclick="goPage('home')" data-bnav="home">🏠<span>Home</span></button>
+    <button class="bnav-btn bnav-sos" onclick="openSOS()" >🆘<span>SOS</span></button>
+    <button class="bnav-btn" onclick="goPage('tips')" data-bnav="tips">🛡️<span>Tips</span></button>
+    <button class="bnav-btn" onclick="goPage('map')" data-bnav="map">🗺️<span>Map</span></button>
+    <button class="bnav-btn" onclick="goPage('resources')" data-bnav="resources">📚<span>Help</span></button>
+  </div>
+</div>
+
+<!-- ── SOS MODAL ── -->
+<div class="modal-bg" id="sosModal">
+  <div class="modal-box">
+    <div class="modal-head">
+      <div class="modal-big-icon">🆘</div>
+      <h2>Emergency Help</h2>
+      <p>Tap a number below to call immediately.</p>
+    </div>
+    <div class="modal-btns">
+      <a href="tel:911" class="modal-btn red">
+        <span>📞</span>
+        <span><div class="mb-num">911</div><div class="mb-lbl">Police / Fire / Ambulance</div></span>
+      </a>
+      <a href="tel:18007997233" class="modal-btn mauve">
+        <span>💜</span>
+        <span><div class="mb-num">1-800-799-7233</div><div class="mb-lbl">National DV Hotline (24/7)</div></span>
+      </a>
+      <a href="tel:18006564673" class="modal-btn teal">
+        <span>🤍</span>
+        <span><div class="mb-num">1-800-656-4673</div><div class="mb-lbl">RAINN Sexual Assault Hotline</div></span>
+      </a>
+      <a href="tel:988" class="modal-btn" style="background:var(--warn); color:white;">
+        <span>💛</span>
+        <span><div class="mb-num">988</div><div class="mb-lbl">Crisis & Mental Health Line</div></span>
+      </a>
+    </div>
+    <button class="modal-close" onclick="closeSOS()">Close</button>
+  </div>
+</div>
+
 <script>
+// ── PAGE NAVIGATION ──
 function goPage(page) {
+  // Hide all pages
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-  document.getElementById('page-' + page).classList.add('active');
-  
-  // Update nav buttons
+
+  // Show selected page
+  const target = document.getElementById('page-' + page);
+  if (target) {
+    target.classList.add('active');
+    // Scroll back to top of new page
+    target.scrollTop = 0;
+    window.scrollTo(0, 0);
+  }
+
+  // Update desktop pill nav
   document.querySelectorAll('.nav-pills button').forEach(b => b.classList.remove('active'));
-  document.querySelector(`[data-page="${page}"]`)?.classList.add('active');
+  const activeBtn = document.querySelector(`.nav-pills [data-page="${page}"]`);
+  if (activeBtn) activeBtn.classList.add('active');
+
+  // Update dropdown
+  const select = document.getElementById('navSelect');
+  if (select) select.value = page;
+
+  // Update bottom nav
+  document.querySelectorAll('.bnav-btn[data-bnav]').forEach(b => b.classList.remove('active'));
+  const activeBnav = document.querySelector(`.bnav-btn[data-bnav="${page}"]`);
+  if (activeBnav) activeBnav.classList.add('active');
 }
 
+// ── SOS MODAL ──
 function openSOS() {
-  alert('EMERGENCY RESOURCES:\n\n911 - Police/Fire/Ambulance\n\n1-800-799-7233 - National DV Hotline\n\n1-800-656-4673 - RAINN Sexual Assault\n\n988 - Crisis & Mental Health Line');
+  document.getElementById('sosModal').classList.add('open');
 }
+function closeSOS() {
+  document.getElementById('sosModal').classList.remove('open');
+}
+// Close modal on background click
+document.getElementById('sosModal').addEventListener('click', function(e) {
+  if (e.target === this) closeSOS();
+});
 
-function filterTips(category) {
-  const cards = document.querySelectorAll('.tip-card');
-  cards.forEach(card => {
+// ── FILTER TIPS ──
+function filterTips(category, btn) {
+  // Update active tab button
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  if (btn) btn.classList.add('active');
+
+  // Show/hide tip cards
+  document.querySelectorAll('.tip-card').forEach(card => {
     if (category === 'all' || card.dataset.cat === category) {
       card.style.display = '';
     } else {
@@ -641,14 +741,10 @@ function filterTips(category) {
   });
 }
 
+// ── ACCORDION ──
 function toggleAcc(header) {
   const item = header.closest('.acc-item');
   item.classList.toggle('open');
-}
-
-// Initialize map (placeholder)
-if (document.getElementById('map')) {
-  document.getElementById('map').innerHTML = '<div class="map-placeholder"><div style="font-size:2rem;">🗺️</div><h3>Downtown Orlando Safety Map</h3><p>Interactive map coming soon</p></div>';
 }
 </script>
 
