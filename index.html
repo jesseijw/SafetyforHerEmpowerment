@@ -423,7 +423,7 @@ nav { position: sticky; top: 0; z-index: 200; background: rgba(253,248,244,0.97)
 
   <!-- TAB: SAFE ZONES -->
   <div id="map-tab-zones">
-    <div id="map" style="width:100%;height:420px;"></div>
+    <div id="map" style="width:100%;height:420px;position:relative;"></div>
     <div class="map-content">
       <h3 class="section-title">Safety Zone Guide</h3>
       <p class="section-intro">Click any marker on the map for details. Tap a zone card below to zoom in.</p>
@@ -823,6 +823,96 @@ function initZonesMap() {
          <p style="margin:0.4rem 0 0;font-size:0.8rem;color:#555;line-height:1.5;">${zone.desc}</p>`
       )).addTo(zonesMapObj);
   });
+
+  // EMERGENCY RESOURCES
+  const emergencyResources = [
+    { type:'police',   emoji:'🚔', name:'OPD Headquarters',             address:'100 S Hughey Ave, Orlando',      lat:28.5407, lng:-81.3778, note:'Orlando Police Department main HQ. Open 24/7.' },
+    { type:'police',   emoji:'🚔', name:'OPD Downtown District Station',address:'21 S Magnolia Ave, Orlando',     lat:28.5385, lng:-81.3761, note:'Downtown district precinct for rapid response.' },
+    { type:'fire',     emoji:'🚒', name:'OFD Station 1 (Downtown)',     address:'35 S Garland Ave, Orlando',      lat:28.5398, lng:-81.3808, note:'Primary downtown fire and EMS station.' },
+    { type:'fire',     emoji:'🚒', name:'OFD Station 5',                address:'2808 S Orange Ave, Orlando',     lat:28.5112, lng:-81.3768, note:'Fire and EMS service for south downtown area.' },
+    { type:'fire',     emoji:'🚒', name:'OFD Station 3',                address:'1975 N Mills Ave, Orlando',      lat:28.5658, lng:-81.3551, note:'Fire and EMS coverage for north/northeast areas.' },
+    { type:'hospital', emoji:'🏥', name:'Orlando Health Regional MC',   address:'52 W Underwood St, Orlando',     lat:28.5259, lng:-81.3769, note:'Level I Trauma Center. Full ER, 24/7.' },
+    { type:'hospital', emoji:'🏥', name:'AdventHealth Orlando',         address:'601 E Rollins St, Orlando',      lat:28.5731, lng:-81.3679, note:'Major hospital with full emergency department.' },
+    { type:'hospital', emoji:'🏥', name:'Arnold Palmer Hospital (ER)',  address:'92 W Miller St, Orlando',        lat:28.5265, lng:-81.3772, note:'Pediatric and adult ER within the OHS campus.' },
+    { type:'shelter',  emoji:'🏠', name:'Harbor House of Central FL',   address:'Confidential (call for location)',lat:28.5542, lng:-81.3621, note:'Primary DV shelter. 24/7 crisis line: (407) 886-2856. Emergency housing, legal advocacy, counseling.' },
+    { type:'shelter',  emoji:'🏠', name:'Coalition for the Homeless',   address:'639 W Central Blvd, Orlando',    lat:28.5432, lng:-81.3892, note:'Emergency and transitional shelter options for women and families.' },
+    { type:'shelter',  emoji:'🏠', name:'LGBTQ+ Center Orlando',        address:'946 N Mills Ave, Orlando',       lat:28.5572, lng:-81.3578, note:'Safe space, resources, and support for LGBTQ+ women and allies.' }
+  ];
+
+  const resourceColors = { police:'#1565C0', fire:'#B71C1C', hospital:'#00695C', shelter:'#6A1B9A' };
+
+  emergencyResources.forEach(res => {
+    const el = document.createElement('div');
+    el.title = res.name;
+    el.style.cssText = 'width:28px;height:28px;background:' + resourceColors[res.type] + ';border:2.5px solid white;border-radius:6px;box-shadow:0 2px 10px rgba(0,0,0,0.4);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:14px;line-height:1;';
+    el.textContent = res.emoji;
+    new mapboxgl.Marker(el).setLngLat([res.lng, res.lat])
+      .setPopup(new mapboxgl.Popup({ offset: 16 }).setHTML(
+        '<strong style="font-size:0.88rem;">' + res.emoji + ' ' + res.name + '</strong>' +
+        '<p style="margin:2px 0 4px;font-size:0.72rem;color:#777;">' + res.address + '</p>' +
+        '<p style="margin:0;font-size:0.8rem;color:#333;line-height:1.5;">' + res.note + '</p>'
+      )).addTo(zonesMapObj);
+  });
+
+  // LEGEND
+  const legendDiv = document.createElement('div');
+  legendDiv.style.cssText = 'position:absolute;bottom:32px;left:10px;background:white;border-radius:10px;padding:10px 14px;box-shadow:0 2px 12px rgba(0,0,0,0.18);font-size:0.74rem;font-family:Nunito,sans-serif;z-index:10;line-height:1.9;';
+  legendDiv.innerHTML = '<div style="font-weight:700;margin-bottom:4px;color:#444;font-size:0.68rem;letter-spacing:0.05em;text-transform:uppercase;">Map Legend</div>' +
+    '<div style="display:flex;align-items:center;gap:6px;"><span style="background:#1565C0;border-radius:4px;width:16px;height:16px;display:inline-flex;align-items:center;justify-content:center;font-size:10px;">🚔</span> Police Station</div>' +
+    '<div style="display:flex;align-items:center;gap:6px;"><span style="background:#B71C1C;border-radius:4px;width:16px;height:16px;display:inline-flex;align-items:center;justify-content:center;font-size:10px;">🚒</span> Fire Station</div>' +
+    '<div style="display:flex;align-items:center;gap:6px;"><span style="background:#00695C;border-radius:4px;width:16px;height:16px;display:inline-flex;align-items:center;justify-content:center;font-size:10px;">🏥</span> Hospital / ER</div>' +
+    '<div style="display:flex;align-items:center;gap:6px;"><span style="background:#6A1B9A;border-radius:4px;width:16px;height:16px;display:inline-flex;align-items:center;justify-content:center;font-size:10px;">🏠</span> Women\'s Shelter</div>' +
+    '<div style="display:flex;align-items:center;gap:6px;margin-top:4px;"><span style="background:#27ae60;border-radius:50%;width:12px;height:12px;display:inline-block;border:2px solid white;box-sizing:border-box;"></span> Safe Zone</div>' +
+    '<div style="display:flex;align-items:center;gap:6px;"><span style="background:#e67e22;border-radius:50%;width:12px;height:12px;display:inline-block;border:2px solid white;box-sizing:border-box;"></span> Caution Zone</div>' +
+    '<div style="display:flex;align-items:center;gap:6px;"><span style="background:#c0392b;border-radius:50%;width:12px;height:12px;display:inline-block;border:2px solid white;box-sizing:border-box;"></span> Avoid at Night</div>';
+  document.getElementById('map').appendChild(legendDiv);
+
+  // MY LOCATION BUTTON
+  const locBtn = document.createElement('button');
+  locBtn.id = 'my-location-btn';
+  locBtn.innerHTML = '&#128205; My Location';
+  locBtn.style.cssText = 'position:absolute;top:10px;left:10px;z-index:10;background:white;border:2px solid rgba(212,115,106,0.5);border-radius:24px;padding:7px 16px;font-family:Nunito,sans-serif;font-size:0.8rem;font-weight:700;color:#D4736A;cursor:pointer;box-shadow:0 2px 10px rgba(0,0,0,0.15);transition:all 0.2s;';
+  locBtn.onmouseover = function() { this.style.background='#D4736A'; this.style.color='white'; };
+  locBtn.onmouseleave = function() { this.style.background='white'; this.style.color='#D4736A'; };
+
+  let userMarker = null;
+  let watchId = null;
+
+  locBtn.addEventListener('click', function() {
+    if (!navigator.geolocation) { alert('Geolocation is not supported by your browser.'); return; }
+    locBtn.innerHTML = '&#9203; Locating\u2026';
+    locBtn.disabled = true;
+    if (watchId) { navigator.geolocation.clearWatch(watchId); watchId = null; }
+    watchId = navigator.geolocation.watchPosition(
+      function(pos) {
+        var lat = pos.coords.latitude, lng = pos.coords.longitude, acc = pos.coords.accuracy;
+        locBtn.innerHTML = '&#128308; Tracking';
+        locBtn.disabled = false;
+        locBtn.style.borderColor = '#1565C0';
+        locBtn.style.color = '#1565C0';
+        if (userMarker) { userMarker.setLngLat([lng, lat]); }
+        else {
+          var dot = document.createElement('div');
+          dot.style.cssText = 'width:16px;height:16px;background:#1565C0;border:3px solid white;border-radius:50%;box-shadow:0 0 0 4px rgba(21,101,192,0.25);animation:pulse-loc 1.5s ease-out infinite;';
+          if (!document.getElementById('pulse-style')) {
+            var s = document.createElement('style');
+            s.id = 'pulse-style';
+            s.textContent = '@keyframes pulse-loc{0%{box-shadow:0 0 0 0 rgba(21,101,192,0.4)}70%{box-shadow:0 0 0 10px rgba(21,101,192,0)}100%{box-shadow:0 0 0 0 rgba(21,101,192,0)}}';
+            document.head.appendChild(s);
+          }
+          userMarker = new mapboxgl.Marker(dot).setLngLat([lng, lat])
+            .setPopup(new mapboxgl.Popup({ offset:14 }).setHTML(
+              '<strong>&#128205; You are here</strong><p style="font-size:0.75rem;color:#555;margin:4px 0 0;">Accuracy: \u00b1' + Math.round(acc) + 'm</p>'
+            )).addTo(zonesMapObj);
+          zonesMapObj.flyTo({ center:[lng,lat], zoom:15 });
+        }
+      },
+      function(err) { locBtn.innerHTML='&#128205; My Location'; locBtn.disabled=false; alert('Could not get your location: ' + err.message); },
+      { enableHighAccuracy:true, timeout:10000 }
+    );
+  });
+
+  document.getElementById('map').appendChild(locBtn);
 }
 
 function flyToZone(lng, lat) {
@@ -842,7 +932,7 @@ const concernLocations = [
   { id:6, level:'moderate', name:'Lynx Central Station',        short:'Homeless concentration area',      desc:'Near the Lynx bus hub, surrounding gas stations, and the downtown library.',                                                 lat:28.5485, lng:-81.3813 },
   { id:7, level:'moderate', name:'Gore St & Kaley Ave Area',    short:'Specific intersection cited',      desc:'This intersection and surrounding streets in the south downtown area were named directly by multiple respondents.',           lat:28.5199, lng:-81.3942 },
   { id:8, level:'low',      name:'Lake Eola Park',              short:'Isolated paths after dark',        desc:'Generally regarded as safe during the day. Mentioned once or twice regarding poorly lit paths and isolated stretches at night.', lat:28.5428, lng:-81.3709 },
-  { id:9, level:'low',      name:'Pine Hills',                  short:'Outside downtown proper',          desc:'Not technically downtown, but cited by several respondents. Included for completeness.',                                      lat:28.5578, lng:-81.4534 }
+  { id:9, level:'high',     name:'Pine Hills',                  short:'High-risk area — use caution',     desc:'Elevated concern area with higher rates of reported incidents. Exercise significant caution, especially at night. Stay in well-lit, populated areas.',  lat:28.5578, lng:-81.4534 }
 ];
 
 const concernConfig = {
