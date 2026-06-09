@@ -5,6 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>S.H.E. — Safety for Her Empowerment</title>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=Nunito:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link href='https://api.mapbox.com/mapbox-gl-js/v3.4.0/mapbox-gl.css' rel='stylesheet' />
+<script src='https://api.mapbox.com/mapbox-gl-js/v3.4.0/mapbox-gl.js'></script>
 <style>
 *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
 :root {
@@ -133,7 +135,7 @@ nav { position: sticky; top: 0; z-index: 200; background: rgba(253,248,244,0.97)
 
 /* ── MAP ── */
 .map-zones { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 24px; }
-#map { width: 100%; height: 400px; background: var(--sage-light); display: flex; align-items: center; justify-content: center; }
+#map { width: 100%; height: 480px; }
 .map-content { padding: 2rem 3rem 3rem; }
 .zone-card { border-radius: 14px; padding: 1.2rem 1.4rem; border-left: 5px solid; }
 .zone-card.safe { background: var(--safe-light); border-color: var(--safe); }
@@ -389,13 +391,7 @@ nav { position: sticky; top: 0; z-index: 200; background: rgba(253,248,244,0.97)
 
 <!-- ═══════════════ MAP ═══════════════ -->
 <div id="page-map" class="page">
-  <div id="map">
-    <div class="map-placeholder">
-      <div style="font-size:2rem;">🗺️</div>
-      <h3>Downtown Orlando Safety Map</h3>
-      <p>Interactive map coming soon. See safety zones listed below.</p>
-    </div>
-  </div>
+  <div id="map"></div>
   <div class="map-content">
     <h3 class="section-title">Community-Reported Safety Zones</h3>
     <p class="section-intro">Based on community survey data. Always trust your own instincts — conditions can change.</p>
@@ -711,6 +707,9 @@ function goPage(page) {
   document.querySelectorAll('.bnav-btn[data-bnav]').forEach(b => b.classList.remove('active'));
   const activeBnav = document.querySelector(`.bnav-btn[data-bnav="${page}"]`);
   if (activeBnav) activeBnav.classList.add('active');
+
+  // Init map when map page is shown
+  if (page === 'map') setTimeout(initMap, 50);
 }
 
 // ── SOS MODAL ──
@@ -746,6 +745,89 @@ function toggleAcc(header) {
   const item = header.closest('.acc-item');
   item.classList.toggle('open');
 }
+
+// ── MAPBOX ──
+mapboxgl.accessToken = 'pk.eyJ1Ijoic2FmZXR5Zm9yaGVyZW1wb3dlcm1lbnQiLCJhIjoiY21wYnkyN3E5MDJhYzJycHg2cTk0ZjlqdyJ9.0_p6SMAmrg9rMP_nqXyDRg';
+
+let mapInitialized = false;
+
+function initMap() {
+  if (mapInitialized) return;
+  mapInitialized = true;
+
+  const map = new mapboxgl.Map({
+    container: 'map',
+    style: 'mapbox://styles/mapbox/streets-v12',
+    center: [-81.3792, 28.5383], // Downtown Orlando
+    zoom: 14
+  });
+
+  map.addControl(new mapboxgl.NavigationControl());
+
+  const zones = [
+    {
+      coords: [-81.3784, 28.5383],
+      label: '✅ Lake Eola Park',
+      desc: 'Well-lit, high foot traffic, frequent events. Avoid isolated areas after dark.',
+      color: '#27ae60'
+    },
+    {
+      coords: [-81.3816, 28.5396],
+      label: '✅ Dr. Phillips Center',
+      desc: 'Event venue with good lighting, security staff, and consistent evening crowds.',
+      color: '#27ae60'
+    },
+    {
+      coords: [-81.3789, 28.5411],
+      label: '✅ Orange Ave (Daytime)',
+      desc: 'Main commercial corridor. Active during business hours.',
+      color: '#27ae60'
+    },
+    {
+      coords: [-81.3801, 28.5388],
+      label: '⚠️ Church Street / Bars District',
+      desc: 'Busy at night but alcohol-related incidents increase. Go with friends.',
+      color: '#e67e22'
+    },
+    {
+      coords: [-81.3770, 28.5370],
+      label: '⚠️ Parking Garages After Dark',
+      desc: 'Poor lighting in many structures. Park near exits, have keys ready.',
+      color: '#e67e22'
+    },
+    {
+      coords: [-81.3760, 28.5355],
+      label: '🔴 Isolated Side Streets',
+      desc: 'Less-trafficked streets with poor lighting and minimal foot traffic at night.',
+      color: '#c0392b'
+    }
+  ];
+
+  zones.forEach(zone => {
+    // Custom colored dot marker
+    const el = document.createElement('div');
+    el.style.cssText = `
+      width: 18px; height: 18px;
+      background: ${zone.color};
+      border: 3px solid white;
+      border-radius: 50%;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.35);
+      cursor: pointer;
+    `;
+
+    new mapboxgl.Marker(el)
+      .setLngLat(zone.coords)
+      .setPopup(
+        new mapboxgl.Popup({ offset: 16 }).setHTML(`
+          <strong style="font-size:0.9rem;">${zone.label}</strong>
+          <p style="margin:0.4rem 0 0; font-size:0.8rem; color:#555; line-height:1.5;">${zone.desc}</p>
+        `)
+      )
+      .addTo(map);
+  });
+}
+
+// Map init is called from within goPage below
 </script>
 
 </body>
