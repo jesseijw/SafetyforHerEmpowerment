@@ -151,6 +151,27 @@ nav { position: sticky; top: 0; z-index: 200; background: rgba(253,248,244,0.97)
 .map-placeholder h3 { font-family: 'Playfair Display', serif; font-size: 1.25rem; color: var(--deep); }
 .map-placeholder p { font-size: 0.84rem; color: var(--warm-gray); max-width: 340px; line-height: 1.6; text-align: center; }
 
+/* ── MAP TABS ── */
+.map-tab-btn { background: rgba(255,255,255,0.6); border: 2px solid rgba(212,115,106,0.2); border-bottom: none; border-radius: 10px 10px 0 0; padding: 0.5rem 1.1rem; font-family: 'Nunito', sans-serif; font-size: 0.82rem; font-weight: 700; cursor: pointer; color: var(--warm-gray); transition: all 0.2s; }
+.map-tab-btn.active { background: white; color: var(--rose); border-color: rgba(212,115,106,0.35); }
+.map-tab-btn:hover:not(.active) { background: rgba(255,255,255,0.85); }
+
+/* ── CONCERN SIDEBAR ── */
+.concern-legend-item { display: flex; align-items: center; gap: 8px; padding: 6px 8px; border-radius: 8px; cursor: pointer; margin-bottom: 4px; transition: background 0.15s; font-size: 0.84rem; font-weight: 500; }
+.concern-legend-item:hover { background: var(--blush); }
+.concern-dot { width: 12px; height: 12px; border-radius: 50%; flex-shrink: 0; border: 2px solid rgba(0,0,0,0.12); }
+.concern-card { padding: 9px 11px; border-radius: 10px; cursor: pointer; transition: background 0.15s, box-shadow 0.15s; margin-bottom: 4px; border: 1.5px solid transparent; }
+.concern-card:hover { background: var(--light); }
+.concern-card.active { border-color: rgba(212,115,106,0.3); box-shadow: 0 2px 8px rgba(44,31,34,0.1); background: white; }
+.concern-card-header { display: flex; align-items: center; gap: 7px; }
+.concern-card-name { font-size: 0.86rem; font-weight: 600; color: var(--deep); flex: 1; }
+.concern-pill { font-size: 0.65rem; font-weight: 700; padding: 2px 7px; border-radius: 99px; }
+.concern-card-desc { font-size: 0.76rem; color: var(--warm-gray); margin-top: 4px; margin-left: 19px; line-height: 1.4; }
+@media (max-width: 600px) {
+  #concern-sidebar { width: 100%; max-height: 200px; border-right: none; border-bottom: 1px solid rgba(212,115,106,0.15); }
+  #map-tab-concerns > div { flex-direction: column; }
+}
+
 /* ── SELF DEFENSE ── */
 .accordion { display: flex; flex-direction: column; gap: 0.75rem; }
 .acc-item { background: white; border-radius: 14px; box-shadow: 0 2px 10px rgba(44,31,34,0.06); overflow: hidden; border: 1px solid rgba(212,115,106,0.1); }
@@ -391,17 +412,56 @@ nav { position: sticky; top: 0; z-index: 200; background: rgba(253,248,244,0.97)
 
 <!-- ═══════════════ MAP ═══════════════ -->
 <div id="page-map" class="page">
-  <div id="map"></div>
-  <div class="map-content">
-    <h3 class="section-title">Community-Reported Safety Zones</h3>
-    <p class="section-intro">Based on community survey data. Always trust your own instincts — conditions can change.</p>
-    <div class="map-zones">
-      <div class="zone-card safe"><div class="zone-label">✅ Generally Safe</div><h3>Lake Eola Park (Daytime)</h3><p>Well-lit, high foot traffic, frequent events. Avoid isolated areas after dark.</p></div>
-      <div class="zone-card safe"><div class="zone-label">✅ Generally Safe</div><h3>Dr. Phillips Center Area</h3><p>Event venue with good lighting, security staff, and consistent evening crowds.</p></div>
-      <div class="zone-card safe"><div class="zone-label">✅ Generally Safe</div><h3>Orange Ave (Daytime)</h3><p>Main commercial corridor. Active during business hours with shops and pedestrian traffic.</p></div>
-      <div class="zone-card caution"><div class="zone-label">⚠️ Use Caution</div><h3>Church Street / Bars District</h3><p>Busy at night but alcohol-related incidents increase. Go with friends, have a plan.</p></div>
-      <div class="zone-card caution"><div class="zone-label">⚠️ Use Caution</div><h3>Parking Garages After Dark</h3><p>Poor lighting in many structures. Park near exits, have keys ready, try to use daytime.</p></div>
-      <div class="zone-card avoid"><div class="zone-label">🔴 Extra Caution at Night</div><h3>Isolated Side Streets</h3><p>Less-trafficked streets behind main corridors have poor lighting and minimal foot traffic.</p></div>
+  <div class="page-header sage-bg" style="padding-bottom:0;">
+    <h2>🗺️ Downtown Orlando Safety Map</h2>
+    <p style="margin-bottom:1rem;">Community-reported data. Always trust your own instincts.</p>
+    <div style="display:flex; gap:0.5rem; margin-top:0.75rem;">
+      <button class="map-tab-btn active" id="tab-zones" onclick="switchMapTab('zones')">📍 Safe Zones</button>
+      <button class="map-tab-btn" id="tab-concerns" onclick="switchMapTab('concerns')">⚠️ Concern Areas</button>
+    </div>
+  </div>
+
+  <!-- TAB: SAFE ZONES -->
+  <div id="map-tab-zones">
+    <div id="map" style="width:100%;height:420px;"></div>
+    <div class="map-content">
+      <h3 class="section-title">Safety Zone Guide</h3>
+      <p class="section-intro">Click any marker on the map for details. Tap a zone card below to zoom in.</p>
+      <div class="map-zones">
+        <div class="zone-card safe" onclick="flyToZone(-81.3784,28.5383)" style="cursor:pointer"><div class="zone-label">✅ Generally Safe</div><h3>Lake Eola Park (Daytime)</h3><p>Well-lit, high foot traffic, frequent events. Avoid isolated areas after dark.</p></div>
+        <div class="zone-card safe" onclick="flyToZone(-81.3816,28.5396)" style="cursor:pointer"><div class="zone-label">✅ Generally Safe</div><h3>Dr. Phillips Center Area</h3><p>Event venue with good lighting, security staff, and consistent evening crowds.</p></div>
+        <div class="zone-card safe" onclick="flyToZone(-81.3789,28.5411)" style="cursor:pointer"><div class="zone-label">✅ Generally Safe</div><h3>Orange Ave (Daytime)</h3><p>Main commercial corridor. Active during business hours with shops and pedestrian traffic.</p></div>
+        <div class="zone-card caution" onclick="flyToZone(-81.3801,28.5388)" style="cursor:pointer"><div class="zone-label">⚠️ Use Caution</div><h3>Church Street / Bars District</h3><p>Busy at night but alcohol-related incidents increase. Go with friends, have a plan.</p></div>
+        <div class="zone-card caution" onclick="flyToZone(-81.3770,28.5370)" style="cursor:pointer"><div class="zone-label">⚠️ Use Caution</div><h3>Parking Garages After Dark</h3><p>Poor lighting in many structures. Park near exits, have keys ready, try to use daytime.</p></div>
+        <div class="zone-card avoid" onclick="flyToZone(-81.3760,28.5355)" style="cursor:pointer"><div class="zone-label">🔴 Extra Caution at Night</div><h3>Isolated Side Streets</h3><p>Less-trafficked streets behind main corridors have poor lighting and minimal foot traffic.</p></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TAB: CONCERN AREAS -->
+  <div id="map-tab-concerns" style="display:none;">
+    <div style="display:flex;flex-wrap:wrap;min-height:480px;">
+      <!-- Sidebar -->
+      <div id="concern-sidebar" style="width:300px;min-width:260px;background:white;border-right:1px solid rgba(212,115,106,0.15);display:flex;flex-direction:column;overflow-y:auto;max-height:480px;">
+        <!-- Legend -->
+        <div style="padding:16px 16px 10px;border-bottom:1px solid #eee;">
+          <div style="font-size:0.68rem;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:var(--warm-gray);margin-bottom:10px;">Filter by Concern Level</div>
+          <div class="concern-legend-item" id="cleg-all" onclick="filterConcerns(null)" style="background:var(--light);"><div class="concern-dot" style="background:#6b5b5e;"></div><span>Show All</span></div>
+          <div class="concern-legend-item" id="cleg-high" onclick="filterConcerns('high')"><div class="concern-dot" style="background:#D93025;"></div><span>High Concern</span><small style="margin-left:auto;font-size:0.7rem;color:var(--warm-gray);">Frequently cited</small></div>
+          <div class="concern-legend-item" id="cleg-moderate" onclick="filterConcerns('moderate')"><div class="concern-dot" style="background:#E37400;"></div><span>Moderate Concern</span><small style="margin-left:auto;font-size:0.7rem;color:var(--warm-gray);">Several mentions</small></div>
+          <div class="concern-legend-item" id="cleg-low" onclick="filterConcerns('low')"><div class="concern-dot" style="background:#1A8A4A;"></div><span>Lower Concern</span><small style="margin-left:auto;font-size:0.7rem;color:var(--warm-gray);">1–2 mentions</small></div>
+        </div>
+        <!-- Location list -->
+        <div style="padding:10px 10px 16px;flex:1;">
+          <div style="font-size:0.68rem;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:var(--warm-gray);padding:4px 8px 8px;">Locations</div>
+          <div id="concern-loc-list"></div>
+        </div>
+      </div>
+      <!-- Map -->
+      <div id="concern-map" style="flex:1;min-height:480px;min-width:200px;"></div>
+    </div>
+    <div style="padding:1rem 1.5rem;background:var(--emergency-light);font-size:0.82rem;color:var(--deep);line-height:1.6;">
+      ⚠️ <strong>Based on community survey responses.</strong> These areas reflect concerns shared by women in Downtown Orlando. Always trust your instincts and stay aware of your surroundings.
     </div>
   </div>
 </div>
@@ -680,154 +740,195 @@ nav { position: sticky; top: 0; z-index: 200; background: rgba(253,248,244,0.97)
 </div>
 
 <script>
-// ── PAGE NAVIGATION ──
+// ══════════════════════════════════════════
+// PAGE NAVIGATION
+// ══════════════════════════════════════════
 function goPage(page) {
-  // Hide all pages
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-
-  // Show selected page
   const target = document.getElementById('page-' + page);
-  if (target) {
-    target.classList.add('active');
-    // Scroll back to top of new page
-    target.scrollTop = 0;
-    window.scrollTo(0, 0);
-  }
-
-  // Update desktop pill nav
+  if (target) { target.classList.add('active'); target.scrollTop = 0; window.scrollTo(0, 0); }
   document.querySelectorAll('.nav-pills button').forEach(b => b.classList.remove('active'));
   const activeBtn = document.querySelector(`.nav-pills [data-page="${page}"]`);
   if (activeBtn) activeBtn.classList.add('active');
-
-  // Update dropdown
   const select = document.getElementById('navSelect');
   if (select) select.value = page;
-
-  // Update bottom nav
   document.querySelectorAll('.bnav-btn[data-bnav]').forEach(b => b.classList.remove('active'));
   const activeBnav = document.querySelector(`.bnav-btn[data-bnav="${page}"]`);
   if (activeBnav) activeBnav.classList.add('active');
-
-  // Init map when map page is shown
-  if (page === 'map') setTimeout(initMap, 50);
+  if (page === 'map') setTimeout(initZonesMap, 50);
 }
 
 // ── SOS MODAL ──
-function openSOS() {
-  document.getElementById('sosModal').classList.add('open');
-}
-function closeSOS() {
-  document.getElementById('sosModal').classList.remove('open');
-}
-// Close modal on background click
-document.getElementById('sosModal').addEventListener('click', function(e) {
-  if (e.target === this) closeSOS();
-});
+function openSOS() { document.getElementById('sosModal').classList.add('open'); }
+function closeSOS() { document.getElementById('sosModal').classList.remove('open'); }
+document.getElementById('sosModal').addEventListener('click', function(e) { if (e.target === this) closeSOS(); });
 
 // ── FILTER TIPS ──
 function filterTips(category, btn) {
-  // Update active tab button
   document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
   if (btn) btn.classList.add('active');
-
-  // Show/hide tip cards
   document.querySelectorAll('.tip-card').forEach(card => {
-    if (category === 'all' || card.dataset.cat === category) {
-      card.style.display = '';
-    } else {
-      card.style.display = 'none';
-    }
+    card.style.display = (category === 'all' || card.dataset.cat === category) ? '' : 'none';
   });
 }
 
 // ── ACCORDION ──
-function toggleAcc(header) {
-  const item = header.closest('.acc-item');
-  item.classList.toggle('open');
-}
+function toggleAcc(header) { header.closest('.acc-item').classList.toggle('open'); }
 
-// ── MAPBOX ──
+// ══════════════════════════════════════════
+// MAPBOX SETUP
+// ══════════════════════════════════════════
 mapboxgl.accessToken = 'pk.eyJ1Ijoic2FmZXR5Zm9yaGVyZW1wb3dlcm1lbnQiLCJhIjoiY21wYnkyN3E5MDJhYzJycHg2cTk0ZjlqdyJ9.0_p6SMAmrg9rMP_nqXyDRg';
 
-let mapInitialized = false;
+// ── MAP TAB SWITCHING ──
+function switchMapTab(tab) {
+  document.getElementById('map-tab-zones').style.display    = tab === 'zones'    ? '' : 'none';
+  document.getElementById('map-tab-concerns').style.display = tab === 'concerns' ? '' : 'none';
+  document.getElementById('tab-zones').classList.toggle('active',    tab === 'zones');
+  document.getElementById('tab-concerns').classList.toggle('active', tab === 'concerns');
+  if (tab === 'zones')    setTimeout(initZonesMap, 50);
+  if (tab === 'concerns') setTimeout(initConcernMap, 50);
+}
 
-function initMap() {
-  if (mapInitialized) return;
-  mapInitialized = true;
+// ══════════════════════════════════════════
+// TAB 1 — SAFE ZONES MAP
+// ══════════════════════════════════════════
+let zonesMapObj = null;
 
-  const map = new mapboxgl.Map({
+function initZonesMap() {
+  if (zonesMapObj) return;
+  zonesMapObj = new mapboxgl.Map({
     container: 'map',
     style: 'mapbox://styles/mapbox/streets-v12',
-    center: [-81.3792, 28.5383], // Downtown Orlando
+    center: [-81.3792, 28.5383],
     zoom: 14
   });
-
-  map.addControl(new mapboxgl.NavigationControl());
+  zonesMapObj.addControl(new mapboxgl.NavigationControl());
 
   const zones = [
-    {
-      coords: [-81.3784, 28.5383],
-      label: '✅ Lake Eola Park',
-      desc: 'Well-lit, high foot traffic, frequent events. Avoid isolated areas after dark.',
-      color: '#27ae60'
-    },
-    {
-      coords: [-81.3816, 28.5396],
-      label: '✅ Dr. Phillips Center',
-      desc: 'Event venue with good lighting, security staff, and consistent evening crowds.',
-      color: '#27ae60'
-    },
-    {
-      coords: [-81.3789, 28.5411],
-      label: '✅ Orange Ave (Daytime)',
-      desc: 'Main commercial corridor. Active during business hours.',
-      color: '#27ae60'
-    },
-    {
-      coords: [-81.3801, 28.5388],
-      label: '⚠️ Church Street / Bars District',
-      desc: 'Busy at night but alcohol-related incidents increase. Go with friends.',
-      color: '#e67e22'
-    },
-    {
-      coords: [-81.3770, 28.5370],
-      label: '⚠️ Parking Garages After Dark',
-      desc: 'Poor lighting in many structures. Park near exits, have keys ready.',
-      color: '#e67e22'
-    },
-    {
-      coords: [-81.3760, 28.5355],
-      label: '🔴 Isolated Side Streets',
-      desc: 'Less-trafficked streets with poor lighting and minimal foot traffic at night.',
-      color: '#c0392b'
-    }
+    { coords: [-81.3784, 28.5383], label: '✅ Lake Eola Park',          desc: 'Well-lit, high foot traffic, frequent events. Avoid isolated areas after dark.',  color: '#27ae60' },
+    { coords: [-81.3816, 28.5396], label: '✅ Dr. Phillips Center',      desc: 'Event venue with good lighting, security staff, and consistent evening crowds.',  color: '#27ae60' },
+    { coords: [-81.3789, 28.5411], label: '✅ Orange Ave (Daytime)',     desc: 'Main commercial corridor. Active during business hours.',                         color: '#27ae60' },
+    { coords: [-81.3801, 28.5388], label: '⚠️ Church Street / Bars',    desc: 'Busy at night but alcohol-related incidents increase. Go with friends.',          color: '#e67e22' },
+    { coords: [-81.3770, 28.5370], label: '⚠️ Parking Garages (Night)', desc: 'Poor lighting in many structures. Park near exits, have keys ready.',             color: '#e67e22' },
+    { coords: [-81.3760, 28.5355], label: '🔴 Isolated Side Streets',   desc: 'Less-trafficked streets with poor lighting and minimal foot traffic at night.',    color: '#c0392b' }
   ];
 
   zones.forEach(zone => {
-    // Custom colored dot marker
     const el = document.createElement('div');
-    el.style.cssText = `
-      width: 18px; height: 18px;
-      background: ${zone.color};
-      border: 3px solid white;
-      border-radius: 50%;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.35);
-      cursor: pointer;
-    `;
-
-    new mapboxgl.Marker(el)
-      .setLngLat(zone.coords)
-      .setPopup(
-        new mapboxgl.Popup({ offset: 16 }).setHTML(`
-          <strong style="font-size:0.9rem;">${zone.label}</strong>
-          <p style="margin:0.4rem 0 0; font-size:0.8rem; color:#555; line-height:1.5;">${zone.desc}</p>
-        `)
-      )
-      .addTo(map);
+    el.style.cssText = `width:18px;height:18px;background:${zone.color};border:3px solid white;border-radius:50%;box-shadow:0 2px 8px rgba(0,0,0,0.35);cursor:pointer;`;
+    new mapboxgl.Marker(el).setLngLat(zone.coords)
+      .setPopup(new mapboxgl.Popup({ offset: 16 }).setHTML(
+        `<strong style="font-size:0.9rem;">${zone.label}</strong>
+         <p style="margin:0.4rem 0 0;font-size:0.8rem;color:#555;line-height:1.5;">${zone.desc}</p>`
+      )).addTo(zonesMapObj);
   });
 }
 
-// Map init is called from within goPage below
+function flyToZone(lng, lat) {
+  if (!zonesMapObj) return;
+  zonesMapObj.flyTo({ center: [lng, lat], zoom: 16 });
+}
+
+// ══════════════════════════════════════════
+// TAB 2 — COMMUNITY CONCERN MAP
+// ══════════════════════════════════════════
+const concernLocations = [
+  { id:1, level:'high',     name:'Parramore District',          short:'Most cited area by name',          desc:'Includes surrounding blocks, areas near Camping World Stadium, and the Orlando Pride stadium.',                              lat:28.5383, lng:-81.3890 },
+  { id:2, level:'high',     name:'Camping World Stadium Area',  short:'Stadium surroundings',             desc:'Stadium area and surrounding streets repeatedly flagged. Part of the broader Parramore concern zone.',                       lat:28.5390, lng:-81.4027 },
+  { id:3, level:'high',     name:'Kia Center / Arena District', short:'Arena and Wall Street corridor',   desc:'Near the Kia Center (formerly Amway Center), around the arena, and along the Wall Street corridor.',                         lat:28.5392, lng:-81.3839 },
+  { id:4, level:'high',     name:'Church Street / Nightlife',   short:'Bars, clubs, late-night activity', desc:'Church Street, Wall Street Plaza, Orange Ave corridor. Concerns tied to intoxication and post-midnight crowds.',               lat:28.5375, lng:-81.3800 },
+  { id:5, level:'high',     name:'Orange Blossom Trail (OBT)',  short:'Full OBT corridor',                desc:'The entire Orange Blossom Trail corridor was cited as a high-concern area.',                                                 lat:28.5265, lng:-81.3971 },
+  { id:6, level:'moderate', name:'Lynx Central Station',        short:'Homeless concentration area',      desc:'Near the Lynx bus hub, surrounding gas stations, and the downtown library.',                                                 lat:28.5485, lng:-81.3813 },
+  { id:7, level:'moderate', name:'Gore St & Kaley Ave Area',    short:'Specific intersection cited',      desc:'This intersection and surrounding streets in the south downtown area were named directly by multiple respondents.',           lat:28.5199, lng:-81.3942 },
+  { id:8, level:'low',      name:'Lake Eola Park',              short:'Isolated paths after dark',        desc:'Generally regarded as safe during the day. Mentioned once or twice regarding poorly lit paths and isolated stretches at night.', lat:28.5428, lng:-81.3709 },
+  { id:9, level:'low',      name:'Pine Hills',                  short:'Outside downtown proper',          desc:'Not technically downtown, but cited by several respondents. Included for completeness.',                                      lat:28.5578, lng:-81.4534 }
+];
+
+const concernConfig = {
+  high:     { label:'High',     color:'#D93025', pillBg:'#fde8e7', pillColor:'#D93025' },
+  moderate: { label:'Moderate', color:'#E37400', pillBg:'#fef3cd', pillColor:'#E37400' },
+  low:      { label:'Lower',    color:'#1A8A4A', pillBg:'#d4edda', pillColor:'#1A8A4A' }
+};
+
+let concernMapObj = null;
+let concernMarkers = [];
+
+function initConcernMap() {
+  buildConcernList(null);
+  if (concernMapObj) return;
+  concernMapObj = new mapboxgl.Map({
+    container: 'concern-map',
+    style: 'mapbox://styles/mapbox/streets-v12',
+    center: [-81.390, 28.538],
+    zoom: 12
+  });
+  concernMapObj.addControl(new mapboxgl.NavigationControl());
+
+  concernLocations.forEach(loc => {
+    const cfg = concernConfig[loc.level];
+    const el = document.createElement('div');
+    el.style.cssText = `width:16px;height:16px;background:${cfg.color};border:3px solid white;border-radius:50%;box-shadow:0 2px 8px rgba(0,0,0,0.35);cursor:pointer;`;
+    const popup = new mapboxgl.Popup({ offset: 16 }).setHTML(
+      `<strong style="font-size:0.88rem;">${loc.name}</strong>
+       <span style="display:inline-block;margin:4px 0 6px;font-size:0.68rem;font-weight:700;padding:2px 8px;border-radius:99px;background:${cfg.pillBg};color:${cfg.pillColor};">${cfg.label} Concern</span>
+       <p style="font-size:0.78rem;color:#555;line-height:1.45;">${loc.desc}</p>`
+    );
+    const marker = new mapboxgl.Marker(el).setLngLat([loc.lng, loc.lat]).setPopup(popup).addTo(concernMapObj);
+    marker._level = loc.level;
+    marker._id    = loc.id;
+    el.addEventListener('click', () => highlightConcernCard(loc.id));
+    concernMarkers.push(marker);
+  });
+}
+
+function buildConcernList(filter) {
+  const listEl = document.getElementById('concern-loc-list');
+  if (!listEl) return;
+  listEl.innerHTML = '';
+  (filter ? concernLocations.filter(l => l.level === filter) : concernLocations).forEach(loc => {
+    const cfg = concernConfig[loc.level];
+    const card = document.createElement('div');
+    card.className = 'concern-card';
+    card.id = `ccard-${loc.id}`;
+    card.innerHTML = `
+      <div class="concern-card-header">
+        <div class="concern-dot" style="background:${cfg.color};"></div>
+        <span class="concern-card-name">${loc.name}</span>
+        <span class="concern-pill" style="background:${cfg.pillBg};color:${cfg.pillColor};">${cfg.label}</span>
+      </div>
+      <p class="concern-card-desc">${loc.short}</p>`;
+    card.addEventListener('click', () => focusConcernLocation(loc));
+    listEl.appendChild(card);
+  });
+}
+
+function filterConcerns(level) {
+  buildConcernList(level);
+  ['high','moderate','low','all'].forEach(k => {
+    const el = document.getElementById(`cleg-${k}`);
+    if (el) el.style.background = '';
+  });
+  const el = document.getElementById(`cleg-${level || 'all'}`);
+  if (el) el.style.background = 'var(--blush)';
+  concernMarkers.forEach(m => {
+    m.getElement().style.display = (!level || m._level === level) ? '' : 'none';
+  });
+}
+
+function focusConcernLocation(loc) {
+  highlightConcernCard(loc.id);
+  if (!concernMapObj) return;
+  concernMapObj.flyTo({ center: [loc.lng, loc.lat], zoom: 15 });
+  const marker = concernMarkers.find(m => m._id === loc.id);
+  if (marker) marker.togglePopup();
+}
+
+function highlightConcernCard(id) {
+  document.querySelectorAll('.concern-card').forEach(c => c.classList.remove('active'));
+  const card = document.getElementById(`ccard-${id}`);
+  if (card) { card.classList.add('active'); card.scrollIntoView({ behavior:'smooth', block:'nearest' }); }
+}
 </script>
 
 </body>
