@@ -126,12 +126,43 @@ nav { position: sticky; top: 0; z-index: 200; background: rgba(253,248,244,0.97)
 .tab-btn:hover { border-color: var(--rose); color: var(--rose); }
 .tab-btn.active { background: var(--rose); color: white; border-color: var(--rose); }
 .tips-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(270px, 1fr)); gap: 1.25rem; }
-.tip-card { background: white; border-radius: 16px; padding: 1.4rem; box-shadow: 0 2px 12px rgba(44,31,34,0.07); border: 1px solid rgba(212,115,106,0.1); transition: box-shadow 0.2s; }
+.tip-card { position: relative; background: white; border-radius: 16px; padding: 1.4rem; box-shadow: 0 2px 12px rgba(44,31,34,0.07); border: 1px solid rgba(212,115,106,0.1); transition: box-shadow 0.2s; }
 .tip-card:hover { box-shadow: 0 4px 20px rgba(212,115,106,0.15); }
 .tc-icon { font-size: 1.8rem; margin-bottom: 0.6rem; }
 .tc-cat { font-size: 0.68rem; font-weight: 700; letter-spacing: 0.15em; text-transform: uppercase; color: var(--rose); margin-bottom: 0.4rem; }
-.tip-card h3 { font-size: 0.95rem; font-weight: 700; color: var(--deep); margin-bottom: 0.45rem; }
+.tip-card h3 { font-size: 0.95rem; font-weight: 700; color: var(--deep); margin-bottom: 0.45rem; padding-right: 1.6rem; }
 .tip-card p { font-size: 0.83rem; line-height: 1.7; color: var(--warm-gray); }
+
+/* ── SAVE / PIN BUTTON ── */
+.tip-save-btn { position: absolute; top: 1rem; right: 1rem; background: var(--light); border: 2px solid rgba(212,115,106,0.2); color: var(--warm-gray); width: 32px; height: 32px; border-radius: 50%; font-size: 0.9rem; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.2s; }
+.tip-save-btn:hover { border-color: var(--rose); color: var(--rose); transform: scale(1.08); }
+.tip-save-btn.saved { background: var(--rose); border-color: var(--rose); color: white; }
+
+/* ── DASHBOARD (SAVED TIPS) ── */
+.dashboard-toolbar { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 0.75rem; margin-bottom: 1.75rem; }
+.dashboard-count { font-size: 0.85rem; color: var(--warm-gray); }
+.dashboard-count strong { color: var(--rose); }
+.dash-clear-btn { background: var(--light); border: 2px solid rgba(212,115,106,0.25); color: var(--warm-gray); border-radius: 20px; padding: 0.45rem 1.1rem; font-family: 'Nunito', sans-serif; font-size: 0.8rem; font-weight: 700; cursor: pointer; transition: all 0.2s; }
+.dash-clear-btn:hover { border-color: var(--emergency); color: var(--emergency); }
+.dashboard-grid { column-count: 3; column-gap: 1.25rem; }
+.dash-card { break-inside: avoid; background: white; border-radius: 16px; padding: 1.3rem; margin-bottom: 1.25rem; box-shadow: 0 2px 12px rgba(44,31,34,0.07); border: 1px solid rgba(212,115,106,0.1); position: relative; }
+.dash-card .tc-icon { font-size: 1.6rem; margin-bottom: 0.5rem; }
+.dash-remove-btn { position: absolute; top: 1rem; right: 1rem; background: var(--light); border: none; color: var(--warm-gray); width: 26px; height: 26px; border-radius: 50%; font-size: 0.75rem; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.2s; }
+.dash-remove-btn:hover { background: var(--emergency-light); color: var(--emergency); }
+.dashboard-empty { text-align: center; padding: 3.5rem 1.5rem; background: white; border-radius: 18px; border: 2px dashed rgba(212,115,106,0.25); }
+.dashboard-empty .de-icon { font-size: 2.6rem; margin-bottom: 1rem; }
+.dashboard-empty h3 { font-family: 'Playfair Display', serif; font-size: 1.2rem; color: var(--deep); margin-bottom: 0.5rem; }
+.dashboard-empty p { font-size: 0.85rem; color: var(--warm-gray); max-width: 380px; margin: 0 auto 1.25rem; line-height: 1.7; }
+.dash-browse-btn { background: var(--rose); color: white; border: none; border-radius: 10px; padding: 0.65rem 1.4rem; font-family: 'Nunito', sans-serif; font-size: 0.85rem; font-weight: 700; cursor: pointer; }
+@media (max-width: 860px) { .dashboard-grid { column-count: 2; } }
+@media (max-width: 560px) { .dashboard-grid { column-count: 1; } }
+
+/* ── ABOUT DISCLAIMER ── */
+.about-disclaimer { background: var(--warn-light); border: 1.5px solid rgba(230,126,34,0.35); border-radius: 16px; padding: 1.5rem 1.75rem; margin-bottom: 2rem; display: flex; gap: 1rem; align-items: flex-start; }
+.about-disclaimer .ad-icon { font-size: 1.6rem; flex-shrink: 0; }
+.about-disclaimer h3 { font-family: 'Playfair Display', serif; font-size: 1.05rem; color: var(--deep); margin-bottom: 0.5rem; font-weight: 600; }
+.about-disclaimer p { font-size: 0.85rem; color: var(--warm-gray); line-height: 1.7; }
+.about-disclaimer p + p { margin-top: 0.5rem; }
 
 /* ── MAP ── */
 .map-zones { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 24px; }
@@ -309,7 +340,8 @@ nav { position: sticky; top: 0; z-index: 200; background: rgba(253,248,244,0.97)
       <option value="home">🏠 Home</option>
       <option value="emergency">🚨 Emergency</option>
       <option value="tips">🛡️ Safety Tips</option>
-      <option value="map">🗺️ Safe Map</option>
+      <option value="dashboard">⭐ My Dashboard</option>
+      <option value="map">🗺️ Safety Map</option>
       <option value="defense">💪 Self-Defense</option>
       <option value="resources">📚 Resources</option>
       <option value="survey">📋 Survey</option>
@@ -323,6 +355,7 @@ nav { position: sticky; top: 0; z-index: 200; background: rgba(253,248,244,0.97)
     <li><button onclick="goPage('home')" data-page="home" class="active">Home</button></li>
     <li><button onclick="goPage('emergency')" data-page="emergency">🚨 Emergency</button></li>
     <li><button onclick="goPage('tips')" data-page="tips">Tips</button></li>
+    <li><button onclick="goPage('dashboard')" data-page="dashboard">⭐ Dashboard</button></li>
     <li><button onclick="goPage('map')" data-page="map">Map</button></li>
     <li><button onclick="goPage('defense')" data-page="defense">Self-Defense</button></li>
     <li><button onclick="goPage('resources')" data-page="resources">Resources</button></li>
@@ -339,11 +372,12 @@ nav { position: sticky; top: 0; z-index: 200; background: rgba(253,248,244,0.97)
   <div class="hero">
     <div class="hero-badge">Downtown Orlando · Free Women's Safety Resource</div>
     <h1>You deserve to feel<br><em>safe everywhere.</em></h1>
-    <p class="hero-sub">S.H.E. is your free, centralized safety guide for navigating Downtown Orlando. Emergency contacts, safety tips, safe routes, self-defense skills, and local help — all in one place.</p>
+    <p class="hero-sub">S.H.E. is your free, centralized safety guide for navigating Downtown Orlando. Emergency contacts, safety tips, a caution area map, self-defense skills, and local help — all in one place.</p>
     <div class="hero-cards">
       <a class="hero-card urgent" href="#" onclick="openSOS(); return false;"><div class="hc-icon">🚨</div><div class="hc-title">I need help NOW</div><div class="hc-desc">Emergency contacts & steps</div></a>
       <a class="hero-card" href="#" onclick="goPage('tips'); return false;"><div class="hc-icon">🛡️</div><div class="hc-title">Safety Tips</div><div class="hc-desc">Practical everyday advice</div></a>
-      <a class="hero-card" href="#" onclick="goPage('map'); return false;"><div class="hc-icon">🗺️</div><div class="hc-title">Safe Routes</div><div class="hc-desc">Navigate Downtown confidently</div></a>
+      <a class="hero-card" href="#" onclick="goPage('dashboard'); return false;"><div class="hc-icon">⭐</div><div class="hc-title">My Dashboard</div><div class="hc-desc">Your saved tips, in one place</div></a>
+      <a class="hero-card" href="#" onclick="goPage('map'); return false;"><div class="hc-icon">🗺️</div><div class="hc-title">Safety Map</div><div class="hc-desc">Navigate Downtown confidently</div></a>
       <a class="hero-card" href="#" onclick="goPage('defense'); return false;"><div class="hc-icon">💪</div><div class="hc-title">Self-Defense</div><div class="hc-desc">Skills to protect yourself</div></a>
       <a class="hero-card" href="#" onclick="goPage('resources'); return false;"><div class="hc-icon">📚</div><div class="hc-title">Find Help</div><div class="hc-desc">Shelters, hotlines & support</div></a>
       <a class="hero-card" href="#" onclick="goPage('social'); return false;"><div class="hc-icon">📱</div><div class="hc-title">Follow Us</div><div class="hc-desc">Stay updated on socials</div></a>
@@ -390,23 +424,36 @@ nav { position: sticky; top: 0; z-index: 200; background: rgba(253,248,244,0.97)
       <button class="tab-btn" onclick="filterTips('social', this)">Social Situations</button>
       <button class="tab-btn" onclick="filterTips('teens', this)">For Teens</button>
     </div>
+    <p style="font-size:0.8rem; color:var(--warm-gray); margin-bottom:1.25rem;">📌 Tap the pin on any tip to save it to <strong>My Dashboard</strong> for quick access later.</p>
     <div class="tips-grid" id="tipsGrid">
-      <div class="tip-card" data-cat="walking"><div class="tc-icon">🚶‍♀️</div><div class="tc-cat">Walking & Transit</div><h3>Walk with confidence</h3><p>Keep your head up, walk at a steady pace. Avoid looking lost or distracted.</p></div>
-      <div class="tip-card" data-cat="walking"><div class="tc-icon">🎧</div><div class="tc-cat">Walking & Transit</div><h3>One earbud only</h3><p>Keep one ear free so you can hear what's around you and notice threats early.</p></div>
-      <div class="tip-card" data-cat="walking"><div class="tc-icon">📍</div><div class="tc-cat">Walking & Transit</div><h3>Share your location</h3><p>Use Google Maps or Find My Friends live location with trusted people.</p></div>
-      <div class="tip-card" data-cat="walking"><div class="tc-icon">🚌</div><div class="tc-cat">Walking & Transit</div><h3>Plan your route ahead</h3><p>Know your route before you leave. Identify well-lit streets and busy areas.</p></div>
-      <div class="tip-card" data-cat="night"><div class="tc-icon">💡</div><div class="tc-cat">At Night</div><h3>Stick to lit streets</h3><p>Choose well-lit routes even if they're longer. Avoid shortcuts through dark alleys.</p></div>
-      <div class="tip-card" data-cat="night"><div class="tc-icon">🚗</div><div class="tc-cat">At Night</div><h3>Check your car first</h3><p>Before getting in at night, glance in back seats. Have keys ready before approaching.</p></div>
-      <div class="tip-card" data-cat="night"><div class="tc-icon">👭</div><div class="tc-cat">At Night</div><h3>Use the buddy system</h3><p>Travel with a friend when possible. If alone, let someone know your whereabouts.</p></div>
-      <div class="tip-card" data-cat="digital"><div class="tc-icon">📲</div><div class="tc-cat">Digital Safety</div><h3>Download a safety app</h3><p>Apps like bSafe, Noonlight, or Shake2Safety let friends track you in real time.</p></div>
-      <div class="tip-card" data-cat="digital"><div class="tc-icon">🔒</div><div class="tc-cat">Digital Safety</div><h3>Lock your privacy settings</h3><p>Keep social media accounts private. Never post your real-time location.</p></div>
-      <div class="tip-card" data-cat="social"><div class="tc-icon">🥤</div><div class="tc-cat">Social Situations</div><h3>Never leave your drink</h3><p>Keep your drink in hand at all events. If you leave it, get a fresh one.</p></div>
-      <div class="tip-card" data-cat="social"><div class="tc-icon">🚘</div><div class="tc-cat">Social Situations</div><h3>Verify your rideshare</h3><p>Check the license plate, car model, AND driver photo before getting in.</p></div>
-      <div class="tip-card" data-cat="social"><div class="tc-icon">🤝</div><div class="tc-cat">Social Situations</div><h3>Bystander intervention</h3><p>If you see someone being harassed: check in, create a distraction, or get help.</p></div>
-      <div class="tip-card" data-cat="teens"><div class="tc-icon">📱</div><div class="tc-cat">For Teens</div><h3>Set up a code word</h3><p>Agree on a secret word with a trusted adult. If you text it, they come get you.</p></div>
-      <div class="tip-card" data-cat="teens"><div class="tc-icon">🙅‍♀️</div><div class="tc-cat">For Teens</div><h3>Trust your gut — always</h3><p>If something feels wrong, it probably is. Your instincts are powerful.</p></div>
-      <div class="tip-card" data-cat="teens"><div class="tc-icon">💬</div><div class="tc-cat">For Teens</div><h3>Talk to a trusted adult</h3><p>If something happened to you or someone you know, speak up. You're not alone.</p></div>
+      <div class="tip-card" data-cat="walking" data-id="walk-confidence"><button class="tip-save-btn" onclick="toggleSaveTip(this)">📌</button><div class="tc-icon">🚶‍♀️</div><div class="tc-cat">Walking & Transit</div><h3>Walk with confidence</h3><p>Keep your head up, walk at a steady pace. Avoid looking lost or distracted.</p></div>
+      <div class="tip-card" data-cat="walking" data-id="one-earbud"><button class="tip-save-btn" onclick="toggleSaveTip(this)">📌</button><div class="tc-icon">🎧</div><div class="tc-cat">Walking & Transit</div><h3>One earbud only</h3><p>Keep one ear free so you can hear what's around you and notice threats early.</p></div>
+      <div class="tip-card" data-cat="walking" data-id="share-location"><button class="tip-save-btn" onclick="toggleSaveTip(this)">📌</button><div class="tc-icon">📍</div><div class="tc-cat">Walking & Transit</div><h3>Share your location</h3><p>Use Google Maps or Find My Friends live location with trusted people.</p></div>
+      <div class="tip-card" data-cat="walking" data-id="plan-route"><button class="tip-save-btn" onclick="toggleSaveTip(this)">📌</button><div class="tc-icon">🚌</div><div class="tc-cat">Walking & Transit</div><h3>Plan your route ahead</h3><p>Know your route before you leave. Identify well-lit streets and busy areas.</p></div>
+      <div class="tip-card" data-cat="night" data-id="lit-streets"><button class="tip-save-btn" onclick="toggleSaveTip(this)">📌</button><div class="tc-icon">💡</div><div class="tc-cat">At Night</div><h3>Stick to lit streets</h3><p>Choose well-lit routes even if they're longer. Avoid shortcuts through dark alleys.</p></div>
+      <div class="tip-card" data-cat="night" data-id="check-car"><button class="tip-save-btn" onclick="toggleSaveTip(this)">📌</button><div class="tc-icon">🚗</div><div class="tc-cat">At Night</div><h3>Check your car first</h3><p>Before getting in at night, glance in back seats. Have keys ready before approaching.</p></div>
+      <div class="tip-card" data-cat="night" data-id="buddy-system"><button class="tip-save-btn" onclick="toggleSaveTip(this)">📌</button><div class="tc-icon">👭</div><div class="tc-cat">At Night</div><h3>Use the buddy system</h3><p>Travel with a friend when possible. If alone, let someone know your whereabouts.</p></div>
+      <div class="tip-card" data-cat="digital" data-id="safety-app"><button class="tip-save-btn" onclick="toggleSaveTip(this)">📌</button><div class="tc-icon">📲</div><div class="tc-cat">Digital Safety</div><h3>Download a safety app</h3><p>Apps like bSafe, Noonlight, or Shake2Safety let friends track you in real time.</p></div>
+      <div class="tip-card" data-cat="digital" data-id="lock-privacy"><button class="tip-save-btn" onclick="toggleSaveTip(this)">📌</button><div class="tc-icon">🔒</div><div class="tc-cat">Digital Safety</div><h3>Lock your privacy settings</h3><p>Keep social media accounts private. Never post your real-time location.</p></div>
+      <div class="tip-card" data-cat="social" data-id="never-leave-drink"><button class="tip-save-btn" onclick="toggleSaveTip(this)">📌</button><div class="tc-icon">🥤</div><div class="tc-cat">Social Situations</div><h3>Never leave your drink</h3><p>Keep your drink in hand at all events. If you leave it, get a fresh one.</p></div>
+      <div class="tip-card" data-cat="social" data-id="verify-rideshare"><button class="tip-save-btn" onclick="toggleSaveTip(this)">📌</button><div class="tc-icon">🚘</div><div class="tc-cat">Social Situations</div><h3>Verify your rideshare</h3><p>Check the license plate, car model, AND driver photo before getting in.</p></div>
+      <div class="tip-card" data-cat="social" data-id="bystander"><button class="tip-save-btn" onclick="toggleSaveTip(this)">📌</button><div class="tc-icon">🤝</div><div class="tc-cat">Social Situations</div><h3>Bystander intervention</h3><p>If you see someone being harassed: check in, create a distraction, or get help.</p></div>
+      <div class="tip-card" data-cat="teens" data-id="code-word"><button class="tip-save-btn" onclick="toggleSaveTip(this)">📌</button><div class="tc-icon">📱</div><div class="tc-cat">For Teens</div><h3>Set up a code word</h3><p>Agree on a secret word with a trusted adult. If you text it, they come get you.</p></div>
+      <div class="tip-card" data-cat="teens" data-id="trust-gut"><button class="tip-save-btn" onclick="toggleSaveTip(this)">📌</button><div class="tc-icon">🙅‍♀️</div><div class="tc-cat">For Teens</div><h3>Trust your gut — always</h3><p>If something feels wrong, it probably is. Your instincts are powerful.</p></div>
+      <div class="tip-card" data-cat="teens" data-id="trusted-adult"><button class="tip-save-btn" onclick="toggleSaveTip(this)">📌</button><div class="tc-icon">💬</div><div class="tc-cat">For Teens</div><h3>Talk to a trusted adult</h3><p>If something happened to you or someone you know, speak up. You're not alone.</p></div>
     </div>
+  </div>
+</div>
+
+<!-- ═══════════════ DASHBOARD ═══════════════ -->
+<div id="page-dashboard" class="page">
+  <div class="page-header rose-bg"><h2>⭐ My Dashboard</h2><p>The tips you've saved, all in one place — like your own safety board.</p></div>
+  <div class="page-body">
+    <div class="dashboard-toolbar">
+      <div class="dashboard-count" id="dashCount"></div>
+      <button class="dash-clear-btn" onclick="clearSavedTips()" id="dashClearBtn" style="display:none;">Clear All</button>
+    </div>
+    <div id="dashboardContent"></div>
   </div>
 </div>
 
@@ -416,23 +463,21 @@ nav { position: sticky; top: 0; z-index: 200; background: rgba(253,248,244,0.97)
     <h2>🗺️ Downtown Orlando Safety Map</h2>
     <p style="margin-bottom:1rem;">Community-reported data. Always trust your own instincts.</p>
     <div style="display:flex; gap:0.5rem; margin-top:0.75rem;">
-      <button class="map-tab-btn active" id="tab-zones" onclick="switchMapTab('zones')">📍 Safe Zones</button>
-      <button class="map-tab-btn" id="tab-concerns" onclick="switchMapTab('concerns')">⚠️ Concern Areas</button>
+      <button class="map-tab-btn active" id="tab-zones" onclick="switchMapTab('zones')">⚠️ Caution Zones</button>
+      <button class="map-tab-btn" id="tab-concerns" onclick="switchMapTab('concerns')">📋 Concern Areas</button>
     </div>
   </div>
 
-  <!-- TAB: SAFE ZONES -->
+  <!-- TAB: CAUTION ZONES -->
   <div id="map-tab-zones">
     <div id="map" style="width:100%;height:420px;position:relative;"></div>
     <div class="map-content">
-      <h3 class="section-title">Safety Zone Guide</h3>
-      <p class="section-intro">Click any marker on the map for details. Tap a zone card below to zoom in.</p>
+      <h3 class="section-title">Caution Zone Guide</h3>
+      <p class="section-intro">These are not "safe zones" — no area can be guaranteed safe. This guide simply highlights spots where extra caution has been reported. Click any marker on the map for details, or tap a card below to zoom in.</p>
       <div class="map-zones">
-        <div class="zone-card safe" onclick="flyToZone(-81.3784,28.5383)" style="cursor:pointer"><div class="zone-label">✅ Generally Safe</div><h3>Lake Eola Park (Daytime)</h3><p>Well-lit, high foot traffic, frequent events. Avoid isolated areas after dark.</p></div>
-        <div class="zone-card safe" onclick="flyToZone(-81.3816,28.5396)" style="cursor:pointer"><div class="zone-label">✅ Generally Safe</div><h3>Dr. Phillips Center Area</h3><p>Event venue with good lighting, security staff, and consistent evening crowds.</p></div>
-        <div class="zone-card safe" onclick="flyToZone(-81.3789,28.5411)" style="cursor:pointer"><div class="zone-label">✅ Generally Safe</div><h3>Orange Ave (Daytime)</h3><p>Main commercial corridor. Active during business hours with shops and pedestrian traffic.</p></div>
         <div class="zone-card caution" onclick="flyToZone(-81.3801,28.5388)" style="cursor:pointer"><div class="zone-label">⚠️ Use Caution</div><h3>Church Street / Bars District</h3><p>Busy at night but alcohol-related incidents increase. Go with friends, have a plan.</p></div>
         <div class="zone-card caution" onclick="flyToZone(-81.3770,28.5370)" style="cursor:pointer"><div class="zone-label">⚠️ Use Caution</div><h3>Parking Garages After Dark</h3><p>Poor lighting in many structures. Park near exits, have keys ready, try to use daytime.</p></div>
+        <div class="zone-card caution" onclick="flyToZone(-81.3784,28.5383)" style="cursor:pointer"><div class="zone-label">⚠️ Use Caution</div><h3>Lake Eola Park (After Dark)</h3><p>Well-lit and busy by day, but isolated paths after dark have been flagged by the community.</p></div>
         <div class="zone-card avoid" onclick="flyToZone(-81.3760,28.5355)" style="cursor:pointer"><div class="zone-label">🔴 Extra Caution at Night</div><h3>Isolated Side Streets</h3><p>Less-trafficked streets behind main corridors have poor lighting and minimal foot traffic.</p></div>
       </div>
     </div>
@@ -670,6 +715,14 @@ nav { position: sticky; top: 0; z-index: 200; background: rgba(253,248,244,0.97)
         <p>From emergency contacts and self-defense skills to safe route mapping and local support organizations, everything on this platform is designed to be immediately useful — no sign-up, no cost, no barriers.</p>
       </div>
     </div>
+    <div class="about-disclaimer">
+      <div class="ad-icon">⚠️</div>
+      <div>
+        <h3>A Note on Our Statistics & Data</h3>
+        <p>None of the statistics, maps, or safety information shared on this platform can guarantee an increase in your personal safety. No tip, resource, or data point can promise that following it will prevent harm.</p>
+        <p>Our goal is solely to help spread awareness and connect women with existing resources — not to make safety guarantees. Please always trust your own judgment, and in an emergency, call 911 or use the hotlines listed on this site.</p>
+      </div>
+    </div>
     <div style="background:white; border-radius:18px; padding:2rem; box-shadow:0 2px 16px rgba(44,31,34,0.07); margin-bottom:2rem;">
       <h3 style="font-family:'Playfair Display',serif; font-size:1.2rem; color:var(--deep); margin-bottom:1rem; font-weight:600;">How S.H.E. Works</h3>
       <div style="display:flex; flex-direction:column; gap:0.75rem;">
@@ -679,7 +732,7 @@ nav { position: sticky; top: 0; z-index: 200; background: rgba(253,248,244,0.97)
         </div>
         <div style="display:flex; gap:0.85rem; align-items:flex-start;">
           <div style="background:var(--rose); color:white; width:26px; height:26px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:0.72rem; font-weight:700; flex-shrink:0;">2</div>
-          <div style="font-size:0.86rem; line-height:1.65; color:var(--warm-gray);"><strong style="color:var(--deep);">Data Mapping</strong> — We analyze that data to identify safe zones, caution areas, and patterns of concern across the city.</div>
+          <div style="font-size:0.86rem; line-height:1.65; color:var(--warm-gray);"><strong style="color:var(--deep);">Data Mapping</strong> — We analyze that data to identify caution areas and patterns of concern across the city. We don't label any area as a guaranteed "safe zone" — no place can be promised safe.</div>
         </div>
         <div style="display:flex; gap:0.85rem; align-items:flex-start;">
           <div style="background:var(--rose); color:white; width:26px; height:26px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:0.72rem; font-weight:700; flex-shrink:0;">3</div>
@@ -732,9 +785,10 @@ nav { position: sticky; top: 0; z-index: 200; background: rgba(253,248,244,0.97)
         <div style="background:white; border-radius:16px; padding:1.3rem 1.5rem; box-shadow:0 2px 14px rgba(44,31,34,0.07); border-left:4px solid var(--warn);">
           <div style="display:flex; align-items:center; gap:0.6rem; margin-bottom:0.5rem;">
             <span style="font-size:1.2rem;">⭐</span>
-            <span style="font-weight:700; font-size:0.9rem; color:var(--deep);">Personalized Dashboard</span>
+            <span style="font-weight:700; font-size:0.9rem; color:var(--deep);">Personalized Dashboard <span style="font-size:0.68rem; font-weight:700; text-transform:uppercase; letter-spacing:0.06em; color:var(--rose); background:var(--blush); padding:0.15rem 0.5rem; border-radius:10px; margin-left:0.4rem;">Live Now</span></span>
           </div>
-          <p style="font-size:0.83rem; color:var(--warm-gray); line-height:1.7; margin:0;">Users would be able to save favorite resources, bookmark organizations, save emergency contacts, and organize frequently used information for quick access.</p>
+          <p style="font-size:0.83rem; color:var(--warm-gray); line-height:1.7; margin:0 0 0.6rem;">You can already pin your favorite Safety Tips to <strong style="color:var(--deep);">My Dashboard</strong> for quick access. Next, we'd like to expand it to bookmarked organizations, saved emergency contacts, and more.</p>
+          <button onclick="goPage('dashboard')" style="background:var(--rose); color:white; border:none; border-radius:8px; padding:0.5rem 1.1rem; font-family:'Nunito',sans-serif; font-size:0.8rem; font-weight:700; cursor:pointer;">Go to My Dashboard →</button>
         </div>
 
         <div style="background:white; border-radius:16px; padding:1.3rem 1.5rem; box-shadow:0 2px 14px rgba(44,31,34,0.07); border-left:4px solid var(--sage);">
@@ -886,6 +940,7 @@ function goPage(page) {
   const activeBnav = document.querySelector(`.bnav-btn[data-bnav="${page}"]`);
   if (activeBnav) activeBnav.classList.add('active');
   if (page === 'map') setTimeout(initZonesMap, 50);
+  if (page === 'dashboard') renderDashboard();
 }
 
 // ── SOS MODAL ──
@@ -906,6 +961,111 @@ function filterTips(category, btn) {
 function toggleAcc(header) { header.closest('.acc-item').classList.toggle('open'); }
 
 // ══════════════════════════════════════════
+// MY DASHBOARD — SAVED / PINNED TIPS
+// ══════════════════════════════════════════
+const SAVED_TIPS_KEY = 'she_saved_tips';
+
+function getSavedTips() {
+  try {
+    const raw = localStorage.getItem(SAVED_TIPS_KEY);
+    return raw ? JSON.parse(raw) : [];
+  } catch (e) { return []; }
+}
+
+function setSavedTips(list) {
+  try { localStorage.setItem(SAVED_TIPS_KEY, JSON.stringify(list)); } catch (e) {}
+}
+
+function isTipSaved(id) {
+  return getSavedTips().some(t => t.id === id);
+}
+
+function toggleSaveTip(btn) {
+  const card = btn.closest('.tip-card');
+  const id = card.dataset.id;
+  let saved = getSavedTips();
+  if (saved.some(t => t.id === id)) {
+    saved = saved.filter(t => t.id !== id);
+    btn.classList.remove('saved');
+  } else {
+    saved.push({
+      id: id,
+      cat: card.dataset.cat,
+      icon: card.querySelector('.tc-icon').textContent,
+      catLabel: card.querySelector('.tc-cat').textContent,
+      title: card.querySelector('h3').textContent,
+      desc: card.querySelector('p').textContent
+    });
+    btn.classList.add('saved');
+  }
+  setSavedTips(saved);
+  updateDashboardCountBadge();
+}
+
+function syncSaveButtons() {
+  const saved = getSavedTips();
+  document.querySelectorAll('.tip-card[data-id]').forEach(card => {
+    const btn = card.querySelector('.tip-save-btn');
+    if (!btn) return;
+    if (saved.some(t => t.id === card.dataset.id)) btn.classList.add('saved');
+    else btn.classList.remove('saved');
+  });
+}
+
+function updateDashboardCountBadge() {
+  const el = document.getElementById('dashCount');
+  if (!el) return;
+  const n = getSavedTips().length;
+  el.innerHTML = n > 0 ? `<strong>${n}</strong> tip${n === 1 ? '' : 's'} saved` : '';
+}
+
+function renderDashboard() {
+  const saved = getSavedTips();
+  const content = document.getElementById('dashboardContent');
+  const clearBtn = document.getElementById('dashClearBtn');
+  updateDashboardCountBadge();
+  if (!content) return;
+  if (saved.length === 0) {
+    clearBtn.style.display = 'none';
+    content.innerHTML = `
+      <div class="dashboard-empty">
+        <div class="de-icon">📌</div>
+        <h3>Nothing saved yet</h3>
+        <p>Browse Safety Tips and tap the pin icon on any card to save it here — like building your own safety board.</p>
+        <button class="dash-browse-btn" onclick="goPage('tips')">Browse Safety Tips</button>
+      </div>`;
+    return;
+  }
+  clearBtn.style.display = '';
+  content.innerHTML = `<div class="dashboard-grid">` + saved.map(t => `
+    <div class="dash-card">
+      <button class="dash-remove-btn" onclick="removeSavedTip('${t.id}')" title="Remove">✕</button>
+      <div class="tc-icon">${t.icon}</div>
+      <div class="tc-cat">${t.catLabel}</div>
+      <h3 style="font-size:0.95rem; font-weight:700; color:var(--deep); margin-bottom:0.45rem;">${t.title}</h3>
+      <p style="font-size:0.83rem; line-height:1.7; color:var(--warm-gray);">${t.desc}</p>
+    </div>`).join('') + `</div>`;
+}
+
+function removeSavedTip(id) {
+  setSavedTips(getSavedTips().filter(t => t.id !== id));
+  renderDashboard();
+  syncSaveButtons();
+}
+
+function clearSavedTips() {
+  if (!confirm('Remove all saved tips from your dashboard?')) return;
+  setSavedTips([]);
+  renderDashboard();
+  syncSaveButtons();
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+  syncSaveButtons();
+  updateDashboardCountBadge();
+});
+
+// ══════════════════════════════════════════
 // MAPBOX SETUP
 // ══════════════════════════════════════════
 mapboxgl.accessToken = 'pk.eyJ1Ijoic2FmZXR5Zm9yaGVyZW1wb3dlcm1lbnQiLCJhIjoiY21wYnkyN3E5MDJhYzJycHg2cTk0ZjlqdyJ9.0_p6SMAmrg9rMP_nqXyDRg';
@@ -921,7 +1081,7 @@ function switchMapTab(tab) {
 }
 
 // ══════════════════════════════════════════
-// TAB 1 — SAFE ZONES MAP
+// TAB 1 — CAUTION ZONES MAP
 // ══════════════════════════════════════════
 let zonesMapObj = null;
 
@@ -936,11 +1096,9 @@ function initZonesMap() {
   zonesMapObj.addControl(new mapboxgl.NavigationControl());
 
   const zones = [
-    { coords: [-81.3784, 28.5383], label: '✅ Lake Eola Park',          desc: 'Well-lit, high foot traffic, frequent events. Avoid isolated areas after dark.',  color: '#27ae60' },
-    { coords: [-81.3816, 28.5396], label: '✅ Dr. Phillips Center',      desc: 'Event venue with good lighting, security staff, and consistent evening crowds.',  color: '#27ae60' },
-    { coords: [-81.3789, 28.5411], label: '✅ Orange Ave (Daytime)',     desc: 'Main commercial corridor. Active during business hours.',                         color: '#27ae60' },
     { coords: [-81.3801, 28.5388], label: '⚠️ Church Street / Bars',    desc: 'Busy at night but alcohol-related incidents increase. Go with friends.',          color: '#e67e22' },
     { coords: [-81.3770, 28.5370], label: '⚠️ Parking Garages (Night)', desc: 'Poor lighting in many structures. Park near exits, have keys ready.',             color: '#e67e22' },
+    { coords: [-81.3784, 28.5383], label: '⚠️ Lake Eola Park (After Dark)', desc: 'Busy by day, but isolated paths after dark have been flagged by the community.', color: '#e67e22' },
     { coords: [-81.3760, 28.5355], label: '🔴 Isolated Side Streets',   desc: 'Less-trafficked streets with poor lighting and minimal foot traffic at night.',    color: '#c0392b' }
   ];
 
@@ -1105,7 +1263,6 @@ function initZonesMap() {
   legendDiv.appendChild(makeLegendRow('fire',    '🚒', '#B71C1C', 'Fire Station',   false));
   legendDiv.appendChild(makeLegendRow('hospital','🏥', '#00695C', 'Hospital / ER',  false));
   legendDiv.appendChild(makeLegendRow('shelter', '🏠', '#6A1B9A', "Women's Shelter",false));
-  legendDiv.appendChild(makeLegendRow(null, null, '#27ae60', 'Safe Zone',       true));
   legendDiv.appendChild(makeLegendRow(null, null, '#e67e22', 'Caution Zone',    true));
   legendDiv.appendChild(makeLegendRow(null, null, '#c0392b', 'Avoid at Night',  true));
   document.getElementById('map').appendChild(legendDiv);
