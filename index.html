@@ -43,8 +43,14 @@ body {
 @keyframes fadeIn { from { opacity:0; transform:translateY(8px); } to { opacity:1; transform:translateY(0); } }
 
 /* ── SOS BANNER ── */
-.sos-banner { background: var(--emergency); color: white; text-align: center; padding: 0.55rem 1rem; font-size: 0.8rem; font-weight: 600; display: flex; align-items: center; justify-content: center; gap: 0.5rem; flex-wrap: wrap; }
+.sos-banner { background: var(--emergency); color: white; text-align: center; padding: 0.55rem 1rem; font-size: 0.8rem; font-weight: 600; display: flex; align-items: center; justify-content: center; gap: 0.6rem; flex-wrap: nowrap; overflow: hidden; }
 .sos-banner a { color: white; font-weight: 700; text-decoration: underline; }
+.sos-ticker-wrap { overflow: hidden; flex: 1; max-width: 640px; position: relative; -webkit-mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent); mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent); }
+.sos-ticker { display: inline-flex; align-items: center; white-space: nowrap; animation: sosScroll 16s linear infinite; }
+.sos-ticker-item { white-space: nowrap; padding: 0 1.25rem; }
+.sos-ticker-item::after { content: '•'; margin-left: 1.25rem; opacity: 0.6; }
+@keyframes sosScroll { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+@media (prefers-reduced-motion: reduce) { .sos-ticker { animation: none; } }
 .sos-pill { background: white; color: var(--emergency); padding: 0.15rem 0.65rem; border-radius: 20px; font-weight: 700; font-size: 0.75rem; }
 
 /* ── NAV ── */
@@ -328,7 +334,13 @@ nav { position: sticky; top: 0; z-index: 200; background: rgba(253,248,244,0.97)
 <!-- SOS BANNER -->
 <div class="sos-banner">
   <span class="sos-pill">⚡ Emergency?</span>
-  Call <a href="tel:911">911</a> &nbsp;·&nbsp; DV Hotline: <a href="tel:18007997233">1-800-799-7233</a> &nbsp;·&nbsp; Sexual Assault: <a href="tel:18006564673">1-800-656-4673</a>
+  <div class="sos-ticker-wrap">
+    <div class="sos-ticker" id="sosTicker">
+      <span class="sos-ticker-item">Call <a href="tel:911">911</a></span>
+      <span class="sos-ticker-item">DV Hotline: <a href="tel:18007997233">1-800-799-7233</a></span>
+      <span class="sos-ticker-item">Sexual Assault: <a href="tel:18006564673">1-800-656-4673</a></span>
+    </div>
+  </div>
 </div>
 
 <!-- NAV -->
@@ -924,6 +936,16 @@ nav { position: sticky; top: 0; z-index: 200; background: rgba(253,248,244,0.97)
 </div>
 
 <script>
+// ══════════════════════════════════════════
+// SOS BANNER TICKER (continuous scroll)
+// ══════════════════════════════════════════
+(function () {
+  const ticker = document.getElementById('sosTicker');
+  if (!ticker) return;
+  // Duplicate the content once so the loop is seamless (scrolls -50% then resets)
+  ticker.innerHTML += ticker.innerHTML;
+})();
+
 // ══════════════════════════════════════════
 // PAGE NAVIGATION
 // ══════════════════════════════════════════
