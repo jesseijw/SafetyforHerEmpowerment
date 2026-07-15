@@ -309,6 +309,29 @@ nav { position: sticky; top: 0; z-index: 200; background: rgba(253,248,244,0.97)
 .modal-close { width: 100%; background: var(--light); border: none; border-radius: 10px; padding: 0.7rem; font-family: 'Nunito', sans-serif; font-size: 0.86rem; font-weight: 600; color: var(--warm-gray); cursor: pointer; transition: all 0.2s; }
 .modal-close:hover { background: var(--blush); }
 
+/* ── REPORT A CONCERN ── */
+.report-concern-btn { width: 100%; display: flex; align-items: center; justify-content: center; gap: 0.4rem; background: var(--mauve); color: white; border: none; border-radius: 10px; padding: 0.65rem 0.9rem; font-family: 'Nunito', sans-serif; font-size: 0.82rem; font-weight: 700; cursor: pointer; transition: background 0.2s; }
+.report-concern-btn:hover { background: #5a3347; }
+.report-concern-btn-header { background: white; color: var(--mauve); border: 2px solid rgba(255,255,255,0.7); border-radius: 20px; padding: 0.45rem 1rem; font-family: 'Nunito', sans-serif; font-size: 0.8rem; font-weight: 700; cursor: pointer; transition: all 0.2s; white-space: nowrap; }
+.report-concern-btn-header:hover { background: var(--blush); }
+.report-banner { position: absolute; top: 12px; left: 50%; transform: translateX(-50%); z-index: 20; background: var(--deep); color: white; padding: 0.6rem 1rem; border-radius: 30px; font-size: 0.8rem; font-weight: 600; display: flex; align-items: center; gap: 0.75rem; box-shadow: 0 4px 16px rgba(0,0,0,0.3); max-width: 90%; text-align: center; }
+.report-banner button { background: rgba(255,255,255,0.2); border: none; color: white; border-radius: 14px; padding: 0.25rem 0.7rem; font-size: 0.72rem; font-weight: 700; cursor: pointer; flex-shrink: 0; }
+.report-banner button:hover { background: rgba(255,255,255,0.35); }
+.report-panel { position: absolute; top: 12px; right: 12px; width: 300px; max-width: 85%; max-height: calc(100% - 24px); overflow-y: auto; background: white; border-radius: 16px; box-shadow: 0 8px 30px rgba(0,0,0,0.28); padding: 1.25rem; z-index: 25; display: none; }
+.report-panel.open { display: block; }
+.report-panel-head { text-align: center; margin-bottom: 1rem; }
+.report-panel-icon { font-size: 2rem; }
+.report-panel h3 { font-family: 'Playfair Display', serif; font-size: 1.15rem; color: var(--mauve); margin: 0.3rem 0 0.2rem; }
+.report-panel-sub { font-size: 0.76rem; color: var(--warm-gray); line-height: 1.5; }
+.report-panel-submit { border: none; cursor: pointer; width: 100%; justify-content: center; }
+.rc-field { margin-bottom: 1rem; text-align: left; }
+.rc-field label { display: block; font-size: 0.75rem; font-weight: 700; color: var(--warm-gray); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.35rem; }
+.rc-field input, .rc-field textarea, .rc-field select { width: 100%; border: 2px solid rgba(212,115,106,0.2); border-radius: 10px; padding: 0.6rem 0.75rem; font-family: 'Nunito', sans-serif; font-size: 0.88rem; color: var(--deep); background: var(--light); resize: vertical; }
+.rc-field input:focus, .rc-field textarea:focus, .rc-field select:focus { outline: none; border-color: var(--mauve); }
+.report-toast { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(20px); background: var(--safe); color: white; padding: 0.8rem 1.5rem; border-radius: 30px; font-size: 0.85rem; font-weight: 600; box-shadow: 0 6px 24px rgba(0,0,0,0.25); z-index: 999; opacity: 0; pointer-events: none; transition: all 0.35s ease; }
+.report-toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+.concern-card.user-submitted { border: 1px dashed var(--mauve); }
+
 /* ── RESPONSIVE ── */
 @media (max-width: 860px) {
   .nav-pills { display: none; }
@@ -474,9 +497,10 @@ nav { position: sticky; top: 0; z-index: 200; background: rgba(253,248,244,0.97)
   <div class="page-header sage-bg" style="padding-bottom:0;">
     <h2>🗺️ Downtown Orlando Safety Map</h2>
     <p style="margin-bottom:1rem;">Community-reported data. Always trust your own instincts.</p>
-    <div style="display:flex; gap:0.5rem; margin-top:0.75rem;">
+    <div style="display:flex; gap:0.5rem; margin-top:0.75rem; align-items:center; flex-wrap:wrap;">
       <button class="map-tab-btn active" id="tab-zones" onclick="switchMapTab('zones')">⚠️ Caution Zones</button>
       <button class="map-tab-btn" id="tab-concerns" onclick="switchMapTab('concerns')">📋 Concern Areas</button>
+      <button class="report-concern-btn-header" onclick="startReportFlow()" style="margin-left:auto;">🚩 Report &amp; Add Places</button>
     </div>
   </div>
 
@@ -500,13 +524,20 @@ nav { position: sticky; top: 0; z-index: 200; background: rgba(253,248,244,0.97)
     <div style="display:flex;flex-wrap:wrap;min-height:480px;">
       <!-- Sidebar -->
       <div id="concern-sidebar" style="width:300px;min-width:260px;background:white;border-right:1px solid rgba(212,115,106,0.15);display:flex;flex-direction:column;overflow-y:auto;max-height:480px;">
+        <!-- Report a concern -->
+        <div style="padding:16px 16px 4px;">
+          <button class="report-concern-btn" onclick="startReportFlow()">🚩 Report &amp; Add Places</button>
+        </div>
         <!-- Legend -->
-        <div style="padding:16px 16px 10px;border-bottom:1px solid #eee;">
+        <div style="padding:12px 16px 10px;border-bottom:1px solid #eee;">
           <div style="font-size:0.68rem;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:var(--warm-gray);margin-bottom:10px;">Filter by Concern Level</div>
           <div class="concern-legend-item" id="cleg-all" onclick="filterConcerns(null)" style="background:var(--light);"><div class="concern-dot" style="background:#6b5b5e;"></div><span>Show All</span></div>
           <div class="concern-legend-item" id="cleg-high" onclick="filterConcerns('high')"><div class="concern-dot" style="background:#D93025;"></div><span>High Concern</span><small style="margin-left:auto;font-size:0.7rem;color:var(--warm-gray);">Frequently cited</small></div>
           <div class="concern-legend-item" id="cleg-moderate" onclick="filterConcerns('moderate')"><div class="concern-dot" style="background:#E37400;"></div><span>Moderate Concern</span><small style="margin-left:auto;font-size:0.7rem;color:var(--warm-gray);">Several mentions</small></div>
           <div class="concern-legend-item" id="cleg-low" onclick="filterConcerns('low')"><div class="concern-dot" style="background:#1A8A4A;"></div><span>Lower Concern</span><small style="margin-left:auto;font-size:0.7rem;color:var(--warm-gray);">1–2 mentions</small></div>
+          <div class="concern-legend-item" id="cleg-shelter" onclick="filterConcerns('shelter')"><div class="concern-dot" style="background:#5f8c76;"></div><span>Women's Shelters</span></div>
+          <div class="concern-legend-item" id="cleg-police" onclick="filterConcerns('police')"><div class="concern-dot" style="background:#2d5f8a;"></div><span>Police Depts.</span></div>
+          <div class="concern-legend-item" id="cleg-resource" onclick="filterConcerns('resource')"><div class="concern-dot" style="background:#8c5c6e;"></div><span>Other Resources</span></div>
         </div>
         <!-- Location list -->
         <div style="padding:10px 10px 16px;flex:1;">
@@ -515,7 +546,67 @@ nav { position: sticky; top: 0; z-index: 200; background: rgba(253,248,244,0.97)
         </div>
       </div>
       <!-- Map -->
-      <div id="concern-map" style="flex:1;min-height:480px;min-width:200px;"></div>
+      <div id="concern-map-wrap" style="flex:1;min-width:200px;position:relative;">
+        <div id="report-banner" class="report-banner" style="display:none;">
+          <span id="report-banner-text">📍 Click anywhere on the map to place your pin</span>
+          <button onclick="cancelReportFlow()">Cancel</button>
+        </div>
+        <div id="concern-map" style="width:100%;height:480px;min-height:480px;"></div>
+
+        <!-- Report / Add-a-place panel — floats over the map so it stays clickable -->
+        <div class="report-panel" id="reportModal">
+          <div class="report-panel-head">
+            <div class="report-panel-icon">🚩</div>
+            <h3>Add to the Safety Map</h3>
+            <p class="report-panel-sub">Submissions are reviewed by our team before they go live — nothing is added to the public map automatically.</p>
+          </div>
+
+          <div class="rc-field">
+            <label for="rcType">What are you adding?</label>
+            <select id="rcType" onchange="onRcTypeChange()">
+              <option value="concern">⚠️ A concern / unsafe area</option>
+              <option value="shelter">🏠 A women's shelter</option>
+              <option value="police">👮 A police department</option>
+              <option value="resource">🛟 Another safety resource</option>
+            </select>
+          </div>
+
+          <div class="rc-field">
+            <label for="rcName">Location name</label>
+            <input type="text" id="rcName" placeholder="e.g. Harbor House of Central Florida">
+          </div>
+
+          <div class="rc-field">
+            <label for="rcAddress">Address <span style="font-weight:400;text-transform:none;">(or click the map)</span></label>
+            <div style="display:flex;gap:0.5rem;">
+              <input type="text" id="rcAddress" placeholder="Type an address...">
+              <button type="button" onclick="geocodeRcAddress()" style="flex-shrink:0;background:var(--sage);color:white;border:none;border-radius:10px;padding:0 1rem;font-family:'Nunito',sans-serif;font-weight:700;font-size:0.8rem;cursor:pointer;">Find</button>
+            </div>
+          </div>
+
+          <div class="rc-field" id="rcLevelField">
+            <label for="rcLevel" id="rcLevelLabel">How do you feel about this location?</label>
+            <select id="rcLevel">
+              <option value="safe">✅ Feels safe — no concerns</option>
+              <option value="low">🟢 Lower — minor caution</option>
+              <option value="moderate" selected>🟠 Moderate — several concerns</option>
+              <option value="high">🔴 High — significant concern</option>
+            </select>
+          </div>
+
+          <div class="rc-field">
+            <label for="rcDesc" id="rcDescLabel">Any details? (optional)</label>
+            <textarea id="rcDesc" rows="3" placeholder="Briefly describe why — hours, services, what happened, or why this spot feels the way it does"></textarea>
+          </div>
+
+          <div id="rcCoords" style="font-size:0.72rem;color:var(--warm-gray);margin-bottom:1rem;">📍 No location selected yet — click the map or use the address box above.</div>
+
+          <div class="modal-btns" style="margin-bottom:0.6rem;">
+            <button class="modal-btn mauve report-panel-submit" onclick="submitReport()">Send for Review</button>
+          </div>
+          <button class="modal-close" onclick="closeReportModal(true)">Cancel</button>
+        </div>
+      </div>
     </div>
     <div style="padding:1rem 1.5rem;background:var(--emergency-light);font-size:0.82rem;color:var(--deep);line-height:1.6;">
       ⚠️ <strong>Based on community survey responses.</strong> These areas reflect concerns shared by women in Downtown Orlando. Always trust your instincts and stay aware of your surroundings.
@@ -935,6 +1026,8 @@ nav { position: sticky; top: 0; z-index: 200; background: rgba(253,248,244,0.97)
   </div>
 </div>
 
+<div class="report-toast" id="reportToast">✓ Thanks — your submission was sent to our team for review.</div>
+
 <script>
 // ══════════════════════════════════════════
 // SOS BANNER TICKER (continuous scroll)
@@ -1347,28 +1440,90 @@ function flyToZone(lng, lat) {
 // TAB 2 — COMMUNITY CONCERN MAP
 // ══════════════════════════════════════════
 const concernLocations = [
-  { id:1, level:'high',     name:'Parramore District',          short:'Most cited area by name',          desc:'Includes surrounding blocks, areas near Camping World Stadium, and the Orlando Pride stadium.',                              lat:28.5383, lng:-81.3890 },
-  { id:2, level:'high',     name:'Camping World Stadium Area',  short:'Stadium surroundings',             desc:'Stadium area and surrounding streets repeatedly flagged. Part of the broader Parramore concern zone.',                       lat:28.5390, lng:-81.4027 },
-  { id:3, level:'high',     name:'Kia Center / Arena District', short:'Arena and Wall Street corridor',   desc:'Near the Kia Center (formerly Amway Center), around the arena, and along the Wall Street corridor.',                         lat:28.5392, lng:-81.3839 },
-  { id:4, level:'high',     name:'Church Street / Nightlife',   short:'Bars, clubs, late-night activity', desc:'Church Street, Wall Street Plaza, Orange Ave corridor. Concerns tied to intoxication and post-midnight crowds.',               lat:28.5375, lng:-81.3800 },
-  { id:5, level:'high',     name:'Orange Blossom Trail (OBT)',  short:'Full OBT corridor',                desc:'The entire Orange Blossom Trail corridor was cited as a high-concern area.',                                                 lat:28.5265, lng:-81.3971 },
-  { id:6, level:'moderate', name:'Lynx Central Station',        short:'Homeless concentration area',      desc:'Near the Lynx bus hub, surrounding gas stations, and the downtown library.',                                                 lat:28.5485, lng:-81.3813 },
-  { id:7, level:'moderate', name:'Gore St & Kaley Ave Area',    short:'Specific intersection cited',      desc:'This intersection and surrounding streets in the south downtown area were named directly by multiple respondents.',           lat:28.5199, lng:-81.3942 },
-  { id:8, level:'low',      name:'Lake Eola Park',              short:'Isolated paths after dark',        desc:'Generally regarded as safe during the day. Mentioned once or twice regarding poorly lit paths and isolated stretches at night.', lat:28.5428, lng:-81.3709 },
-  { id:9, level:'high',     name:'Pine Hills',                  short:'High-risk area — use caution',     desc:'Elevated concern area with higher rates of reported incidents. Exercise significant caution, especially at night. Stay in well-lit, populated areas.',  lat:28.5578, lng:-81.4534 }
+  { id:1, type:'concern', level:'high',     name:'Parramore District',          short:'Most cited area by name',          desc:'Includes surrounding blocks, areas near Camping World Stadium, and the Orlando Pride stadium.',                              lat:28.5383, lng:-81.3890 },
+  { id:2, type:'concern', level:'high',     name:'Camping World Stadium Area',  short:'Stadium surroundings',             desc:'Stadium area and surrounding streets repeatedly flagged. Part of the broader Parramore concern zone.',                       lat:28.5390, lng:-81.4027 },
+  { id:3, type:'concern', level:'high',     name:'Kia Center / Arena District', short:'Arena and Wall Street corridor',   desc:'Near the Kia Center (formerly Amway Center), around the arena, and along the Wall Street corridor.',                         lat:28.5392, lng:-81.3839 },
+  { id:4, type:'concern', level:'high',     name:'Church Street / Nightlife',   short:'Bars, clubs, late-night activity', desc:'Church Street, Wall Street Plaza, Orange Ave corridor. Concerns tied to intoxication and post-midnight crowds.',               lat:28.5375, lng:-81.3800 },
+  { id:5, type:'concern', level:'high',     name:'Orange Blossom Trail (OBT)',  short:'Full OBT corridor',                desc:'The entire Orange Blossom Trail corridor was cited as a high-concern area.',                                                 lat:28.5265, lng:-81.3971 },
+  { id:6, type:'concern', level:'moderate', name:'Lynx Central Station',        short:'Homeless concentration area',      desc:'Near the Lynx bus hub, surrounding gas stations, and the downtown library.',                                                 lat:28.5485, lng:-81.3813 },
+  { id:7, type:'concern', level:'moderate', name:'Gore St & Kaley Ave Area',    short:'Specific intersection cited',      desc:'This intersection and surrounding streets in the south downtown area were named directly by multiple respondents.',           lat:28.5199, lng:-81.3942 },
+  { id:8, type:'concern', level:'low',      name:'Lake Eola Park',              short:'Isolated paths after dark',        desc:'Generally regarded as safe during the day. Mentioned once or twice regarding poorly lit paths and isolated stretches at night.', lat:28.5428, lng:-81.3709 },
+  { id:9, type:'concern', level:'high',     name:'Pine Hills',                  short:'High-risk area — use caution',     desc:'Elevated concern area with higher rates of reported incidents. Exercise significant caution, especially at night. Stay in well-lit, populated areas.',  lat:28.5578, lng:-81.4534 }
 ];
 
 const concernConfig = {
+  safe:     { label:'Feels Safe', color:'#27ae60', pillBg:'#e8f5e9', pillColor:'#1e8449' },
   high:     { label:'High',     color:'#D93025', pillBg:'#fde8e7', pillColor:'#D93025' },
   moderate: { label:'Moderate', color:'#E37400', pillBg:'#fef3cd', pillColor:'#E37400' },
   low:      { label:'Lower',    color:'#1A8A4A', pillBg:'#d4edda', pillColor:'#1A8A4A' }
 };
 
+// Labels shown for the "how do you feel about this location?" rating,
+// which now applies to every submission type — not just concerns.
+const ratingLabels = {
+  safe:     '✅ Feels Safe',
+  low:      '🟢 Lower Concern',
+  moderate: '🟠 Moderate Concern',
+  high:     '🔴 High Concern'
+};
+
+// Non-"concern" location types a visitor can add — shelters, police departments,
+// and other safety resources. Each gets its own marker color/icon and list pill.
+const locationTypeConfig = {
+  shelter:  { label:"Women's Shelter",  color:'#5f8c76', pillBg:'#e3efe9', pillColor:'#3f6b53', icon:'🏠' },
+  police:   { label:'Police Department',color:'#2d5f8a', pillBg:'#e3edf7', pillColor:'#2d5f8a', icon:'👮' },
+  resource: { label:'Safety Resource',  color:'#8c5c6e', pillBg:'#f3e6ec', pillColor:'#8c5c6e', icon:'🛟' }
+};
+
+// ─────────────────────────────────────────────────────────────────────────
+// BACKEND CONFIG
+// Paste the Web App URL of your deployed Google Apps Script here to enable:
+//   • Submissions to be emailed to safetyforherempowerment@gmail.com with
+//     one-click Approve/Deny links (nothing goes live until you approve it)
+//   • Approved submissions to load onto everyone's map automatically
+// Until this is set, submissions fall back to opening a pre-filled email
+// draft to safetyforherempowerment@gmail.com for manual review instead.
+// See the companion apps-script.gs file + setup guide for deployment steps.
+// ─────────────────────────────────────────────────────────────────────────
+const REPORT_ENDPOINT = 'https://script.google.com/macros/s/AKfycbwP7xmcc1r-vLo6keR6DqdRNlrfCN-_4BEiASBJqpWCk33ZvtUYnh8SGVCIr72xf98Zfg/exec';
+const REVIEW_EMAIL = 'safetyforherempowerment@gmail.com';
+
 let concernMapObj = null;
 let concernMarkers = [];
+let currentConcernFilter = null;
+
+function isConcernFilter(f) { return f === 'high' || f === 'moderate' || f === 'low'; }
+
+function locMatchesFilter(loc, filter) {
+  if (!filter) return true;
+  if (isConcernFilter(filter)) return loc.type === 'concern' && loc.level === filter;
+  return loc.type === filter;
+}
+
+function getVisualConfig(loc) {
+  return loc.type === 'concern' ? concernConfig[loc.level] : locationTypeConfig[loc.type];
+}
+
+// Pulls approved, team-reviewed submissions from the backend so every
+// visitor's map stays in sync. Safe no-op if REPORT_ENDPOINT isn't set yet.
+async function fetchApprovedSubmissions() {
+  if (!REPORT_ENDPOINT) return;
+  try {
+    const res = await fetch(`${REPORT_ENDPOINT}?action=list`);
+    const approved = await res.json();
+    if (!Array.isArray(approved)) return;
+    approved.forEach(loc => {
+      if (!concernLocations.some(l => l.id === loc.id)) {
+        concernLocations.push(loc);
+        if (concernMapObj) addConcernMarker(loc);
+      }
+    });
+    buildConcernList(currentConcernFilter);
+  } catch (e) { /* backend not reachable yet — safe to ignore */ }
+}
 
 function initConcernMap() {
-  buildConcernList(null);
+  buildConcernList(currentConcernFilter);
   if (concernMapObj) return;
   concernMapObj = new mapboxgl.Map({
     container: 'concern-map',
@@ -1377,55 +1532,82 @@ function initConcernMap() {
     zoom: 12
   });
   concernMapObj.addControl(new mapboxgl.NavigationControl());
+  concernLocations.forEach(loc => addConcernMarker(loc));
+  fetchApprovedSubmissions();
+  // Light polling so newly-approved reports appear without a full page reload.
+  setInterval(fetchApprovedSubmissions, 45000);
+}
 
-  concernLocations.forEach(loc => {
-    const cfg = concernConfig[loc.level];
-    const el = document.createElement('div');
+// Builds one marker + popup for a location and adds it to the map.
+// Used for the seed dataset and for anything approved by the review team.
+function addConcernMarker(loc) {
+  const cfg = getVisualConfig(loc);
+  const el = document.createElement('div');
+  if (loc.type === 'concern') {
     el.style.cssText = `width:16px;height:16px;background:${cfg.color};border:3px solid white;border-radius:50%;box-shadow:0 2px 8px rgba(0,0,0,0.35);cursor:pointer;`;
-    const popup = new mapboxgl.Popup({ offset: 16 }).setHTML(
-      `<strong style="font-size:0.88rem;">${loc.name}</strong>
-       <span style="display:inline-block;margin:4px 0 6px;font-size:0.68rem;font-weight:700;padding:2px 8px;border-radius:99px;background:${cfg.pillBg};color:${cfg.pillColor};">${cfg.label} Concern</span>
-       <p style="font-size:0.78rem;color:#555;line-height:1.45;">${loc.desc}</p>`
-    );
-    const marker = new mapboxgl.Marker(el).setLngLat([loc.lng, loc.lat]).setPopup(popup).addTo(concernMapObj);
-    marker._level = loc.level;
-    marker._id    = loc.id;
-    el.addEventListener('click', () => highlightConcernCard(loc.id));
-    concernMarkers.push(marker);
-  });
+  } else {
+    el.style.cssText = `width:26px;height:26px;background:${cfg.color};border:3px solid white;border-radius:50%;box-shadow:0 2px 8px rgba(0,0,0,0.35);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:13px;line-height:1;`;
+    el.textContent = cfg.icon;
+  }
+  const typeLabel = loc.type === 'concern' ? `${cfg.label} Concern` : cfg.label;
+  const ratingBadge = (loc.type !== 'concern' && loc.level && ratingLabels[loc.level])
+    ? `<span style="display:inline-block;margin:0 0 6px 6px;font-size:0.68rem;font-weight:700;padding:2px 8px;border-radius:99px;background:${concernConfig[loc.level].pillBg};color:${concernConfig[loc.level].pillColor};">${ratingLabels[loc.level]}</span>`
+    : '';
+  const popup = new mapboxgl.Popup({ offset: 16 }).setHTML(
+    `<strong style="font-size:0.88rem;">${escapeHTML(loc.name)}</strong><br/>
+     <span style="display:inline-block;margin:4px 0 6px;font-size:0.68rem;font-weight:700;padding:2px 8px;border-radius:99px;background:${cfg.pillBg};color:${cfg.pillColor};">${typeLabel}${loc.userSubmitted ? ' · Community-submitted' : ''}</span>${ratingBadge}
+     <p style="font-size:0.78rem;color:#555;line-height:1.45;">${escapeHTML(loc.desc)}</p>`
+  );
+  const marker = new mapboxgl.Marker(el).setLngLat([loc.lng, loc.lat]).setPopup(popup).addTo(concernMapObj);
+  marker._level = loc.level || null;
+  marker._type  = loc.type;
+  marker._id    = loc.id;
+  el.style.display = locMatchesFilter(loc, currentConcernFilter) ? '' : 'none';
+  el.addEventListener('click', () => highlightConcernCard(loc.id));
+  concernMarkers.push(marker);
+  return marker;
+}
+
+function escapeHTML(str) {
+  const d = document.createElement('div');
+  d.textContent = str == null ? '' : str;
+  return d.innerHTML;
 }
 
 function buildConcernList(filter) {
   const listEl = document.getElementById('concern-loc-list');
   if (!listEl) return;
   listEl.innerHTML = '';
-  (filter ? concernLocations.filter(l => l.level === filter) : concernLocations).forEach(loc => {
-    const cfg = concernConfig[loc.level];
+  concernLocations.filter(l => locMatchesFilter(l, filter)).forEach(loc => {
+    const cfg = getVisualConfig(loc);
+    const pillLabel = loc.type === 'concern' ? cfg.label : cfg.icon;
     const card = document.createElement('div');
-    card.className = 'concern-card';
+    card.className = 'concern-card' + (loc.userSubmitted ? ' user-submitted' : '');
     card.id = `ccard-${loc.id}`;
     card.innerHTML = `
       <div class="concern-card-header">
         <div class="concern-dot" style="background:${cfg.color};"></div>
-        <span class="concern-card-name">${loc.name}</span>
-        <span class="concern-pill" style="background:${cfg.pillBg};color:${cfg.pillColor};">${cfg.label}</span>
+        <span class="concern-card-name">${escapeHTML(loc.name)}</span>
+        <span class="concern-pill" style="background:${cfg.pillBg};color:${cfg.pillColor};">${pillLabel}</span>
       </div>
-      <p class="concern-card-desc">${loc.short}</p>`;
+      <p class="concern-card-desc">${escapeHTML(loc.short)}${loc.userSubmitted ? ' 🚩' : ''}</p>`;
     card.addEventListener('click', () => focusConcernLocation(loc));
     listEl.appendChild(card);
   });
 }
 
-function filterConcerns(level) {
-  buildConcernList(level);
-  ['high','moderate','low','all'].forEach(k => {
+function filterConcerns(key) {
+  currentConcernFilter = key;
+  buildConcernList(key);
+  ['high','moderate','low','shelter','police','resource','all'].forEach(k => {
     const el = document.getElementById(`cleg-${k}`);
     if (el) el.style.background = '';
   });
-  const el = document.getElementById(`cleg-${level || 'all'}`);
+  const el = document.getElementById(`cleg-${key || 'all'}`);
   if (el) el.style.background = 'var(--blush)';
   concernMarkers.forEach(m => {
-    m.getElement().style.display = (!level || m._level === level) ? '' : 'none';
+    const loc = concernLocations.find(l => l.id === m._id);
+    m.getElement().style.display = loc && locMatchesFilter(loc, key) ? '' : 'none';
   });
 }
 
@@ -1441,6 +1623,189 @@ function highlightConcernCard(id) {
   document.querySelectorAll('.concern-card').forEach(c => c.classList.remove('active'));
   const card = document.getElementById(`ccard-${id}`);
   if (card) { card.classList.add('active'); card.scrollIntoView({ behavior:'smooth', block:'nearest' }); }
+}
+
+// ══════════════════════════════════════════
+// ADD TO THE SAFETY MAP — concerns, shelters,
+// police departments, or other safety resources.
+// Nothing is published automatically: every
+// submission is emailed to the team for a
+// one-click Approve/Deny before it goes live.
+// ══════════════════════════════════════════
+let reportPin = null;
+let reportLngLat = null;
+let reportClickBound = false;
+
+function onRcTypeChange() {
+  const type = document.getElementById('rcType').value;
+  const isConcern = type === 'concern';
+  document.getElementById('rcLevelLabel').textContent = isConcern
+    ? 'How concerning is this?'
+    : 'How do you feel about this location?';
+  document.getElementById('rcDescLabel').textContent = isConcern
+    ? "What's the concern? (optional)"
+    : 'Any details? (hours, services, contact info, etc. — optional)';
+}
+
+function startReportFlow() {
+  if (document.getElementById('map-tab-concerns').style.display === 'none') {
+    switchMapTab('concerns');
+  }
+  const begin = () => {
+    if (!concernMapObj) { setTimeout(begin, 60); return; }
+    document.getElementById('reportModal').classList.add('open');
+    document.getElementById('report-banner').style.display = 'flex';
+    concernMapObj.getCanvas().style.cursor = 'crosshair';
+    if (!reportClickBound) {
+      concernMapObj.on('click', handleReportClick);
+      reportClickBound = true;
+    }
+  };
+  setTimeout(begin, 60);
+}
+
+function handleReportClick(e) {
+  reportLngLat = e.lngLat;
+  placeReportPin(reportLngLat.lng, reportLngLat.lat);
+  updateRcCoords();
+}
+
+function placeReportPin(lng, lat) {
+  if (reportPin) reportPin.remove();
+  const el = document.createElement('div');
+  el.style.cssText = 'width:20px;height:20px;background:var(--mauve);border:3px solid white;border-radius:50% 50% 50% 0;transform:rotate(-45deg);box-shadow:0 2px 10px rgba(0,0,0,0.4);cursor:grab;';
+  reportPin = new mapboxgl.Marker({ element: el, draggable: true }).setLngLat([lng, lat]).addTo(concernMapObj);
+  reportPin.on('dragend', () => { reportLngLat = reportPin.getLngLat(); updateRcCoords(); });
+}
+
+// Lets a submitter type an address instead of clicking the map.
+async function geocodeRcAddress() {
+  const address = document.getElementById('rcAddress').value.trim();
+  if (!address || !concernMapObj) return;
+  try {
+    const url = `https://api.mapbox.com/geocoding/v5/mapbox.places/${encodeURIComponent(address)}.json?proximity=-81.379,28.538&access_token=${mapboxgl.accessToken}&limit=1`;
+    const res = await fetch(url);
+    const data = await res.json();
+    if (data.features && data.features.length) {
+      const [lng, lat] = data.features[0].center;
+      reportLngLat = { lng, lat };
+      placeReportPin(lng, lat);
+      concernMapObj.flyTo({ center: [lng, lat], zoom: 15 });
+      document.getElementById('report-banner').style.display = 'none';
+      updateRcCoords();
+    } else {
+      alert("Couldn't find that address — try adding more detail, or click the exact spot on the map instead.");
+    }
+  } catch (err) {
+    alert('Address lookup failed. Please click the location on the map instead.');
+  }
+}
+
+function updateRcCoords() {
+  const coordEl = document.getElementById('rcCoords');
+  if (coordEl && reportLngLat) {
+    coordEl.textContent = `📍 Pin at ${reportLngLat.lat.toFixed(4)}, ${reportLngLat.lng.toFixed(4)} — drag the pin on the map to adjust it.`;
+  }
+}
+
+function cancelReportFlow() {
+  document.getElementById('report-banner').style.display = 'none';
+  if (concernMapObj) concernMapObj.getCanvas().style.cursor = '';
+}
+
+function stopReportListening() {
+  if (concernMapObj && reportClickBound) {
+    concernMapObj.off('click', handleReportClick);
+    reportClickBound = false;
+  }
+  concernMapObj && (concernMapObj.getCanvas().style.cursor = '');
+  document.getElementById('report-banner').style.display = 'none';
+}
+
+function resetReportForm() {
+  document.getElementById('rcType').value = 'concern';
+  document.getElementById('rcLevel').value = 'moderate';
+  onRcTypeChange();
+  document.getElementById('rcName').value = '';
+  document.getElementById('rcAddress').value = '';
+  document.getElementById('rcDesc').value = '';
+  document.getElementById('rcCoords').textContent = '📍 No location selected yet — click the map or use the address box above.';
+}
+
+function closeReportModal(isCancel) {
+  document.getElementById('reportModal').classList.remove('open');
+  stopReportListening();
+  if (isCancel && reportPin) { reportPin.remove(); reportPin = null; reportLngLat = null; }
+  resetReportForm();
+}
+
+function submitReport() {
+  if (!reportLngLat) { alert('Please choose a location first — click the map or search an address above.'); return; }
+  const desc  = document.getElementById('rcDesc').value.trim();
+  const type  = document.getElementById('rcType').value;
+  const level = document.getElementById('rcLevel').value;
+  const name  = document.getElementById('rcName').value.trim() || (type === 'concern' ? 'Unnamed location' : locationTypeConfig[type].label);
+  const shortText = desc || ratingLabels[level] || '';
+
+  const submission = {
+    id: 'user-' + Date.now(),
+    type, level, name,
+    short: shortText.length > 70 ? shortText.slice(0, 67) + '…' : shortText,
+    desc,
+    lat: reportLngLat.lat,
+    lng: reportLngLat.lng,
+    userSubmitted: true,
+    submittedAt: new Date().toISOString()
+  };
+
+  sendSubmissionForReview(submission);
+
+  if (reportPin) { reportPin.remove(); reportPin = null; }
+  reportLngLat = null;
+  stopReportListening();
+  document.getElementById('reportModal').classList.remove('open');
+  resetReportForm();
+  showReportToast();
+}
+
+// Sends the submission to the review backend (if configured) so the team
+// gets an email with Approve/Deny links — see apps-script.gs. Nothing is
+// added to concernLocations here, so the public map is untouched until a
+// teammate approves it. Falls back to a pre-filled email draft if no
+// backend URL has been set yet in REPORT_ENDPOINT above.
+function sendSubmissionForReview(submission) {
+  if (REPORT_ENDPOINT) {
+    fetch(REPORT_ENDPOINT, {
+      method: 'POST',
+      mode: 'no-cors', // Apps Script web apps don't return readable CORS headers; fire-and-forget
+      headers: { 'Content-Type': 'text/plain' }, // avoids a CORS preflight
+      body: JSON.stringify(submission)
+    }).catch(() => { /* still queued server-side in most cases; nothing more we can check client-side */ });
+    return;
+  }
+
+  // Fallback: no backend configured yet — open a pre-filled email instead.
+  const typeLabel = submission.type === 'concern' ? 'Concern / Unsafe Area' : locationTypeConfig[submission.type].label;
+  const ratingLabel = ratingLabels[submission.level] || submission.level || '(none given)';
+  const subject = `S.H.E. Map Submission: ${submission.name}`;
+  const body = [
+    `Type: ${typeLabel}`,
+    `Rating: ${ratingLabel}`,
+    `Name: ${submission.name}`,
+    `Description: ${submission.desc || '(none given)'}`,
+    `Coordinates: ${submission.lat.toFixed(5)}, ${submission.lng.toFixed(5)}`,
+    `Google Maps: https://maps.google.com/?q=${submission.lat},${submission.lng}`,
+    '',
+    'Reply APPROVE or DENY, or add this to the site manually.'
+  ].join('\n');
+  const mailto = `mailto:${REVIEW_EMAIL}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+  window.open(mailto, '_blank');
+}
+
+function showReportToast() {
+  const toast = document.getElementById('reportToast');
+  toast.classList.add('show');
+  setTimeout(() => toast.classList.remove('show'), 3600);
 }
 </script>
 
