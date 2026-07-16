@@ -6,7 +6,7 @@
 <title>S.H.E.: Safety for Her Empowerment</title>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=Nunito:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <link href='https://api.mapbox.com/mapbox-gl-js/v3.4.0/mapbox-gl.css' rel='stylesheet' />
-<script src='https://api.mapbox.com/mapbox-gl-js/v3.4.0/mapbox-gl.js'></script>
+<script src='https://api.mapbox.com/mapbox-gl-js/v3.4.0/mapbox-gl.js' onerror="window.__mapboxScriptFailed = true;"></script>
 <style>
 *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
 :root {
@@ -172,7 +172,12 @@ nav { position: sticky; top: 0; z-index: 200; background: rgba(253,248,244,0.97)
 
 /* ── MAP ── */
 .map-zones { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 24px; }
-#map { width: 100%; height: 480px; }
+#map { width: 100% !important; height: 420px !important; min-height: 420px !important; display: block !important; }
+#concern-map { width: 100% !important; height: 480px !important; min-height: 480px !important; display: block !important; }
+#map .mapboxgl-canvas, #concern-map .mapboxgl-canvas { width: 100% !important; height: 100% !important; }
+.map-fallback { display:flex; flex-direction:column; align-items:center; justify-content:center; gap:0.6rem; height:100%; width:100%; background:var(--sage-light); padding:1.5rem; text-align:center; }
+.map-fallback p { font-size:0.82rem; color:var(--warm-gray); max-width:380px; line-height:1.6; }
+.map-fallback a { color:var(--rose); font-weight:700; }
 .map-content { padding: 2rem 3rem 3rem; }
 .zone-card { border-radius: 14px; padding: 1.2rem 1.4rem; border-left: 5px solid; }
 .zone-card.safe { background: var(--safe-light); border-color: var(--safe); }
@@ -1278,18 +1283,56 @@ function switchMapTab(tab) {
 }
 
 // ══════════════════════════════════════════
+// MAP FALLBACK — shown instead of a blank box if Mapbox never loads
+// or throws an error (blocked script, bad/restricted token, network
+// issue, etc.) so visitors (and we) see *something* instead of nothing.
+// ══════════════════════════════════════════
+function showMapFallback(containerId, reason) {
+  const el = document.getElementById(containerId);
+  if (!el || el.querySelector('.map-fallback')) return;
+  el.innerHTML = `
+    <div class="map-fallback">
+      <div style="font-size:1.6rem;">🗺️</div>
+      <p><strong>This map couldn't load${reason ? ' (' + reason + ')' : ''}.</strong><br>
+      This is usually an ad blocker/privacy extension blocking Mapbox, or a network restriction on this site.
+      Try disabling extensions or opening in a private window.</p>
+      <a href="https://maps.google.com/?q=Downtown+Orlando" target="_blank" rel="noopener">Open in Google Maps instead ↗</a>
+    </div>`;
+}
+
+// Forces Mapbox to recompute canvas size — guards against the container
+// having 0 size at the moment the map was created (common when a host
+// page/embed applies its own layout/CSS slightly after our script runs).
+function keepMapSized(mapObj, containerId) {
+  const el = document.getElementById(containerId);
+  if (!el) return;
+  [150, 400, 900, 1800].forEach(ms => setTimeout(() => { try { mapObj.resize(); } catch (e) {} }, ms));
+  if (window.ResizeObserver) {
+    new ResizeObserver(() => { try { mapObj.resize(); } catch (e) {} }).observe(el);
+  }
+  window.addEventListener('resize', () => { try { mapObj.resize(); } catch (e) {} });
+}
+
+// ══════════════════════════════════════════
 // TAB 1 — CAUTION ZONES MAP
 // ══════════════════════════════════════════
 let zonesMapObj = null;
 
 function initZonesMap() {
   if (zonesMapObj) return;
+  if (typeof mapboxgl === 'undefined') {
+    showMapFallback('map', window.__mapboxScriptFailed ? 'Mapbox script blocked' : 'Mapbox script not loaded');
+    return;
+  }
+  try {
   zonesMapObj = new mapboxgl.Map({
     container: 'map',
     style: 'mapbox://styles/mapbox/streets-v12',
     center: [-81.3792, 28.5383],
     zoom: 14
   });
+  zonesMapObj.on('error', (e) => { console.error('Zones map error:', e && e.error); showMapFallback('map', 'map error'); });
+  keepMapSized(zonesMapObj, 'map');
   zonesMapObj.addControl(new mapboxgl.NavigationControl());
 
   const zones = [
@@ -1515,6 +1558,11 @@ function initZonesMap() {
   });
 
   document.getElementById('map').appendChild(locBtn);
+  } catch (err) {
+    console.error('Zones map failed to initialize:', err);
+    zonesMapObj = null;
+    showMapFallback('map', 'initialization error');
+  }
 }
 
 function flyToZone(lng, lat) {
@@ -1884,12 +1932,19 @@ async function fetchApprovedSubmissions() {
 function initConcernMap() {
   buildConcernList(currentConcernFilter);
   if (concernMapObj) return;
+  if (typeof mapboxgl === 'undefined') {
+    showMapFallback('concern-map', window.__mapboxScriptFailed ? 'Mapbox script blocked' : 'Mapbox script not loaded');
+    return;
+  }
+  try {
   concernMapObj = new mapboxgl.Map({
     container: 'concern-map',
     style: 'mapbox://styles/mapbox/streets-v12',
     center: [-81.390, 28.538],
     zoom: 12
   });
+  concernMapObj.on('error', (e) => { console.error('Concern map error:', e && e.error); showMapFallback('concern-map', 'map error'); });
+  keepMapSized(concernMapObj, 'concern-map');
   concernMapObj.addControl(new mapboxgl.NavigationControl());
   concernLocations.forEach(loc => addConcernMarker(loc));
   fetchApprovedSubmissions();
@@ -1899,6 +1954,11 @@ function initConcernMap() {
   // LIVE OPD INCIDENT PINS (toggle) — same shared layer as the Caution
   // Zones map, same underlying City of Orlando data feed.
   setupOfficialIncidentLayer(concernMapObj, document.getElementById('concern-map-wrap'), 'top:10px;right:10px;');
+  } catch (err) {
+    console.error('Concern map failed to initialize:', err);
+    concernMapObj = null;
+    showMapFallback('concern-map', 'initialization error');
+  }
 }
 
 // "My Location" button for the Concern Areas map (mirrors the one on the
