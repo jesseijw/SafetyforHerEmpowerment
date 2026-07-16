@@ -620,7 +620,7 @@ nav { position: sticky; top: 0; z-index: 200; background: rgba(253,248,244,0.97)
   <!-- TAB: LIVE CRIME DATA (Orlando public dashboard, embedded) -->
   <div id="map-tab-crime" style="display:none;">
     <div style="padding:1rem 1.5rem;background:var(--light);font-size:0.82rem;color:var(--deep);line-height:1.6;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:0.75rem;">
-      <span>📊 Live public safety data from the City of Orlando. This is an external dashboard we don't control. If it doesn't display below, use the link to open it directly.</span>
+      <span>📊 Live public safety data from the City of Orlando. This is an external dashboard we don't control. If it doesn't display below, use the link to open it directly. Prefer pins on our own map? Individual, real-time OPD calls for service are also available as a toggle (🚔 Live OPD Data) on the Caution Zones and Concern Areas tabs, pulled from this same official feed.</span>
       <a href="https://orl.maps.arcgis.com/apps/dashboards/eae3bde08de34ea0b7c2a637b255b48b" target="_blank" rel="noopener" onclick="trackEvent('click','crime_dashboard_open_new_tab')" style="flex-shrink:0;background:var(--sage);color:white;text-decoration:none;border-radius:10px;padding:0.5rem 1rem;font-weight:700;font-size:0.78rem;white-space:nowrap;">Open Full Dashboard ↗</a>
     </div>
     <iframe
@@ -1092,6 +1092,13 @@ nav { position: sticky; top: 0; z-index: 200; background: rgba(253,248,244,0.97)
 
 <script>
 // ══════════════════════════════════════════
+// BACKEND CONFIG (must come before anything that calls trackEvent,
+// since trackEvent reads REPORT_ENDPOINT)
+// ══════════════════════════════════════════
+const REPORT_ENDPOINT = '';
+const REVIEW_EMAIL = 'safetyforherempowerment@gmail.com';
+
+// ══════════════════════════════════════════
 // SOS BANNER TICKER (continuous scroll)
 // ══════════════════════════════════════════
 (function () {
@@ -1449,6 +1456,10 @@ function initZonesMap() {
   legendDiv.appendChild(makeLegendRow(null, null, '#c0392b', 'Avoid at Night',  true));
   document.getElementById('map').appendChild(legendDiv);
 
+  // LIVE OPD INCIDENT PINS (toggle) — real, individual calls for service
+  // from the City's open-data feed, same source cited in the tab intro text.
+  setupOfficialIncidentLayer(zonesMapObj, document.getElementById('map'), 'top:10px;right:10px;');
+
   // MY LOCATION BUTTON
   const locBtn = document.createElement('button');
   locBtn.id = 'my-location-btn';
@@ -1584,7 +1595,20 @@ function getOfficialDataSchema() {
       const dateCol = cols.find(c => /date/i.test(c.name || '') &&
         (c.dataTypeName === 'calendar_date' || c.dataTypeName === 'floating_timestamp' || c.dataTypeName === 'fixed_timestamp'));
       if (!locCol) return null;
-      return { locationField: locCol.fieldName, dateField: dateCol ? dateCol.fieldName : null };
+      // Extra fields for the individual-incident pin layer (Incident Type,
+      // Incident Location text, Disposition). Discovered at runtime for the
+      // same reason as above — we never want to hardcode/guess field names
+      // against a schema the City could change.
+      const typeCol = cols.find(c => /type/i.test(c.name || '') && c.dataTypeName === 'text');
+      const addressCol = cols.find(c => c !== locCol && c !== typeCol && /location|address/i.test(c.name || '') && c.dataTypeName === 'text');
+      const dispositionCol = cols.find(c => /disposition/i.test(c.name || '') && c.dataTypeName === 'text' && !/class/i.test(c.name || ''));
+      return {
+        locationField: locCol.fieldName,
+        dateField: dateCol ? dateCol.fieldName : null,
+        typeField: typeCol ? typeCol.fieldName : null,
+        addressField: addressCol ? addressCol.fieldName : null,
+        dispositionField: dispositionCol ? dispositionCol.fieldName : null
+      };
     })
     .catch(() => null);
   return _officialDataSchemaPromise;
@@ -1656,6 +1680,129 @@ function loadOfficialDataFor(loc, marker) {
   });
 }
 
+// ══════════════════════════════════════════════════════════════════════════
+// LIVE OPD INCIDENT PINS — individual, real calls-for-service from the same
+// City of Orlando open-data feed used above, shown as their own toggleable
+// layer on BOTH the Caution Zones map and the Concern Areas map (not just a
+// per-pin count badge). Off by default — visitors turn it on, which keeps
+// the map readable and avoids hammering the City's API on every page load.
+// ══════════════════════════════════════════════════════════════════════════
+const OFFICIAL_INCIDENTS_CENTER = { lat: 28.5383, lng: -81.3792 }; // Downtown Orlando
+const OFFICIAL_INCIDENTS_RADIUS_METERS = 1600; // ~1 mile
+const OFFICIAL_INCIDENTS_LIMIT = 250;          // most recent N within that radius/window
+
+// Fetches individual recent incidents (not just a count) near a point.
+// Returns an array of { lat, lng, type, date, address, disposition }, or
+// null if the lookup couldn't complete — callers should treat null as
+// "unavailable" and say so, never silently show zero results as "none".
+async function fetchRecentOfficialIncidents(lat, lng, radiusMeters, limit) {
+  try {
+    const schema = await getOfficialDataSchema();
+    if (!schema) return null;
+    const since = new Date(Date.now() - OFFICIAL_DATA_LOOKBACK_DAYS * 24 * 60 * 60 * 1000).toISOString().slice(0, 10);
+    let where = `within_circle(${schema.locationField}, ${lat}, ${lng}, ${radiusMeters})`;
+    if (schema.dateField) where += ` AND ${schema.dateField} > '${since}T00:00:00'`;
+    const params = new URLSearchParams();
+    params.set('$where', where);
+    if (schema.dateField) params.set('$order', `${schema.dateField} DESC`);
+    params.set('$limit', String(limit || OFFICIAL_INCIDENTS_LIMIT));
+    const url = `${OFFICIAL_DATA_BASE}/resource/${OFFICIAL_DATA_RESOURCE_ID}.json?${params.toString()}`;
+    const res = await fetch(url);
+    if (!res.ok) return null;
+    const rows = await res.json();
+    if (!Array.isArray(rows)) return null;
+    return rows.map(r => {
+      const loc = r[schema.locationField];
+      let plat, plng;
+      if (loc && Array.isArray(loc.coordinates)) { plng = loc.coordinates[0]; plat = loc.coordinates[1]; }
+      else if (loc && loc.latitude && loc.longitude) { plat = parseFloat(loc.latitude); plng = parseFloat(loc.longitude); }
+      if (!Number.isFinite(plat) || !Number.isFinite(plng)) return null;
+      return {
+        lat: plat, lng: plng,
+        type: schema.typeField ? r[schema.typeField] : null,
+        date: schema.dateField ? r[schema.dateField] : null,
+        address: schema.addressField ? r[schema.addressField] : null,
+        disposition: schema.dispositionField ? r[schema.dispositionField] : null
+      };
+    }).filter(Boolean);
+  } catch (e) {
+    return null;
+  }
+}
+
+function formatOfficialIncidentDate(raw) {
+  if (!raw) return '';
+  const d = new Date(raw);
+  return Number.isNaN(d.getTime()) ? '' : d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+}
+
+function renderOfficialIncidentPopupHTML(inc) {
+  return `<span style="display:inline-block;margin-bottom:6px;font-size:0.68rem;font-weight:700;padding:2px 8px;border-radius:99px;background:#f1f1f1;color:#555;">🚔 OPD Call for Service</span>
+    <strong style="font-size:0.85rem;display:block;">${escapeHTML(inc.type || 'Type not specified')}</strong>
+    ${inc.address ? `<p style="font-size:0.75rem;color:#666;margin:4px 0 0;">${escapeHTML(inc.address)}</p>` : ''}
+    ${inc.date ? `<p style="font-size:0.72rem;color:#888;margin:2px 0 0;">${formatOfficialIncidentDate(inc.date)}</p>` : ''}
+    ${inc.disposition ? `<p style="font-size:0.72rem;color:#888;margin:2px 0 0;">Disposition: ${escapeHTML(inc.disposition)}</p>` : ''}
+    <p style="font-size:0.66rem;color:#aaa;margin-top:6px;line-height:1.4;">Source: City of Orlando Open Data Portal (OPD Calls for Service), the same records feeding the <a href="https://orl.maps.arcgis.com/apps/dashboards/eae3bde08de34ea0b7c2a637b255b48b" target="_blank" rel="noopener" style="color:#D4736A;">OPD Criminal Dashboard</a>.</p>`;
+}
+
+// Builds a small "🚔 Live OPD Data" toggle button + an empty layer group,
+// wires up fetch-on-first-enable + show/hide, and appends the button into
+// the given container. Shared between both maps so the behavior (and the
+// underlying data) stays identical everywhere it appears.
+function setupOfficialIncidentLayer(mapObj, containerEl, positionCss) {
+  const state = { markers: [], loaded: false, visible: false };
+
+  const btn = document.createElement('button');
+  btn.innerHTML = '🚔 Live OPD Data';
+  btn.style.cssText = 'position:absolute;' + positionCss + 'z-index:10;background:white;border:2px solid rgba(0,0,0,0.15);border-radius:24px;padding:7px 14px;font-family:Nunito,sans-serif;font-size:0.78rem;font-weight:700;color:#444;cursor:pointer;box-shadow:0 2px 10px rgba(0,0,0,0.15);transition:all 0.2s;';
+
+  function setOn() { btn.style.background = '#444'; btn.style.color = 'white'; btn.style.borderColor = '#444'; }
+  function setOff() { btn.style.background = 'white'; btn.style.color = '#444'; btn.style.borderColor = 'rgba(0,0,0,0.15)'; }
+
+  async function enable() {
+    state.visible = true;
+    setOn();
+    if (state.loaded) { state.markers.forEach(m => m.addTo(mapObj)); return; }
+    btn.innerHTML = '⏳ Loading…';
+    const center = mapObj.getCenter ? mapObj.getCenter() : OFFICIAL_INCIDENTS_CENTER;
+    const incidents = await fetchRecentOfficialIncidents(
+      center.lat || OFFICIAL_INCIDENTS_CENTER.lat,
+      center.lng || OFFICIAL_INCIDENTS_CENTER.lng,
+      OFFICIAL_INCIDENTS_RADIUS_METERS,
+      OFFICIAL_INCIDENTS_LIMIT
+    );
+    state.loaded = true;
+    btn.innerHTML = '🚔 Live OPD Data';
+    if (!incidents) {
+      btn.innerHTML = '🚔 Data unavailable';
+      setTimeout(() => { btn.innerHTML = '🚔 Live OPD Data'; setOff(); state.visible = false; }, 2500);
+      return;
+    }
+    incidents.forEach(inc => {
+      const el = document.createElement('div');
+      el.style.cssText = 'width:9px;height:9px;background:#444;border:1.5px solid white;border-radius:50%;box-shadow:0 1px 4px rgba(0,0,0,0.4);cursor:pointer;';
+      const marker = new mapboxgl.Marker(el).setLngLat([inc.lng, inc.lat])
+        .setPopup(new mapboxgl.Popup({ offset: 10 }).setHTML(renderOfficialIncidentPopupHTML(inc)))
+        .addTo(mapObj);
+      state.markers.push(marker);
+    });
+  }
+
+  function disable() {
+    state.visible = false;
+    setOff();
+    state.markers.forEach(m => m.remove());
+  }
+
+  btn.addEventListener('click', () => {
+    trackEvent('click', 'toggle_official_incidents');
+    state.visible ? disable() : enable();
+  });
+
+  containerEl.appendChild(btn);
+  return state;
+}
+
 // ─────────────────────────────────────────────────────────────────────────
 // BACKEND CONFIG
 // Paste the Web App URL of your deployed Google Apps Script here to enable:
@@ -1665,9 +1812,9 @@ function loadOfficialDataFor(loc, marker) {
 // Until this is set, submissions fall back to opening a pre-filled email
 // draft to safetyforherempowerment@gmail.com for manual review instead.
 // See the companion apps-script.gs file + setup guide for deployment steps.
+// (REPORT_ENDPOINT / REVIEW_EMAIL are declared near the top of this script,
+// before they're first used.)
 // ─────────────────────────────────────────────────────────────────────────
-const REPORT_ENDPOINT = '';
-const REVIEW_EMAIL = 'safetyforherempowerment@gmail.com';
 
 // ── Lightweight, anonymous usage tracking (page views + key button clicks) ──
 // No personal data is collected — just a random id stored in this browser
@@ -1741,6 +1888,9 @@ function initConcernMap() {
   // Light polling so newly-approved reports appear without a full page reload.
   setInterval(fetchApprovedSubmissions, 45000);
   addConcernLocateButton_();
+  // LIVE OPD INCIDENT PINS (toggle) — same shared layer as the Caution
+  // Zones map, same underlying City of Orlando data feed.
+  setupOfficialIncidentLayer(concernMapObj, document.getElementById('concern-map-wrap'), 'top:10px;right:10px;');
 }
 
 // "My Location" button for the Concern Areas map (mirrors the one on the
