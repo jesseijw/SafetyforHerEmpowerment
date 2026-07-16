@@ -351,6 +351,14 @@ nav { position: sticky; top: 0; z-index: 200; background: rgba(253,248,244,0.97)
   .social-body { padding: 1.5rem 1.1rem; }
 }
 </style>
+<!-- Microsoft Clarity -->
+<script type="text/javascript">
+    (function(c,l,a,r,i,t,y){
+        c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+        t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+        y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+    })(window, document, "clarity", "script", "xn38qozmks");
+</script>
 </head>
 <body>
 
@@ -2064,8 +2072,18 @@ function startReportFlow() {
   if (document.getElementById('map-tab-concerns').style.display === 'none') {
     switchMapTab('concerns');
   }
+  let attempts = 0;
+  const MAX_ATTEMPTS = 50; // ~3 seconds
   const begin = () => {
-    if (!concernMapObj) { setTimeout(begin, 60); return; }
+    if (!concernMapObj) {
+      attempts++;
+      if (attempts >= MAX_ATTEMPTS) {
+        alert("The map couldn't load, so we can't place a pin right now. This is usually caused by an ad blocker or privacy extension blocking Mapbox — try disabling it or opening the site in a private/incognito window, then try again.");
+        return;
+      }
+      setTimeout(begin, 60);
+      return;
+    }
     document.getElementById('reportModal').classList.add('open');
     document.getElementById('report-banner').style.display = 'flex';
     concernMapObj.getCanvas().style.cursor = 'crosshair';
